@@ -1,4 +1,4 @@
-package aoc2016
+package adventofcode2016
 
 import (
 	"fmt"
@@ -6,14 +6,15 @@ import (
 )
 
 var day00Examples = []struct {
-	in, out uint
+	in  []string
+	out uint
 }{
-	{0, 0},
+	{[]string{}, 0},
 }
 
 func TestDay00ExamplesPart1(t *testing.T) {
 	for _, tt := range day00Examples {
-		id := fmt.Sprintf("%d", tt.in)
+		id := fmt.Sprintf("%s", tt.in)
 		t.Run(id, func(t *testing.T) {
 			want := tt.out
 			got := Day00Part1(tt.in)
@@ -25,6 +26,15 @@ func TestDay00ExamplesPart1(t *testing.T) {
 }
 
 func TestDay00Part1(t *testing.T) {
+	const want = 0
+	lines, err := linesFromFilename(filename(00))
+	if err != nil {
+		t.Fatal(err)
+	}
+	got := Day00Part1(lines)
+	if want != got {
+		t.Fatalf("want %d but got %d", want, got)
+	}
 }
 
 func TestDay00Part2(t *testing.T) {

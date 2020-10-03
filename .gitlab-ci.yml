@@ -1,0 +1,9 @@
+test-go:
+    stage: test
+    image: golang
+    script:
+        - go get -u golang.org/x/lint/golint
+        - golint
+        - go vet
+        - go test -bench -benchmem -cover -short
+    coverage: '/coverage: \d+\.\d+%/'

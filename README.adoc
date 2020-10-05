@@ -13,3 +13,25 @@ became clear that all steps count.
 Part 2 needs to find sector ID of room "north pole objects". After finding
 nothing, dumping all decrypted rooms, grep'ing for "north" one finally finds
 the correct room "northpole object storage".
+
+----
+BenchmarkDay4Part1
+BenchmarkDay4Part1-16                418           2771044 ns/op         1099945 B/op      12315 allocs/op
+BenchmarkDay4Part2
+BenchmarkDay4Part2-16             270402              4263 ns/op            1610 B/op         19 allocs/op
+----
+
+Use a 26 bytes array to count letter occurences instead of a sparse map[byte]uint:
+
+----
+BenchmarkDay4Part1
+BenchmarkDay4Part1-16                854           1279735 ns/op          217994 B/op       6545 allocs/op
+BenchmarkDay4Part2
+BenchmarkDay4Part2-16             857664              1381 ns/op             336 B/op         11 allocs/op
+----
+
+Part #1 is 100% faster, part #2 300 % faster.
+
+1381 nanoseconds (ns) are 1.4 microseconds (μs).
+Light will travel around 500 meters in 1.6 μs.
+I mean this is incredibly fast, nay?

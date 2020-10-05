@@ -7,10 +7,10 @@ import (
 )
 
 type day4 struct {
-	ID       []byte
-	letters  map[byte]uint
 	sector   uint
+	letters  [26]byte
 	checksum [5]byte
+	ID       []byte
 }
 
 // avoid rune conversion
@@ -23,22 +23,7 @@ const dash = '-'
 func newDay4(s string) (day4, error) {
 	var d day4
 	d.ID = []byte(s)
-	d.letters = make(map[byte]uint, 26)
 
-	// sparse map is faster than pre-allocating all letters to 0
-	/*
-		for i := byte('a'); i <= 'z'; i++ {
-			d.letters[i] = 0
-		}
-	*/
-	letter := func(b byte) {
-		// insert into sparse map
-		if _, ok := d.letters[b]; ok {
-			d.letters[b]++
-		} else {
-			d.letters[b] = 1
-		}
-	}
 	for i, b := range d.ID {
 		if b == dash {
 			continue
@@ -48,26 +33,32 @@ func newDay4(s string) (day4, error) {
 			continue
 		}
 		if b == '[' {
-			for j := 0; j < len(d.checksum); j++ {
-				d.checksum[j] = d.ID[i+1+j]
-			}
+			/*
+				Golang happily unrolls this loop into a copy()
+				command:
+
+				for j := 0; j < len(d.checksum); j++ {
+					d.checksum[j] = d.ID[i+1+j]
+				}
+			*/
+			copy(d.checksum[:], d.ID[i+1:i+1+5])
 			return d, nil
 		}
-		letter(b)
+		d.letters[b-'a']++
 	}
 	return d, fmt.Errorf("missing checksum in %q", s)
 }
 
 type day4Sector struct {
 	b byte
-	n uint
+	n byte
 }
 
 func (d day4) real() bool {
 	// sort letters by occurence
 	var sectors []day4Sector
-	for k, v := range d.letters {
-		sectors = append(sectors, day4Sector{k, v})
+	for b, n := range d.letters {
+		sectors = append(sectors, day4Sector{byte(b) + 'a', n})
 	}
 	sort.Slice(sectors, func(i, j int) bool {
 		if sectors[i].n < sectors[j].n {

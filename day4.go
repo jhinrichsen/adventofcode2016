@@ -23,8 +23,16 @@ const dash = '-'
 func newDay4(s string) (day4, error) {
 	var d day4
 	d.ID = []byte(s)
-	d.letters = make(map[byte]uint, len(s)) // a bit too large = large enough
+	d.letters = make(map[byte]uint, 26)
+
+	// sparse map is faster than pre-allocating all letters to 0
+	/*
+		for i := byte('a'); i <= 'z'; i++ {
+			d.letters[i] = 0
+		}
+	*/
 	letter := func(b byte) {
+		// insert into sparse map
 		if _, ok := d.letters[b]; ok {
 			d.letters[b]++
 		} else {

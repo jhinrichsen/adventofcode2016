@@ -7,3 +7,9 @@ There's no grid, no 2D array, no X and Y variables, and no direction. Like.
 Did not understand part 2, failing unit tests because i only marked end
 positions. Only when i https://goplay.space[turtle graphic'ed] the example it
 became clear that all steps count.
+
+== Day 4
+
+Part 2 needs to find sector ID of room "north pole objects". After finding
+nothing, dumping all decrypted rooms, grep'ing for "north" one finally finds
+the correct room "northpole object storage".

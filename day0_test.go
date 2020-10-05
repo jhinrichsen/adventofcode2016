@@ -17,7 +17,7 @@ func TestDay00ExamplesPuzzle1(t *testing.T) {
 		id := fmt.Sprintf("%s", tt.in)
 		t.Run(id, func(t *testing.T) {
 			want := tt.out
-			got := Day00Puzzle1(tt.in)
+			got := Day0Part1(tt.in)
 			if want != got {
 				t.Fatalf("want %d but got %d", want, got)
 			}
@@ -25,13 +25,13 @@ func TestDay00ExamplesPuzzle1(t *testing.T) {
 	}
 }
 
-func TestDay00Puzzle1(t *testing.T) {
+func TestDay0Part1(t *testing.T) {
 	const want = 0
 	lines, err := linesFromFilename(filename(00))
 	if err != nil {
 		t.Fatal(err)
 	}
-	got := Day00Puzzle1(lines)
+	got := Day0Part1(lines)
 	if want != got {
 		t.Fatalf("want %d but got %d", want, got)
 	}

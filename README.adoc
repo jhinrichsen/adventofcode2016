@@ -35,3 +35,8 @@ Part #1 is 100% faster, part #2 300 % faster.
 1381 nanoseconds (ns) are 1.4 microseconds (μs).
 Light will travel around 500 meters in 1.6 μs.
 I mean this is incredibly fast, nay?
+
+Fastest reported times on reddit are 2 ms versus my 1.2 ms, but then those
+numbers are from hardware that is at least 4 years older than my MacBook Pro
+(16-inch, 2019, 2,4 GHz 8-Core Intel Core i9). I'm rolling my own parser
+though, instead of using `scanf(3)` e.a.

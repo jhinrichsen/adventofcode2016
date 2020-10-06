@@ -13,33 +13,32 @@ func Day5(doorID string, part1 bool) string {
 	var idx int // 0..n-1
 	for i := 0; ; i++ {
 		chk := md5.Sum([]byte(fmt.Sprintf("%s%d", doorID, i)))
+		fiveZeroes := chk[0] == 0 &&
+			chk[1] == 0 &&
+			chk[2] < 16
+		if !fiveZeroes {
+			continue
+		}
 		rep := []byte(fmt.Sprintf("%x", chk))
-		if rep[0] == '0' &&
-			rep[1] == '0' &&
-			rep[2] == '0' &&
-			rep[3] == '0' &&
-			rep[4] == '0' {
-
-			if part1 {
-				// next character is at position 6
-				password[idx] = rep[5]
-			} else {
-				// next character is index of next next
-				// character
-				j := int(rep[5] - '0')
-				if j >= len(password) {
-					continue // skip illegal index, try next
-				}
-				// "Use only the first result for each position"
-				if password[j] != 0 {
-					continue
-				}
-				password[j] = rep[6]
+		if part1 {
+			// next character is at position 6
+			password[idx] = rep[5]
+		} else {
+			// next character is index of next next
+			// character
+			j := int(rep[5] - '0')
+			if j >= len(password) {
+				continue // skip illegal index, try next
 			}
-			idx++
-			if idx == len(password) {
-				break
+			// "Use only the first result for each position"
+			if password[j] != 0 {
+				continue
 			}
+			password[j] = rep[6]
+		}
+		idx++
+		if idx == len(password) {
+			break
 		}
 	}
 	return string(password[:])

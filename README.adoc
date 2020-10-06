@@ -40,3 +40,37 @@ Fastest reported times on reddit are 2 ms versus my 1.2 ms, but then those
 numbers are from hardware that is at least 4 years older than my MacBook Pro
 (16-inch, 2019, 2,4 GHz 8-Core Intel Core i9). I'm rolling my own parser
 though, instead of using `scanf(3)` e.a.
+
+== Day 5
+
+----
+BenchmarkDay5Part1
+BenchmarkDay5Part1-16    	       1	8290784618 ns/op	1741396552 B/op	100409235 allocs/op
+BenchmarkDay5Part2
+BenchmarkDay5Part2-16    	       1	13266456586 ns/op	2739557288 B/op	157963381 allocs/op
+----
+
+Comparing the binary MD5 instead of the hex representation:
+
+----
+BenchmarkDay5Part1
+BenchmarkDay5Part1-16    	       1	4014164864 ns/op	669773280 B/op	50204243 allocs/op
+BenchmarkDay5Part2
+BenchmarkDay5Part2-16    	       1	6278619828 ns/op	1053675720 B/op	78981141 allocs/op
+----
+
+Twice as fast,  `benchstat` reports:
+
+----
+name          old time/op    new time/op    delta
+Day5Part1-16     8.29s ± 0%     4.01s ± 0%   ~     (p=1.000 n=1+1)
+Day5Part2-16     13.3s ± 0%      6.3s ± 0%   ~     (p=1.000 n=1+1)
+
+name          old alloc/op   new alloc/op   delta
+Day5Part1-16    1.74GB ± 0%    0.67GB ± 0%   ~     (p=1.000 n=1+1)
+Day5Part2-16    2.74GB ± 0%    1.05GB ± 0%   ~     (p=1.000 n=1+1)
+
+name          old allocs/op  new allocs/op  delta
+Day5Part1-16      100M ± 0%       50M ± 0%   ~     (p=1.000 n=1+1)
+Day5Part2-16      158M ± 0%       79M ± 0%   ~     (p=1.000 n=1+1)
+----

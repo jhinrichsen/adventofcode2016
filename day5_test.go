@@ -1,0 +1,54 @@
+package adventofcode2016
+
+import (
+	"testing"
+)
+
+func TestDay5ExamplePart1(t *testing.T) {
+	const (
+		want  = "18f47a30"
+		part1 = true
+	)
+
+	got := Day5("abc", part1)
+	if want != got {
+		t.Fatalf("want %q but got %q", want, got)
+	}
+}
+
+func BenchmarkDay5Part1(b *testing.B) {
+	const (
+		want  = "1a3099aa"
+		part1 = true
+	)
+	for i := 0; i < b.N; i++ {
+		got := Day5(day5Input, part1)
+		if want != got {
+			b.Fatalf("want %q but got %q", want, got)
+		}
+	}
+}
+
+func TestDay5ExamplePart2(t *testing.T) {
+	const (
+		want  = "05ace8e3"
+		part1 = false
+	)
+	got := Day5("abc", part1)
+	if want != got {
+		t.Fatalf("want %q but got %q", want, got)
+	}
+}
+
+func BenchmarkDay5Part2(b *testing.B) {
+	const (
+		want  = "694190cd"
+		part1 = false
+	)
+	for i := 0; i < b.N; i++ {
+		got := Day5(day5Input, part1)
+		if want != got {
+			b.Fatalf("want %q but got %q", want, got)
+		}
+	}
+}

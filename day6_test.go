@@ -19,7 +19,7 @@ func TestDay6ExamplePart1(t *testing.T) {
 	}
 }
 
-func BenchmarkDay6(b *testing.B) {
+func BenchmarkDay6Part1(b *testing.B) {
 	const (
 		want  = "tzstqsua"
 		part1 = true

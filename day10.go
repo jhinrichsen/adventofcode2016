@@ -23,8 +23,8 @@ func (a bot) active() bool {
 	return a.n == 2
 }
 
-// Day10 solves day 10 part 1.
-func Day10(lines []string, value1, value2 uint) (uint, error) {
+// Day10 solves day 10. For part 2, value1 and value2 are ignored.
+func Day10(lines []string, part1 bool, value1, value2 uint) (uint, error) {
 	// invariant: value1 < value2
 	if value1 > value2 {
 		value1, value2 = value2, value1
@@ -42,6 +42,10 @@ func Day10(lines []string, value1, value2 uint) (uint, error) {
 			}
 			v := uint(vi)
 			ID := fs[4] + fs[5]
+			if len(ID) == 0 {
+				return 0, fmt.Errorf("line %d: missing ID in %q",
+					i, line)
+			}
 			b := bots[ID]
 			b.ID = ID
 			b.send(v)
@@ -57,13 +61,26 @@ func Day10(lines []string, value1, value2 uint) (uint, error) {
 					fmt.Errorf(msg, len(fs), line)
 			}
 			ID := fs[0] + fs[1]
+			if len(ID) == 0 {
+				return 0, fmt.Errorf("line %d: missing ID in %q",
+					i, line)
+			}
 			b := bots[ID]
 			b.ID = ID
+			ID0 := fs[5] + fs[6]
+			ID1 := fs[10] + fs[11]
 			b.output = [...]string{
-				fs[5] + fs[6],
-				fs[10] + fs[11],
+				ID0,
+				ID1,
 			}
 			bots[ID] = b
+			// register output bots
+			if _, ok := bots[ID0]; !ok {
+				bots[ID0] = bot{ID: ID0}
+			}
+			if _, ok := bots[ID1]; !ok {
+				bots[ID1] = bot{ID: ID1}
+			}
 		}
 	}
 
@@ -80,7 +97,7 @@ func Day10(lines []string, value1, value2 uint) (uint, error) {
 		}
 
 		// this bot?
-		if l == value1 && h == value2 {
+		if part1 && l == value1 && h == value2 {
 			x, err := strconv.Atoi(b.ID[3:])
 			if err != nil {
 				return 0, fmt.Errorf("error converting bot ID "+
@@ -88,18 +105,33 @@ func Day10(lines []string, value1, value2 uint) (uint, error) {
 			}
 			return uint(x), nil
 		}
-		low := bots[b.output[0]]
-		low.send(l)
-		bots[low.ID] = low
-		if low.active() {
-			active[low.ID] = true
+		if low, ok := bots[b.output[0]]; ok {
+			low.send(l)
+			bots[low.ID] = low
+			if low.active() {
+				active[low.ID] = true
+			}
+		} else {
+			return 0, fmt.Errorf("%q has unknown low bot %q",
+				b.ID, b.output[0])
 		}
-		high := bots[b.output[1]]
-		high.send(h)
-		bots[high.ID] = high
-		if high.active() {
-			active[high.ID] = true
+		if high, ok := bots[b.output[1]]; ok {
+			high.send(h)
+			bots[high.ID] = high
+			if high.active() {
+				active[high.ID] = true
+			}
+		} else {
+			return 0, fmt.Errorf("%q has unknown high bot %q",
+				b.ID, b.output[1])
 		}
 	}
-	return 0, fmt.Errorf("no more active bots, nothing found")
+	product := uint(1)
+	for _, ID := range []string{"output0", "output1", "output2"} {
+		b := bots[ID]
+		for i := 0; i < b.n; i++ {
+			product *= b.input[i]
+		}
+	}
+	return product, nil
 }

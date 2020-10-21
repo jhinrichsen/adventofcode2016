@@ -8,12 +8,15 @@ import (
 // syntax. Part #1 does not allow the same, one needs to really analyse the
 // complete chain.
 func TestDay10Example(t *testing.T) {
-	const want = 2
+	const (
+		want  = 2
+		part1 = true
+	)
 	lines, err := linesFromFilename(exampleFilename(10))
 	if err != nil {
 		t.Fatal(err)
 	}
-	got, err := Day10(lines, 2, 5)
+	got, err := Day10(lines, part1, 2, 5)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -22,17 +25,42 @@ func TestDay10Example(t *testing.T) {
 	}
 }
 
-func TestDay10Part1(t *testing.T) {
-	const want = 161
+func BenchmarkDay10Part1(b *testing.B) {
+	const (
+		want  = 161
+		part1 = true
+	)
 	lines, err := linesFromFilename(filename(10))
 	if err != nil {
-		t.Fatal(err)
+		b.Fatal(err)
 	}
-	got, err := Day10(lines, 61, 17)
+	for i := 0; i < b.N; i++ {
+		got, err := Day10(lines, part1, 61, 17)
+		if err != nil {
+			b.Fatal(err)
+		}
+		if want != got {
+			b.Fatalf("want %d but got %d", want, got)
+		}
+	}
+}
+
+func BenchmarkDay10Part2(b *testing.B) {
+	const (
+		want  = 133163
+		part1 = false
+	)
+	lines, err := linesFromFilename(filename(10))
 	if err != nil {
-		t.Fatal(err)
+		b.Fatal(err)
 	}
-	if want != got {
-		t.Fatalf("want %d but got %d", want, got)
+	for i := 0; i < b.N; i++ {
+		got, err := Day10(lines, part1, 0, 0)
+		if err != nil {
+			b.Fatal(err)
+		}
+		if want != got {
+			b.Fatalf("want %d but got %d", want, got)
+		}
 	}
 }

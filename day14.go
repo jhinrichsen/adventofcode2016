@@ -7,18 +7,23 @@ import (
 )
 
 // Day14 returns 64th key for given salt.
-func Day14(salt string) uint {
+func Day14(salt string, part1 bool) uint {
 	const (
 		nth  = 64
 		next = 1000
 	)
+	hasher := func() func(string) string {
+		if part1 {
+			return hash
+		}
+		return stretchedHash
+	}()
 	var hashes []string
 	keys := uint8(1)
 	for i := 0; ; i++ {
 		for j := len(hashes); j < i+next+1; j++ {
-			bs := md5.Sum([]byte(salt + strconv.Itoa(j)))
 			hashes = append(hashes, "")
-			hashes[j] = hex.EncodeToString(bs[:])
+			hashes[j] = hasher(salt + strconv.Itoa(j))
 		}
 		findTriple := func(s string) byte {
 			for i := 0; i < len(s)-2; i++ {
@@ -55,4 +60,18 @@ func Day14(salt string) uint {
 			keys++
 		}
 	}
+}
+
+func hash(s string) string {
+	bs := md5.Sum([]byte(s))
+	return hex.EncodeToString(bs[:])
+}
+
+func stretchedHash(s string) string {
+	buf := []byte(s)
+	for i := 0; i < 2017; i++ {
+		bs := md5.Sum(buf)
+		buf = []byte(hex.EncodeToString(bs[:]))
+	}
+	return string(buf)
 }

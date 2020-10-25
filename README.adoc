@@ -74,3 +74,16 @@ name          old allocs/op  new allocs/op  delta
 Day5Part1-16      100M ± 0%       50M ± 0%   ~     (p=1.000 n=1+1)
 Day5Part2-16      158M ± 0%       79M ± 0%   ~     (p=1.000 n=1+1)
 ----
+
+== Day 11
+
+Now this puzzle is way beyond my capabilities, types of generators do not
+matter, never heard of Zobrist before, and the h() function for floors (1 * 
+first floor, 2 * second floor, 3 * third floor, 4 * fourth floor) reminds me of
+Columbus' egg: simple and easy after the fact.
+
+== Day 13
+
+Off by one for part 2, because 50 steps means the starting point and from then
+on 50 steps.
+I took the starting point as the first step.

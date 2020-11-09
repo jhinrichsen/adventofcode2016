@@ -87,3 +87,9 @@ Columbus' egg: simple and easy after the fact.
 Off by one for part 2, because 50 steps means the starting point and from then
 on 50 steps.
 I took the starting point as the first step.
+
+== Day 16
+
+As a bit of surprise, this one was pretty straightforward, first shot ran in
+half a second, so no further optimizations such as reducing allocations,
+collapsing distinct reverse and flip phases into one e.a.

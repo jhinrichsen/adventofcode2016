@@ -90,5 +90,5 @@ func BenchmarkDay8Part1(b *testing.B) {
 	   #     #  #  #  #  # #   #  #  #     #  #    #   #  #  #  #
 	   ####   ##   #  #  #  #   ###  #     #  #    #   #  #   ##
 	*/
-	fmt.Fprintf(ioutil.Discard, strings.ReplaceAll(save.String(), ".", " "))
+	fmt.Fprint(ioutil.Discard, strings.ReplaceAll(save.String(), ".", " "))
 }

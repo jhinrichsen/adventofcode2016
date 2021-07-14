@@ -5,8 +5,6 @@ import (
 	"fmt"
 )
 
-const day5Input = "uqwqemis"
-
 // Day5 solves day 1 part 1.
 func Day5(doorID string, part1 bool) string {
 	var password [8]byte

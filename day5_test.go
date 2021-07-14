@@ -4,6 +4,8 @@ import (
 	"testing"
 )
 
+const day5Input = "uqwqemis"
+
 func TestDay5ExamplePart1(t *testing.T) {
 	const (
 		want  = "18f47a30"

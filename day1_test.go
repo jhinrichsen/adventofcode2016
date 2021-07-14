@@ -1,7 +1,6 @@
 package adventofcode2016
 
 import (
-	"fmt"
 	"testing"
 )
 
@@ -30,8 +29,7 @@ func TestDay1Examples(t *testing.T) {
 	}
 
 	for _, tt := range tableTests {
-		id := fmt.Sprintf("%s", tt.in)
-		t.Run(id, func(t *testing.T) {
+		t.Run(tt.in, func(t *testing.T) {
 			want := tt.out
 			got, err := day1(tt.in, tt.part2)
 			if err != nil {

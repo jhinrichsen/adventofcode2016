@@ -75,12 +75,10 @@ func (s day11) adjacent() (routes []day11) {
 	return
 }
 
-func (s day11) isInvalid() bool {
-	return s.fl1.isInvalid() || s.fl2.isInvalid() || s.fl3.isInvalid() || s.fl4.isInvalid()
-}
 func (s day11) isSolved() bool {
 	return s.fl1.isEmpty() && s.fl2.isEmpty() && s.fl3.isEmpty()
 }
+
 func (s day11) String() string {
 	return fmt.Sprintf("%s%s%s%s%v", s.fl1, s.fl2, s.fl3, s.fl4, s.floorID)
 }
@@ -88,9 +86,7 @@ func (s day11) String() string {
 func (fl floor) isEmpty() bool {
 	return fl.chips == 0 && fl.generators == 0
 }
-func (fl floor) isInvalid() bool {
-	return fl.chips != 0 && fl.generators > fl.chips
-}
+
 func (fl floor) String() string {
 	return fmt.Sprintf("%v%v", fl.chips, fl.generators)
 }

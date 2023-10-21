@@ -1,7 +1,6 @@
 package adventofcode2016
 
 import (
-	"fmt"
 	"testing"
 )
 
@@ -22,11 +21,10 @@ var day7Examples = []struct {
 
 func TestDay7Examples(t *testing.T) {
 	for _, tt := range day7Examples {
-		id := fmt.Sprintf("%s", tt.in)
+		id := tt.in
 		t.Run(id, func(t *testing.T) {
 			want := tt.out
-			var got uint
-			got = Day7([]string{tt.in}, tt.part1)
+			got := Day7([]string{tt.in}, tt.part1)
 			if want != got {
 				t.Fatalf("want %d but got %d", want, got)
 			}

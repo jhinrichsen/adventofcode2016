@@ -1,7 +1,6 @@
 package adventofcode2016
 
 import (
-	"fmt"
 	"testing"
 )
 
@@ -17,7 +16,7 @@ var day4Examples = []struct {
 
 func TestDay4Logic(t *testing.T) {
 	for _, tt := range day4Examples {
-		id := fmt.Sprintf("%s", tt.in)
+		id := tt.in
 		t.Run(id, func(t *testing.T) {
 			want := tt.out
 			d, err := newDay4(tt.in)

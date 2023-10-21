@@ -51,7 +51,7 @@ func cap2(n int) int {
 	return n
 }
 
-//Adjacent states from valid moves from this state
+// Adjacent states from valid moves from this state
 func (s day11) adjacent() (routes []day11) {
 	maxG, maxM := cap2(s.current.generators), cap2(s.current.chips) //Only bring up to 2 items up/down
 	if s.floorID != 4 {                                             //Move items up in all combinations
@@ -75,9 +75,6 @@ func (s day11) adjacent() (routes []day11) {
 	return
 }
 
-func (s day11) isInvalid() bool {
-	return s.fl1.isInvalid() || s.fl2.isInvalid() || s.fl3.isInvalid() || s.fl4.isInvalid()
-}
 func (s day11) isSolved() bool {
 	return s.fl1.isEmpty() && s.fl2.isEmpty() && s.fl3.isEmpty()
 }
@@ -87,9 +84,6 @@ func (s day11) String() string {
 
 func (fl floor) isEmpty() bool {
 	return fl.chips == 0 && fl.generators == 0
-}
-func (fl floor) isInvalid() bool {
-	return fl.chips != 0 && fl.generators > fl.chips
 }
 func (fl floor) String() string {
 	return fmt.Sprintf("%v%v", fl.chips, fl.generators)

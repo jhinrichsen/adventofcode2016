@@ -99,6 +99,27 @@ collapsing distinct reverse and flip phases into one e.a.
 Both part 1 and part 2 correct on first try.
 Updated Go from 1.13 to 1.21 because it is October 2023.
 
+== Day 18
+
+
+Both part 1 and part 2 correct on first try.
+Part 2 is the quickest implementation of any puzzle i have ever done.
+I basically just copied the test for part 1 into part 2, ran like a charm.
+
+----
+% go test -run=xxx -bench=Day18 -benchmem
+goos: darwin
+goarch: amd64
+pkg: gitlab.com/jhinrichsen/adventofcode2016
+cpu: Intel(R) Core(TM) i9-9980HK CPU @ 2.40GHz
+BenchmarkDay18Part2-16    	       3	 373477125 ns/op	134400981 B/op	 1200004 allocs/op
+PASS
+ok  	gitlab.com/jhinrichsen/adventofcode2016	2.419
+----
+
+Let's see 373477125 ns/op = 373477 μs/op = 373 ms/op.
+
+
 == Benchmarks
 
 

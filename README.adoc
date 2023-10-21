@@ -93,3 +93,46 @@ I took the starting point as the first step.
 As a bit of surprise, this one was pretty straightforward, first shot ran in
 half a second, so no further optimizations such as reducing allocations,
 collapsing distinct reverse and flip phases into one e.a.
+
+== Day 17
+
+Both part 1 and part 2 correct on first try.
+Updated Go from 1.13 to 1.21 because it is October 2023.
+
+== Benchmarks
+
+
+=== Go 1.16.6
+
+go test -run NONE -bench . -benchmem
+goos: darwin
+goarch: amd64
+pkg: gitlab.com/jhinrichsen/adventofcode2016
+cpu: Intel(R) Core(TM) i9-9980HK CPU @ 2.40GHz
+BenchmarkDay10Part1-16                	    7935	    149868 ns/op	  150914 B/op	     898 allocs/op
+BenchmarkDay10Part2-16                	    5566	    180755 ns/op	  150906 B/op	     898 allocs/op
+BenchmarkDay12Part1-16                	      16	  64670795 ns/op	35622124 B/op	  954128 allocs/op
+BenchmarkDay12Part2-16                	       1	1880828079 ns/op	1033513760 B/op	27683214 allocs/op
+BenchmarkDay13Part1-16                	   13106	     88480 ns/op	  145743 B/op	     505 allocs/op
+BenchmarkDay14Part1-16                	      18	  61525941 ns/op	 3397745 B/op	   78431 allocs/op
+BenchmarkDay15Part1PlainVanilla-16    	    3597	    341104 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay15Part2PlainVanilla-16    	     216	   5890262 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay1Part1-16                 	  125259	      8485 ns/op	    3082 B/op	       5 allocs/op
+BenchmarkDay1Part2-16                 	   13448	     88505 ns/op	   49126 B/op	      51 allocs/op
+BenchmarkDay2Part1-16                 	    9693	    118226 ns/op	     328 B/op	       2 allocs/op
+BenchmarkDay2Part2-16                 	    8084	    131257 ns/op	     387 B/op	       3 allocs/op
+BenchmarkDay3Part1-16                 	    5994	    208099 ns/op	   91296 B/op	    1902 allocs/op
+BenchmarkDay3Part2-16                 	    5872	    208013 ns/op	   91296 B/op	    1902 allocs/op
+BenchmarkDay4Part1-16                 	     914	   1284869 ns/op	  210504 B/op	    6545 allocs/op
+BenchmarkDay4Part2-16                 	  808363	      1416 ns/op	     328 B/op	      11 allocs/op
+BenchmarkDay5Part1-16                 	       1	3987839685 ns/op	669767480 B/op	50204193 allocs/op
+BenchmarkDay5Part2-16                 	       1	6387133445 ns/op	1053682040 B/op	78981164 allocs/op
+BenchmarkDay6Part1-16                 	  248094	      4243 ns/op	       8 B/op	       1 allocs/op
+BenchmarkDay6Part2-16                 	  262150	      4339 ns/op	       8 B/op	       1 allocs/op
+BenchmarkDay7Part1-16                 	    1296	    915176 ns/op	  735616 B/op	   14392 allocs/op
+BenchmarkDay7Part2-16                 	     559	   2165888 ns/op	 1969477 B/op	   24375 allocs/op
+BenchmarkDay8Part1-16                 	   31016	     38769 ns/op	    5648 B/op	     113 allocs/op
+BenchmarkDay9Part1-16                 	   35505	     34320 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay9Part2-16                 	   14134	     93560 ns/op	   98304 B/op	       1 allocs/op
+PASS
+

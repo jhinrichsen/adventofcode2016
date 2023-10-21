@@ -69,16 +69,6 @@ func (a state) next() []state {
 
 type states map[state]bool
 
-func (a states) ended() (bool, state) {
-	for k := range a {
-		if k.pos == finishPosition {
-			return true, k
-		}
-	}
-	var zero state
-	return false, zero
-}
-
 func md5s(s string) string {
 	hash := md5.Sum([]byte(s))
 	return hex.EncodeToString(hash[:])
@@ -92,6 +82,7 @@ func Day17(passcode string, maxMoves int, part1 bool) string {
 	// populate with start position
 	ss[state{startPosition, passcode}] = true
 	prospects := make(states)
+	var fittest string
 
 	for i := 0; i < maxMoves; i++ {
 		for s := range ss {
@@ -99,14 +90,28 @@ func Day17(passcode string, maxMoves int, part1 bool) string {
 				prospects[s2] = true
 			}
 		}
-		finished, winner := ss.ended()
-		if finished {
-			// strip original passcode from result
-			return strings.TrimPrefix(winner.passcode, passcode)
+
+		// check which prospects ended
+		for p := range prospects {
+			// PERF move this check into block above to avoid
+			// setting a prospect, and removing it below
+			if p.pos == finishPosition {
+				// strip original passcode from result
+				fittest = strings.TrimPrefix(p.passcode, passcode)
+				if part1 {
+					// part 1: find the shortest path
+					return fittest
+				}
+				// remove prospect from pool
+				delete(prospects, p)
+			}
 		}
 
+		if len(prospects) == 0 {
+			break
+		}
 		ss, prospects = prospects, ss
 		clear(prospects)
 	}
-	return ""
+	return fittest
 }

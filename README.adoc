@@ -1,5 +1,19 @@
 = Advent Of Code (AOC) 2016
 
+My take on aoc puzzles in Go.
+
+All puzzles live in the same Go package, usually one `.go` file per day.
+
+I never make it to the board, because i am too slow.
+I prefer to get my answers right the first time, use test cases, and do some
+low level performance tweaking stuff.
+
+All answers are hardcoded into the test cases.
+Although most puzzles are user specific input, you might want to avoid looking
+at the test cases.
+
+image::img/events_2023-10.png[Events as of October 2023]
+
 == Day 1
 
 There's no grid, no 2D array, no X and Y variables, and no direction. Like.
@@ -118,13 +132,173 @@ ok  	gitlab.com/jhinrichsen/adventofcode2016	2.419
 ----
 
 Let's see 373477125 ns/op = 373477 μs/op = 373 ms/op.
+This is the base mark, now for the tuning.
 
+=== Avoid allocations
+
+Instead of
+
+----
+func next(row string) string
+----
+
+use an implementation that does not allocate:
+
+----
+func next(from []byte, into []byte)
+----
+
+We don't need the complete history, so we can take turns on predecessor and successors (a/b, blue/green).
+
+Memory consumption is O(1) now:
+
+----
+BenchmarkDay18Part2V2-16    	       4	 274722198 ns/op	     224 B/op	       2 allocs/op
+----
+
+After having another look at the boolean expression `f(left, right)`
+this is a regular XOR. Don't know why my online boolean simplifier did
+not recognize this.
+Maybe i should have done a Karnaugh myself. Gosh, `minterms`, long time
+no see.
+
+Runtime down by 70%:
+----
+name             old time/op    new time/op    delta
+Day18Part2V2-16     275ms ± 0%      84ms ± 0%  -69.52%  (p=0.000 n=10+10)
+
+name             old alloc/op   new alloc/op   delta
+Day18Part2V2-16      224B ± 0%      224B ± 0%     ~     (all equal)
+
+name             old allocs/op  new allocs/op  delta
+Day18Part2V2-16      2.00 ± 0%      2.00 ± 0%     ~     (all equal)
+----
+
+These were the obvious low hanging fruits for tuning.
+Let's have a look at pprof to identify more options.
+
+----
+(pprof) top10
+Showing nodes accounting for 1.01s, 100% of 1.01s total
+      flat  flat%   sum%        cum   cum%
+     0.67s 66.34% 66.34%      0.68s 67.33%  gitlab.com/jhinrichsen/adventofcode2016.step (inline)
+     0.32s 31.68% 98.02%      0.32s 31.68%  gitlab.com/jhinrichsen/adventofcode2016.SafesAndTraps.Safes (inline)
+     0.01s  0.99% 99.01%      1.01s   100%  gitlab.com/jhinrichsen/adventofcode2016.Day18V2
+     0.01s  0.99%   100%      0.01s  0.99%  runtime.asyncPreempt
+         0     0%   100%      1.01s   100%  gitlab.com/jhinrichsen/adventofcode2016.BenchmarkDay18Part2V2
+         0     0%   100%      0.93s 92.08%  testing.(*B).launch
+----
+
+One third is spent just counting bits.
+
+----
+100
+101 func (a SafesAndTraps) Safes() int {
+102         var n int
+103         for i := len(a) - 2; i > 0; i-- {
+104                 if !a[i] {
+105                         n++
+106                 }
+107         }
+108         return n
+109 }
+110
+----
+
+The assembler listing shows a whole lot of stuff going on under the hood.
+
+----
+0x0011 00017 (day18.go:100)	LEAQ	1(DX), SI
+0x0018 00024 (day18.go:100)	TESTQ	BX, BX
+0x001b 00027 (day18.go:100)	CMOVQNE	DX, SI
+0x001f 00031 (day18.go:100)	MOVQ	SI, DX
+0x0027 00039 (day18.go:103)	MOVQ	DX, AX
+0x002a 00042 (day18.go:103)	RET
+0x0000 00000 (day18.go:106)	TEXT	command-line-arguments.NewSafesAndTraps(SB), ABIInternal, $40-16
+0x0000 00000 (day18.go:106)	CMPQ	SP, 16(R14)
+0x0004 00004 (day18.go:106)	PCDATA	$0, $-2
+0x0004 00004 (day18.go:106)	JLS	141
+0x000a 00010 (day18.go:106)	PCDATA	$0, $-1
+x000a 00010 (day18.go:106)	PUSHQ	BP
+0x000b 00011 (day18.go:106)	MOVQ	SP, BP
+0x000e 00014 (day18.go:106)	SUBQ	$32, SP
+0x0012 00018 (day18.go:106)	FUNCDATA	$0, gclocals·wgcWObbY2HYnK2SU/U22lA==(SB)
+0x0012 00018 (day18.go:106)	FUNCDATA	$1, gclocals·J5F+7Qw7O7ve2QcWC7DpeQ==(SB)
+0x0012 00018 (day18.go:106)	FUNCDATA	$5, command-line-arguments.NewSafesAndTraps.arginfo1(SB)
+0x0012 00018 (day18.go:106)	FUNCDATA	$6, command-line-arguments.NewSafesAndTraps.argliveinfo(SB)
+0x0012 00018 (day18.go:106)	PCDATA	$3, $1
+0x0012 00018 (day18.go:107)	MOVQ	BX, command-line-arguments.s+56(SP)
+0x0017 00023 (day18.go:106)	MOVQ	AX, command-line-arguments.s+48(SP)
+0x001c 00028 (day18.go:106)	PCDATA	$3, $-1
+0x001c 00028 (day18.go:107)	LEAQ	2(BX), CX
+0x0020 00032 (day18.go:107)	MOVQ	CX, command-line-arguments.bits.len+24(SP)
+0x0025 00037 (day18.go:107)	LEAQ	type:bool(SB), AX
+0x002c 00044 (day18.go:107)	MOVQ	CX, BX
+0x002f 00047 (day18.go:107)	PCDATA	$1, $0
+0x002f 00047 (day18.go:107)	CALL	runtime.makeslice(SB)
+0x008d 00141 (day18.go:106)	PCDATA	$1, $-1
+0x008d 00141 (day18.go:106)	PCDATA	$0, $-2
+0x008d 00141 (day18.go:106)	MOVQ	AX, 8(SP)
+0x0092 00146 (day18.go:106)	MOVQ	BX, 16(SP)
+0x0097 00151 (day18.go:106)	CALL	runtime.morestack_noctxt(SB)
+0x009c 00156 (day18.go:106)	MOVQ	8(SP), AX
+0x00a1 00161 (day18.go:106)	MOVQ	16(SP), BX
+0x00a6 00166 (day18.go:106)	PCDATA	$0, $-1
+0x00a6 00166 (day18.go:106)	JMP	0
+0x0017 00023 (day18.go:107)	MOVQ	BX, command-line-arguments.row+64(SP)
+0x0021 00033 (day18.go:107)	LEAQ	2(BX), DX
+0x0025 00037 (day18.go:107)	MOVQ	DX, command-line-arguments.bits.len+24(SP)
+0x002b 00043 (day18.go:107)	LEAQ	type:bool(SB), AX
+0x0032 00050 (day18.go:107)	MOVQ	DX, BX
+0x0035 00053 (day18.go:107)	MOVQ	DX, CX
+0x0038 00056 (day18.go:107)	PCDATA	$1, $0
+0x0038 00056 (day18.go:107)	CALL	runtime.makeslice(SB)
+0x007c 00124 (day18.go:107)	MOVQ	AX, command-line-arguments..autotmp_51+32(SP)
+0x00d6 00214 (day18.go:100)	LEAQ	1(R9), R11
+0x00dd 00221 (day18.go:100)	TESTQ	R10, R10
+0x00e0 00224 (day18.go:100)	CMOVQNE	R9, R11
+0x00e4 00228 (day18.go:100)	MOVQ	R11, R9
+0x0026 00038 (day18.go:100)	LEAQ	1(AX), SI
+0x002d 00045 (day18.go:100)	TESTQ	BX, BX
+0x0030 00048 (day18.go:100)	CMOVQNE	AX, SI
+0x0034 00052 (day18.go:100)	MOVQ	SI, AX
+----
+
+Un-exporting the struct and the function, and using a pointer receiver:
+
+----
+100
+101 func (a *safesAndTraps) safes() int {
+102         var n int
+103         for i := len(*a) - 2; i > 0; i-- {
+104                 if !(*a)[i] {
+105                         n++
+106                 }
+107         }
+108         return n
+109 }
+110
+----
+
+_increases_ the runtime by 5%.
+
+----
+name             old time/op    new time/op    delta
+Day18Part2V2-16    83.9ms ± 0%    88.0ms ± 0%  +4.96%  (p=0.000 n=10+10)
+
+name             old alloc/op   new alloc/op   delta
+Day18Part2V2-16      224B ± 0%      224B ± 0%    ~     (all equal)
+
+name             old allocs/op  new allocs/op  delta
+Day18Part2V2-16      2.00 ± 0%      2.00 ± 0%    ~     (all equal)
+----
 
 == Benchmarks
 
 
 === Go 1.16.6
 
+----
 go test -run NONE -bench . -benchmem
 goos: darwin
 goarch: amd64
@@ -156,4 +330,4 @@ BenchmarkDay8Part1-16                 	   31016	     38769 ns/op	    5648 B/op	 
 BenchmarkDay9Part1-16                 	   35505	     34320 ns/op	       0 B/op	       0 allocs/op
 BenchmarkDay9Part2-16                 	   14134	     93560 ns/op	   98304 B/op	       1 allocs/op
 PASS
-
+----

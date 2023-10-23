@@ -31,9 +31,10 @@ func newDay15(lines []string) (day15, error) {
 		if err != nil {
 			return d, fmt.Errorf("cannot parse number %q", fs[3])
 		}
-		position, err := strconv.Atoi(fs[6][4:])
+		s := strings.TrimRight(fs[11], ".")
+		position, err := strconv.Atoi(s)
 		if err != nil {
-			return d, err
+			return d, fmt.Errorf("error converting %+v", s)
 		}
 		d = append(d, disc{
 			position:  position,

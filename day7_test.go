@@ -21,8 +21,7 @@ var day7Examples = []struct {
 
 func TestDay7Examples(t *testing.T) {
 	for _, tt := range day7Examples {
-		id := tt.in
-		t.Run(id, func(t *testing.T) {
+		t.Run(tt.in, func(t *testing.T) {
 			want := tt.out
 			got := Day7([]string{tt.in}, tt.part1)
 			if want != got {

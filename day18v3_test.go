@@ -19,6 +19,18 @@ func trapsAsString(bits []bool) string {
 	return sb.String()
 }
 
+func TestTrapsAsString(t *testing.T) {
+	want := "^^.^.^."
+	got := trapsAsString([]bool{
+		false, // left safe
+		true, true, false, true, false, true, false,
+		false, // left safe
+	})
+	if want != got {
+		t.Fatalf("want %q but got %q", want, got)
+	}
+}
+
 func TestDay18ExampleV3(t *testing.T) {
 	const want = 38
 	got := Day18V3(day18Example[0], len(day18Example))

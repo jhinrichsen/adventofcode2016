@@ -2,7 +2,7 @@ package adventofcode2016
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"strings"
 	"testing"
 )
@@ -90,5 +90,5 @@ func BenchmarkDay8Part1(b *testing.B) {
 	   #     #  #  #  #  # #   #  #  #     #  #    #   #  #  #  #
 	   ####   ##   #  #  #  #   ###  #     #  #    #   #  #   ##
 	*/
-	fmt.Fprintf(ioutil.Discard, strings.ReplaceAll(save.String(), ".", " "))
+	fmt.Fprint(io.Discard, strings.ReplaceAll(save.String(), ".", " "))
 }

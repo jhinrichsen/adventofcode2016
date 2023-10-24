@@ -356,6 +356,41 @@ PASS
 ok  	gitlab.com/jhinrichsen/adventofcode2016	4.932s
 ----
 
+
+== Day 19
+
+Part 1 and 2 correct on first submission.
+It had to be some sort of OEIS, because 3 million iterations doing _something_ already takes too long.
+
+----
+goos: darwin
+goarch: amd64
+pkg: gitlab.com/jhinrichsen/adventofcode2016
+cpu: Intel(R) Core(TM) i9-9980HK CPU @ 2.40GHz
+BenchmarkDay19Part1-16    	776810582	         1.544 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay19Part1-16    	776542976	         1.543 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay19Part1-16    	776042260	         1.543 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay19Part1-16    	775742094	         1.543 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay19Part1-16    	776205050	         1.544 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay19Part1-16    	775785795	         1.544 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay19Part1-16    	776457939	         1.543 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay19Part1-16    	776107875	         1.543 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay19Part1-16    	775791412	         1.544 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay19Part1-16    	776528312	         1.543 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay19Part2-16    	 2749078	       437.4 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay19Part2-16    	 2748660	       436.5 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay19Part2-16    	 2751550	       436.5 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay19Part2-16    	 2747470	       436.0 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay19Part2-16    	 2747382	       436.4 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay19Part2-16    	 2756632	       436.3 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay19Part2-16    	 2748680	       436.1 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay19Part2-16    	 2747872	       436.5 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay19Part2-16    	 2749844	       436.5 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay19Part2-16    	 2746927	       436.3 ns/op	       0 B/op	       0 allocs/op
+PASS
+ok  	gitlab.com/jhinrichsen/adventofcode2016	30.260s
+----
+
 == Benchmarks
 
 

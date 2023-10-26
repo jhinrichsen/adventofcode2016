@@ -1,7 +1,6 @@
 package adventofcode2016
 
 import (
-	"fmt"
 	"strings"
 )
 
@@ -35,7 +34,6 @@ func Day18V3(row string, count int) int {
 
 	var sum int
 	for ; count > 0; count-- {
-		fmt.Printf("%s\n", trapsAsString(a))
 		for i := len(a) - 2; i > 0; i-- {
 			// count safes in current row
 			if !a[i] {
@@ -44,7 +42,6 @@ func Day18V3(row string, count int) int {
 			// determine next row
 			b[i] = a[i-1] != a[i+1]
 		}
-		fmt.Printf("row %d: %d\n", count, sum)
 		a, b = b, a
 	}
 

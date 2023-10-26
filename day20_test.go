@@ -1,7 +1,6 @@
 package adventofcode2016
 
 import (
-	"fmt"
 	"testing"
 )
 
@@ -49,23 +48,16 @@ func _TestDay20Lowest(t *testing.T) {
 	m79 |= 8
 	m79 |= 9
 
-	fmt.Printf("m15:   %08b\n", m15)
-	fmt.Printf("m79:   %08b\n", m79)
-
 	m1 := rangeMask3(1, 5)
-	fmt.Printf("mask1: %08b\n", m1)
 	if m15 != m1 {
 		t.Fatalf("%d does not match %d", m15, m1)
 	}
 	m2 := rangeMask3(7, 9)
-	fmt.Printf("mask2: %08b\n", m2)
 	if m79 != m2 {
 		t.Fatalf("%d does not match %d", m79, m2)
 	}
 
 	var got uint32 = m1 | m2
-	fmt.Printf("want:  %08b\n", want)
-	fmt.Printf("got:   %08b\n", got)
 	if want != got {
 		t.Fatalf("want %0.8b but got %0.8b", want, got)
 	}
@@ -77,9 +69,7 @@ func _TestDay20RangeMask2(t *testing.T) {
 	for i := want; i < 10; i++ {
 		want |= i
 	}
-	fmt.Printf("want: %32b\n", want)
 	got := rangeMask2(0, 9)
-	fmt.Printf("got:  %32b\n", got)
 	if want != got {
 		t.Fatalf("want %b but got %b", want, got)
 	}

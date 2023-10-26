@@ -5,12 +5,16 @@ import (
 )
 
 const (
-	input  = "^.....^.^^^^^.^..^^.^.......^^..^^^..^^^^..^.^^.^.^....^^...^^.^^.^...^^.^^^^..^^.....^.^...^.^.^^.^"
-	repeat = 400000
-	want   = 19991126
+	day18Input = "^.....^.^^^^^.^..^^.^.......^^..^^^..^^^^..^.^^.^.^....^^...^^.^^.^...^^.^^^^..^^.....^.^...^.^.^^.^"
+
+	day18RepeatPart1 = 40
+	day18WantPart1   = 1974
+
+	day18RepeatPart2 = 400000
+	day18WantPart2   = 19991126
 )
 
-var day18Example = []string{
+var day18ExampleInput = []string{
 	".^^.^.^^^^",
 	"^^^...^..^",
 	"^.^^.^.^^.",
@@ -24,16 +28,15 @@ var day18Example = []string{
 }
 
 func TestDay18Part1(t *testing.T) {
-	const want = 1974
-	got := Day18(input, 40)
-	if want != got {
-		t.Fatalf("want %d but got %d", want, got)
+	got := Day18(day18Input, day18RepeatPart1)
+	if day18WantPart1 != got {
+		t.Fatalf("want %d but got %d", day18WantPart1, got)
 	}
 }
 
 func TestDay18Part2(t *testing.T) {
-	got := Day18(input, repeat)
-	if want != got {
-		t.Fatalf("want %d but got %d", want, got)
+	got := Day18(day18Input, day18RepeatPart2)
+	if day18WantPart2 != got {
+		t.Fatalf("want %d but got %d", day18WantPart2, got)
 	}
 }

@@ -37,17 +37,14 @@ func TestDay18ExampleV2(t *testing.T) {
 }
 
 func TestDay18Part2V2(t *testing.T) {
-	got := Day18V2(input, repeat)
-	if want != got {
-		t.Fatalf("want %d but got %d", want, got)
+	got := Day18V2(day18Input, day18RepeatPart2)
+	if day18WantPart2 != got {
+		t.Fatalf("want %d but got %d", day18WantPart2, got)
 	}
 }
 
 func BenchmarkDay18Part2V2(b *testing.B) {
-	const (
-		input = "^.....^.^^^^^.^..^^.^.......^^..^^^..^^^^..^.^^.^.^....^^...^^.^^.^...^^.^^^^..^^.....^.^...^.^.^^.^"
-	)
 	for i := 0; i < b.N; i++ {
-		_ = Day18V2(input, repeat)
+		_ = Day18V2(day18Input, day18RepeatPart2)
 	}
 }

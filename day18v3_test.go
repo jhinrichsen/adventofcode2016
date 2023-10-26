@@ -1,23 +1,8 @@
 package adventofcode2016
 
 import (
-	"strings"
 	"testing"
 )
-
-func trapsAsString(bits []bool) string {
-	var sb strings.Builder
-	for i := 1; i < len(bits)-1; i++ {
-		var c byte
-		if bits[i] {
-			c = trap
-		} else {
-			c = safe
-		}
-		sb.WriteByte(c)
-	}
-	return sb.String()
-}
 
 func TestTrapsAsString(t *testing.T) {
 	want := "^^.^.^."
@@ -39,7 +24,16 @@ func TestDay18ExampleV3(t *testing.T) {
 	}
 }
 
-// TODO add Part1V3
+func TestDay18Part1V3(t *testing.T) {
+	const (
+		repeat = 40
+		want   = 1974
+	)
+	got := Day18V3(input, repeat)
+	if want != got {
+		t.Fatalf("want %d but got %d", want, got)
+	}
+}
 
 func TestDay18Part2V3(t *testing.T) {
 	got := Day18V3(input, repeat)

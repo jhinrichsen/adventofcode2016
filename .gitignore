@@ -1,0 +1,4 @@
+*.bench
+*.out
+*.S
+*.test

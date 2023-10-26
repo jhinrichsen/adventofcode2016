@@ -4,41 +4,42 @@
 package adventofcode2016
 
 import (
+	"fmt"
+	"slices"
 	"testing"
 )
 
-func TestDay21Example(t *testing.T) {
-	lineResults := []string{
-		"ebcda",
-		"edcba",
-		"abcde",
-		"bcdea",
-		"bdeac",
-		"abdec",
-		"ecabd",
-		"decab",
-	}
-	lines, err := linesFromFilename(exampleFilename(21))
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	got := "abcde"
-	for i, line := range lines {
-		lineno := i + 1
-		f := parseDay21(line)
-
-		want := lineResults[i]
-		got = f(got)
-		if want != got {
-			t.Fatalf("line #%d: want %q but got %q", lineno, want, got)
-		}
-	}
+var day21ExampleResults = []string{
+	"abcde", // start password
+	"ebcda", // result after applying first command
+	"edcba",
+	"abcde",
+	"bcdea",
+	"bdeac",
+	"abdec",
+	"ecabd",
+	"decab", // result
 }
 
 func test(t *testing.T, name string, got, want string) {
 	if want != got {
 		t.Fatalf("error in %q: want %q but got %q", name, want, got)
+	}
+}
+
+func testN(t *testing.T, cmds []string, results []string, scramble bool) {
+	got := results[0]
+	for i, cmd := range cmds {
+		f := parseDay21(cmd, scramble)
+
+		want := results[i+1]
+		fmt.Printf("before: %s\n", got)
+		got = f(got)
+		fmt.Printf("after : %s\n", got)
+		if want != got {
+			idx := i + 1 // lines are 1-based
+			t.Fatalf("line #%d: want %q but got %q", idx, want, got)
+		}
 	}
 }
 
@@ -57,17 +58,25 @@ func TestReverse(t *testing.T) {
 func TestRotateLeftN(t *testing.T) {
 	s := "rotate left N"
 	f := rotateLeftN
+	test(t, s, f("abcde", 0), "abcde")
 	test(t, s, f("abcde", 1), "bcdea")
+	test(t, s, f("abcde", 2), "cdeab")
+	test(t, s, f("abcde", 3), "deabc")
 	test(t, s, f("abcde", 4), "eabcd")
 	test(t, s, f("abcde", 5), "abcde")
+	test(t, s, f("abcde", 6), "bcdea")
 }
 
 func TestRotateRightN(t *testing.T) {
 	s := "rotate right N"
 	f := rotateRightN
+	test(t, s, f("abcde", 0), "abcde")
 	test(t, s, f("abcde", 1), "eabcd")
+	test(t, s, f("abcde", 2), "deabc")
+	test(t, s, f("abcde", 3), "cdeab")
 	test(t, s, f("abcde", 4), "bcdea")
 	test(t, s, f("abcde", 5), "abcde")
+	test(t, s, f("abcde", 6), "eabcd")
 }
 
 func TestRotateLeftPos(t *testing.T) {
@@ -83,13 +92,40 @@ func TestMove(t *testing.T) {
 	test(t, "move", move("bdeac", 3, 0), "abdec")
 }
 
-func TestDay21(t *testing.T) {
-	const want = "gfdhebac"
+func TestDay21Part1Example(t *testing.T) {
+	lines, err := linesFromFilename(exampleFilename(21))
+	if err != nil {
+		t.Fatal(err)
+	}
+	testN(t, lines, day21ExampleResults, true)
+}
+
+func TestDay21Part2Example(t *testing.T) {
+	cmds, err := linesFromFilename(exampleFilename(21))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// reverse commands and expected results
+	slices.Reverse(cmds)
+	// create our own copy because tests may run in parallel
+	results := make([]string, len(day21ExampleResults))
+	copy(results, day21ExampleResults)
+	slices.Reverse(results)
+
+	testN(t, cmds, results, false)
+}
+func TestDay21Part1(t *testing.T) {
+	const (
+		input = "abcdefgh"
+		part1 = true // part1 is synomym to 'scramble'
+		want  = "gfdhebac"
+	)
 	lines, err := linesFromFilename(filename(21))
 	if err != nil {
 		t.Fatal(err)
 	}
-	got := Day21("abcdefgh", lines, true)
+	got := Day21(input, lines, part1)
 	if want != got {
 		t.Fatalf("want %q but got %q", want, got)
 	}

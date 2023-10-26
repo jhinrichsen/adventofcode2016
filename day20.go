@@ -9,42 +9,6 @@ import (
 
 // Trying to find a solution in the bitmask space, to no avail...
 
-// that's an AND
-func rangeMask1(lower, upper uint32) uint32 {
-	var x uint32 = uint32(((1 << (lower - 1)) - 1) ^ ((1 << upper) - 1))
-	return x
-}
-
-// that's another AND
-func rangeMask2(lower, upper uint32) uint32 {
-	count := 0
-	for lower != upper {
-		lower >>= 1
-		upper >>= 1
-		count++
-	}
-	return upper << count
-}
-
-// that's an OR
-func rangeMask3(a, b uint32) uint32 {
-	var d, z uint32
-	d = b - a + 1
-	z = 0
-	for d > 1 {
-		z = (z << 1) | 1
-		d >>= 1
-	}
-	d = z
-	z |= a
-	a += d
-	for a <= b {
-		z |= a
-		a++
-	}
-	return z
-}
-
 type _range struct {
 	lower, upper uint32
 }

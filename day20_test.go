@@ -23,58 +23,6 @@ func TestDay20Part1Example(t *testing.T) {
 	}
 }
 
-// correct: f(5, 7) = 4
-// correct: f(11, 14) = 8
-func _TestDay20RangeMask(t *testing.T) {
-	var want, lower, upper uint32
-	want = 8
-	lower = 11
-	upper = 14
-	got := rangeMask2(lower, upper)
-	if want != got {
-		t.Fatalf("want %0.8b but got %0.8b", want, got)
-	}
-}
-
-func _TestDay20Lowest(t *testing.T) {
-	var m15, m79, want uint32
-	m15 |= 1
-	m15 |= 2
-	m15 |= 3
-	m15 |= 4
-	m15 |= 5
-	want = 6
-	m79 |= 7
-	m79 |= 8
-	m79 |= 9
-
-	m1 := rangeMask3(1, 5)
-	if m15 != m1 {
-		t.Fatalf("%d does not match %d", m15, m1)
-	}
-	m2 := rangeMask3(7, 9)
-	if m79 != m2 {
-		t.Fatalf("%d does not match %d", m79, m2)
-	}
-
-	var got uint32 = m1 | m2
-	if want != got {
-		t.Fatalf("want %0.8b but got %0.8b", want, got)
-	}
-}
-
-func _TestDay20RangeMask2(t *testing.T) {
-	var want uint32
-	// setup [0-4], [5-9]
-	for i := want; i < 10; i++ {
-		want |= i
-	}
-	got := rangeMask2(0, 9)
-	if want != got {
-		t.Fatalf("want %b but got %b", want, got)
-	}
-}
-
 func TestDay20Part1(t *testing.T) {
 	const (
 		day   = 20

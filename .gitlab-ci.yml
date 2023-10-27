@@ -1,9 +1,31 @@
-test-go:
+image: golang:1.21
+
+# You can override the included template(s) by including variable overrides
+# SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
+# Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings
+# Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
+# Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
+# Note that environment variables can be set in several places
+# See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
+stages:
+- test
+sast:
     stage: test
-    image: golang
+include:
+- template: Security/SAST.gitlab-ci.yml
+
+test-job:
+    stage: test
+    except:
+        - README.adoc
+    before_script:
+        - make setup
     script:
-        - go get -u golang.org/x/lint/golint
-        - golint
-        - go vet
-        - go test -bench=. -benchmem -cover -short
+        - make lint test
     coverage: '/coverage: \d+\.\d+%/'
+    artifacts:
+        reports:
+            coverage_report:
+                coverage_format: cobertura
+                path: coverage.xml
+

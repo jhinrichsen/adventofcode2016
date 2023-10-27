@@ -1,5 +1,10 @@
 = Advent Of Code (AOC) 2016
 
+image:https://godoc.org/gitlab.com/jhinrichsen/adventofcode2016?status.svg["godoc", link="https://godoc.org/gitlab.com/jhinrichsen/adventofcode2016"]
+image:https://goreportcard.com/badge/gitlab.com/jhinrichsen/adventofcode2016["Go report card", link="https://goreportcard.com/report/gitlab.com/jhinrichsen/adventofcode2016"]
+image:https://gitlab.com/jhinrichsen/adventofcode2016/badges/main/pipeline.svg[link="https://gitlab.com/jhinrichsen/adventofcode2016/-/commits/main",title="pipeline status"]
+image:https://gitlab.com/jhinrichsen/adventofcode2016/badges/main/coverage.svg[link="https://gitlab.com/jhinrichsen/adventofcode2016/badges/main/coverage.svg",title="coverage report"]
+
 My take on aoc puzzles in Go.
 
 All puzzles live in the same Go package, usually one `.go` file per day.
@@ -13,7 +18,7 @@ All answers are hardcoded into the test cases.
 Although most puzzles are user specific input, you might want to avoid looking
 at the test cases.
 
-image::img/events_2023-10.png[Events as of October 2023]
+image::img/events_2016-10.png[Events as of October 2023]
 
 == Day 1: No Time for a Taxicab
 

@@ -7,6 +7,7 @@ All puzzles live in the same Go package, usually one `.go` file per day.
 I never make it to the board, because i am too slow.
 I prefer to get my answers right the first time, use test cases, and do some
 low level performance tweaking stuff.
+More like NASA landing Rover on Mars, than trial and error.
 
 All answers are hardcoded into the test cases.
 Although most puzzles are user specific input, you might want to avoid looking
@@ -14,7 +15,7 @@ at the test cases.
 
 image::img/events_2023-10.png[Events as of October 2023]
 
-== Day 1
+== Day 1: No Time for a Taxicab
 
 There's no grid, no 2D array, no X and Y variables, and no direction. Like.
 
@@ -22,7 +23,9 @@ Did not understand part 2, failing unit tests because i only marked end
 positions. Only when i https://goplay.space[turtle graphic'ed] the example it
 became clear that all steps count.
 
-== Day 4
+== Day 2: Bathroom Security
+== Day 3: Squares With Three Sides
+== Day 4: Security Through Obscurity
 
 Part 2 needs to find sector ID of room "north pole objects". After finding
 nothing, dumping all decrypted rooms, grep'ing for "north" one finally finds
@@ -55,7 +58,7 @@ numbers are from hardware that is at least 4 years older than my MacBook Pro
 (16-inch, 2019, 2,4 GHz 8-Core Intel Core i9). I'm rolling my own parser
 though, instead of using `scanf(3)` e.a.
 
-== Day 5
+== Day 5: How About a Nice Game of Chess?
 
 ----
 BenchmarkDay5Part1
@@ -89,36 +92,44 @@ Day5Part1-16      100M ± 0%       50M ± 0%   ~     (p=1.000 n=1+1)
 Day5Part2-16      158M ± 0%       79M ± 0%   ~     (p=1.000 n=1+1)
 ----
 
-== Day 11
+== Day 6: Signals and Noise
+== Day 7: Internet Protocol Version 7
+== Day 8: Two-Factor Authentication
+== Day 9: Explosives in Cyberspace
+== Day 10: Balance Bots
+== Day 11: Radioisotope Thermoelectric Generators
 
 Now this puzzle is way beyond my capabilities, types of generators do not
 matter, never heard of Zobrist before, and the h() function for floors (1 * 
 first floor, 2 * second floor, 3 * third floor, 4 * fourth floor) reminds me of
 Columbus' egg: simple and easy after the fact.
 
-== Day 13
+== Day 12: Leonardo's Monorail
+== Day 13: A Maze of Twisty Little Cubicles
 
 Off by one for part 2, because 50 steps means the starting point and from then
 on 50 steps.
 I took the starting point as the first step.
 
-== Day 16
+== Day 14: One-Time Pad
+== Day 15: Timing is Everything
+== Day 16: Dragon Checksum
 
 As a bit of surprise, this one was pretty straightforward, first shot ran in
 half a second, so no further optimizations such as reducing allocations,
 collapsing distinct reverse and flip phases into one e.a.
 
-== Day 17
+
+== Day 17: Two Steps Forward
 
 Both part 1 and part 2 correct on first try.
 Updated Go from 1.13 to 1.21 because it is October 2023.
 
 
-== Day 18
-
+== Day 18: Like a Rogue
 
 Both part 1 and part 2 correct on first try.
-Part 2 is the quickest implementation of any puzzle i have ever done.
+Part 2 is the quickest coding of any puzzle i have ever done.
 I basically just copied the test for part 1 into part 2, ran like a charm.
 
 ----
@@ -357,10 +368,11 @@ ok  	gitlab.com/jhinrichsen/adventofcode2016	4.932s
 ----
 
 
-== Day 19
+== Day 19: An Elephant Named Joseph
 
 Part 1 and 2 correct on first submission.
 It had to be some sort of OEIS, because 3 million iterations doing _something_ already takes too long.
+O(1), look mom, no allocs.
 
 ----
 goos: darwin
@@ -391,8 +403,43 @@ PASS
 ok  	gitlab.com/jhinrichsen/adventofcode2016	30.260s
 ----
 
-== Benchmarks
 
+== Day 20: Firewall Rules
+
+This is actually the way that IP subnet masks work. I checked the https://go.dev/src/net/ip.go?s=10884:10916[Go sources] for usable
+implementations, but they focus on IPv4 and IPv6.
+
+So after a little googling i found out that this is related to Leetcode's 201.
+It is a solved problem for O(1) space and time complexity.
+ 
+EDIT: Turned out i am on a wrong track, submasks is not going to solve the problem.
+Falling back to a regular algo.
+
+
+== Day 21: Scrambled Letters and Hash
+
+This puzzle took me a while, but i ended up with a O(n) algorithm for both parts.
+Correct on first submission for both parts.
+
+----
+goos: linux
+goarch: amd64
+pkg: gitlab.com/jhinrichsen/adventofcode2016
+cpu: AMD Ryzen 5 3400G with Radeon Vega Graphics    
+BenchmarkDay21Part2-8   	   10000	    107537 ns/op	   24888 B/op	     631 allocs/op
+BenchmarkDay21Part2-8   	   11295	    106726 ns/op	   24888 B/op	     631 allocs/op
+BenchmarkDay21Part2-8   	   10000	    103890 ns/op	   24888 B/op	     631 allocs/op
+BenchmarkDay21Part2-8   	   11203	     99349 ns/op	   24888 B/op	     631 allocs/op
+BenchmarkDay21Part2-8   	   10000	    103898 ns/op	   24888 B/op	     631 allocs/op
+BenchmarkDay21Part2-8   	   10000	    109153 ns/op	   24888 B/op	     631 allocs/op
+BenchmarkDay21Part2-8   	   11107	    102896 ns/op	   24888 B/op	     631 allocs/op
+BenchmarkDay21Part2-8   	    9260	    110085 ns/op	   24888 B/op	     631 allocs/op
+BenchmarkDay21Part2-8   	   12633	    107367 ns/op	   24888 B/op	     631 allocs/op
+BenchmarkDay21Part2-8   	   15932	     76910 ns/op	   24888 B/op	     631 allocs/op
+----
+
+
+== Benchmarks
 
 === Go 1.16.6
 

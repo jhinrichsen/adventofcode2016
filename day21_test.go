@@ -21,6 +21,12 @@ var day21ExampleResults = []string{
 	"decab", // result
 }
 
+func diet(t *testing.T, err error) {
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
 func test(t *testing.T, name string, got, want string) {
 	if want != got {
 		t.Fatalf("error in %q: want %q but got %q", name, want, got)
@@ -29,13 +35,26 @@ func test(t *testing.T, name string, got, want string) {
 
 func testN(t *testing.T, cmds []string, results []string, scramble bool) {
 	got := results[0]
-	for i, cmd := range cmds {
-		f := parseDay21(cmd, scramble)
+	jt := newJumpTable(results[0])
+	if !scramble && (len(jt[0]) != len(jt[1])) {
+		t.Skip("ambiguous descramble")
+	}
 
+	for i, cmd := range cmds {
+		f1, f2, err := compile(cmd, jt)
+		if err != nil {
+			t.Fatal(err)
+		}
+		var f stepfn
+		if scramble {
+			f = f1
+		} else {
+			f = f2
+		}
 		want := results[i+1]
-		fmt.Printf("before: %s\n", got)
+		fmt.Printf("before line #%d: %s\n", i+1, got)
 		got = f(got)
-		fmt.Printf("after : %s\n", got)
+		fmt.Printf("after  line #%d: %s\n", i+1, got)
 		if want != got {
 			idx := i + 1 // lines are 1-based
 			t.Fatalf("line #%d: want %q but got %q", idx, want, got)
@@ -115,6 +134,7 @@ func TestDay21Part2Example(t *testing.T) {
 
 	testN(t, cmds, results, false)
 }
+
 func TestDay21Part1(t *testing.T) {
 	const (
 		input = "abcdefgh"
@@ -125,8 +145,56 @@ func TestDay21Part1(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	got := Day21(input, lines, part1)
+	got, err := Day21(lines, input, part1)
+	diet(t, err)
 	if want != got {
 		t.Fatalf("want %q but got %q", want, got)
+	}
+}
+
+func BenchmarkDay21Part1(b *testing.B) {
+	const (
+		input = "abcdefgh"
+		part1 = true // part1 is synomym to 'scramble'
+	)
+	lines, err := linesFromFilename(filename(21))
+	if err != nil {
+		b.Fatal(err)
+	}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		_, _ = Day21(lines, input, part1)
+	}
+}
+
+func TestDay21Part2(t *testing.T) {
+	const (
+		input = "fbgdceah"
+		part1 = false // part1 is synomym to 'scramble'
+		want  = "dhaegfbc"
+	)
+	cmds, err := linesFromFilename(filename(21))
+	if err != nil {
+		t.Fatal(err)
+	}
+	got, err := Day21(cmds, input, part1)
+	diet(t, err)
+	if want != got {
+		t.Fatalf("want %q but got %q", want, got)
+	}
+}
+
+func BenchmarkDay21Part2(b *testing.B) {
+	const (
+		input = "fbgdceah"
+		part1 = false // part1 is synomym to 'scramble'
+	)
+	cmds, err := linesFromFilename(filename(21))
+	if err != nil {
+		b.Fatal(err)
+	}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		_, _ = Day21(cmds, input, part1)
 	}
 }

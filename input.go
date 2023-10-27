@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strconv"
 )
 
 func linesFromFilename(filename string) ([]string, error) {
@@ -32,4 +33,13 @@ func exampleFilename(day int) string {
 
 func filename(day int) string {
 	return fmt.Sprintf("testdata/day%d.txt", day)
+}
+
+// toint parses and returns a number as specifiec by strconv.Atoi or panic()s.
+func toint(s string) int {
+	n, err := strconv.Atoi(s)
+	if err != nil {
+		panic(err)
+	}
+	return n
 }

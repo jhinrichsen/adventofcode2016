@@ -4,7 +4,6 @@
 package adventofcode2016
 
 import (
-	"fmt"
 	"slices"
 	"testing"
 )
@@ -52,9 +51,7 @@ func testN(t *testing.T, cmds []string, results []string, scramble bool) {
 			f = f2
 		}
 		want := results[i+1]
-		fmt.Printf("before line #%d: %s\n", i+1, got)
 		got = f(got)
-		fmt.Printf("after  line #%d: %s\n", i+1, got)
 		if want != got {
 			idx := i + 1 // lines are 1-based
 			t.Fatalf("line #%d: want %q but got %q", idx, want, got)

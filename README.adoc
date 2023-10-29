@@ -18,7 +18,7 @@ All answers are hardcoded into the test cases.
 Although most puzzles are user specific input, you might want to avoid looking
 at the test cases.
 
-image::img/events_2016-10.png[Events as of October 2023]
+image::img/events_2023-10.png[Events as of October 2023]
 
 == Day 1: No Time for a Taxicab
 
@@ -443,6 +443,24 @@ BenchmarkDay21Part2-8   	   12633	    107367 ns/op	   24888 B/op	     631 allocs
 BenchmarkDay21Part2-8   	   15932	     76910 ns/op	   24888 B/op	     631 allocs/op
 ----
 
+== Day 22: Grid Computing
+
+Got the first answer wrong for part 1 because i was using column _Size_ and _Used_ instead of _Used_ and _Avail_. Does that count as an off-by-one?
+
+For part 2... never ever can i come up with a general solution for these kind
+of problems. Maybe i am missing a formal CS education?
+So when looking up some help on reddit, people were just visualizing the nodes,
+and did some manual counting. Duh.
+
+Anyway, here's my input, percentage of use as grey coloured/ gray colored - grau halt - maze:
+
+Original size, one pixel for one node:
+
+image::img/day22.png[Day 22 maze]
+
+Zoomed:
+
+image::img/day22_zoomed.png[Day 22 maze (zoomed)]
 
 == Benchmarks
 

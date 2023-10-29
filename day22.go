@@ -2,7 +2,11 @@ package adventofcode2016
 
 import (
 	"fmt"
+	"image"
+	"image/color"
+	"image/png"
 	"math"
+	"os"
 	"strconv"
 	"strings"
 )
@@ -117,5 +121,26 @@ func Day22(lines []string, part1 bool) (uint, error) {
 			viable++
 		}
 	}
-	return viable, nil
+
+	// normalize used% to 8 bit value
+	per8 := make(map[coordinate]uint8, X*Y)
+	for k, v := range m {
+		n := (256 * v.used) / (v.used + v.avail)
+		per8[k] = uint8(n)
+	}
+
+	// create image
+	w, h := X, Y
+	g := image.NewGray(image.Rect(0, 0, w, h))
+	for k, v := range per8 {
+		g.SetGray(k.x, k.y, color.Gray{v})
+
+	}
+	f, err := os.Create("day22.png")
+	if err != nil {
+		return viable, err
+	}
+	defer f.Close()
+	err = png.Encode(f, g)
+	return viable, err
 }

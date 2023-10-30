@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"image"
 	"image/color"
-	"image/png"
+	"image/gif"
 	"math"
 	"os"
 	"strconv"
@@ -73,7 +73,7 @@ func Day22(lines []string, part1 bool) (uint, error) {
 	estimatedNodes := int(math.Sqrt(float64(len(lines)))) // assume square, we could look it up, but that's sort of cheating...
 	m := make(map[coordinate]df, estimatedNodes)
 
-	var X, Y int
+	var dim, empty coordinate
 	// root@ebhq-gridcenter# df -h
 	// Filesystem              Size  Used  Avail  Use%
 	// /dev/grid/node-x0-y0     92T   72T    20T   78%
@@ -87,8 +87,8 @@ func Day22(lines []string, part1 bool) (uint, error) {
 			return 0, fmt.Errorf("line %d: %w", i+1, err)
 		}
 
-		X = max(X, x)
-		Y = max(Y, y)
+		dim.x = max(dim.x, x)
+		dim.y = max(dim.y, y)
 
 		used, err := parseHuman(parts[2])
 		if err != nil {
@@ -112,6 +112,8 @@ func Day22(lines []string, part1 bool) (uint, error) {
 			}
 			// 'Node A is not empty (its Used is not zero).'
 			if na.used == 0 {
+				empty.x = ca.x
+				empty.y = ca.y
 				continue
 			}
 			// 'The data on node A (its Used) would fit on node B (its Avail).'
@@ -121,26 +123,73 @@ func Day22(lines []string, part1 bool) (uint, error) {
 			viable++
 		}
 	}
+	if part1 {
+		return viable, nil
+	}
 
 	// normalize used% to 8 bit value
-	per8 := make(map[coordinate]uint8, X*Y)
+	per8 := make(map[coordinate]uint8, dim.x*dim.y)
 	for k, v := range m {
 		n := (256 * v.used) / (v.used + v.avail)
 		per8[k] = uint8(n)
 	}
 
-	// create image
-	w, h := X, Y
-	g := image.NewGray(image.Rect(0, 0, w, h))
-	for k, v := range per8 {
-		g.SetGray(k.x, k.y, color.Gray{v})
-
+	// convert gray to RGBA
+	var palette color.Palette
+	for i := 0; i < 256; i++ {
+		palette = append(palette, color.Gray{Y: uint8(i)})
 	}
-	f, err := os.Create("day22.png")
+
+	// create image
+	var (
+		images []*image.Paletted
+		delays []int
+
+		rect  = image.Rect(0, 0, dim.x, dim.y)
+		left  = coordinate{-1, 0}
+		right = coordinate{+1, 0}
+		up    = coordinate{0, -1}
+		down  = coordinate{0, +1}
+		paths = []struct {
+			direction coordinate
+			n         int
+		}{
+			{left, 4},
+			{up, 22},
+			{right, 21},
+			{down, 1},
+		}
+		count uint
+		next  coordinate
+	)
+	for i := 0; i < len(paths); i++ {
+		direction := paths[i].direction
+		n := paths[i].n
+		for j := 0; j < n; j++ {
+			next.x = empty.x + direction.x
+			next.y = empty.y + direction.y
+			tmp := per8[next]
+			per8[next] = per8[empty]
+			per8[empty] = tmp
+			empty = next
+
+			g := image.NewPaletted(rect, palette)
+			for k, v := range per8 {
+				// TODO SetColorIndex
+				g.Set(k.x, k.y, palette[v])
+
+			}
+			images = append(images, g)
+			delays = append(delays, 100) // 10 * 100ms
+
+			count++
+		}
+	}
+	f, err := os.Create("day22.gif")
 	if err != nil {
 		return viable, err
 	}
 	defer f.Close()
-	err = png.Encode(f, g)
-	return viable, err
+	err = gif.EncodeAll(f, &gif.GIF{Image: images, Delay: delays})
+	return count, err
 }

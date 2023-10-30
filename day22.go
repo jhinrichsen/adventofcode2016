@@ -102,6 +102,10 @@ func Day22(lines []string, part1 bool) (uint, error) {
 		m[coordinate{x, y}] = df{used, avail}
 	}
 
+	// dimension is one larger than max index
+	dim.x++
+	dim.y++
+
 	// part 1
 	var viable uint
 	for ca, na := range m {
@@ -127,20 +131,28 @@ func Day22(lines []string, part1 bool) (uint, error) {
 		return viable, nil
 	}
 
-	// normalize used% to 8 bit value
+	// normalize used% to 255 grayscales
 	per8 := make(map[coordinate]uint8, dim.x*dim.y)
 	for k, v := range m {
-		n := (256 * v.used) / (v.used + v.avail)
-		per8[k] = uint8(n)
+		n := uint8((255 * v.used) / (v.used + v.avail))
+		per8[k] = n
 	}
+	// top right pixel is our special index 1
+	per8[coordinate{dim.x - 1, 0}] = 1
 
 	// convert gray to RGBA
 	var palette color.Palette
 	for i := 0; i < 256; i++ {
 		palette = append(palette, color.Gray{Y: uint8(i)})
 	}
+	// index 1 is red
+	palette[1] = color.RGBA{R: 255, G: 0, B: 0, A: 255}
 
 	// create image
+	type path struct {
+		direction coordinate
+		n         int
+	}
 	var (
 		images []*image.Paletted
 		delays []int
@@ -150,24 +162,31 @@ func Day22(lines []string, part1 bool) (uint, error) {
 		right = coordinate{+1, 0}
 		up    = coordinate{0, -1}
 		down  = coordinate{0, +1}
-		paths = []struct {
-			direction coordinate
-			n         int
-		}{
+		paths = []path{
 			{left, 4},
 			{up, 22},
-			{right, 21},
-			{down, 1},
+			{right, 22},
 		}
-		count uint
-		next  coordinate
+		next coordinate
 	)
+
+	// repeat sequence to move red hole to the left
+	for i := 0; i < dim.x-2; i++ {
+		paths = append(paths, []path{
+			{down, 1},
+			{left, 2},
+			{up, 1},
+			{right, 1},
+		}...)
+	}
 	for i := 0; i < len(paths); i++ {
 		direction := paths[i].direction
 		n := paths[i].n
 		for j := 0; j < n; j++ {
 			next.x = empty.x + direction.x
 			next.y = empty.y + direction.y
+
+			// swap empty and next
 			tmp := per8[next]
 			per8[next] = per8[empty]
 			per8[empty] = tmp
@@ -175,14 +194,10 @@ func Day22(lines []string, part1 bool) (uint, error) {
 
 			g := image.NewPaletted(rect, palette)
 			for k, v := range per8 {
-				// TODO SetColorIndex
-				g.Set(k.x, k.y, palette[v])
-
+				g.SetColorIndex(k.x, k.y, v)
 			}
 			images = append(images, g)
 			delays = append(delays, 100) // 10 * 100ms
-
-			count++
 		}
 	}
 	f, err := os.Create("day22.gif")
@@ -191,5 +206,10 @@ func Day22(lines []string, part1 bool) (uint, error) {
 	}
 	defer f.Close()
 	err = gif.EncodeAll(f, &gif.GIF{Image: images, Delay: delays})
+
+	var count uint
+	for i := 0; i < len(paths); i++ {
+		count += uint(paths[i].n)
+	}
 	return count, err
 }

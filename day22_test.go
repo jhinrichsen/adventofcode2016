@@ -26,10 +26,9 @@ func TestDay22Part1(t *testing.T) {
 func TestDay22Part2(t *testing.T) {
 	const (
 		part1 = false
-		// want  = 20636 // first try wrong, too high
-		// i was using col 1 (size) and col 2 (used) instead of col 2 (used) and col 3 (avail)
-		// does that count as 'off-by-one'? not sure...
-		want = 0
+		// want  = 181 // first try wrong, too low
+		// want = 187 // fixing dim+1, too low
+		want = 188 // counting moves instead of images
 	)
 	lines, err := linesFromFilename(filename(22))
 	if err != nil {

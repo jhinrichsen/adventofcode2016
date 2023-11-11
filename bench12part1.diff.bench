@@ -1,0 +1,8 @@
+name           old time/op    new time/op    delta
+Day12Part1-16    92.1ms ± 0%     9.3ms ± 0%  -89.87%  (p=0.000 n=9+10)
+
+name           old alloc/op   new alloc/op   delta
+Day12Part1-16    35.6MB ± 0%     0.0MB ± 0%  -99.99%  (p=0.000 n=8+10)
+
+name           old allocs/op  new allocs/op  delta
+Day12Part1-16      954k ± 0%        0k ± 0%  -99.99%  (p=0.000 n=9+10)

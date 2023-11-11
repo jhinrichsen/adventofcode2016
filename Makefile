@@ -39,3 +39,18 @@ README.pdf: README.adoc
 .PHONY: clean
 clean:
 	rm README.pdf README.html
+
+.PHONY: bench12
+bench12: bench12part1.diff.bench bench12part2.diff.bench
+bench12part1.diff.bench: bench12part1.bench bench12V2part1.bench
+	benchstat  $^ | tee $@
+bench12part2.diff.bench: bench12part2.bench bench12V2part2.bench
+	benchstat  $^ | tee $@
+bench12part1.bench:
+	$(GO) test -run="^$$" -bench=Day12Part1 -benchmem -count 10 | tee $@
+bench12V2part1.bench:
+	$(GO) test -run="^$$" -bench=Day12V2Part1 -benchmem -count 10 | sed -e 's/V2//' | tee $@ 
+bench12part2.bench:
+	$(GO) test -run="^$$" -bench=Day12Part2 -benchmem -count 10 | tee $@
+bench12V2part2.bench:
+	$(GO) test -run="^$$" -bench=Day12V2Part2 -benchmem -count 10 | sed -e 's/V2//' | tee $@

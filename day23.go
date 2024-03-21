@@ -6,8 +6,15 @@ import (
 )
 
 // Day23 returns value of register a.
+// In contrast to day 12, we do not have just compile time parameters, but also runtime parameters.
 func Day23(lines []string, part1 bool) (int, error) {
+
+	// type rtf func(a, b int) // run time function
+	type rtf func(t bool)
+
 	var registers [4]int
+	var pc int // program counter
+	words := make([]rtf, len(lines))
 
 	isRegister := func(r byte) bool {
 		return r >= 'a' && r <= 'd'
@@ -15,7 +22,74 @@ func Day23(lines []string, part1 bool) (int, error) {
 	register := func(b byte) int {
 		return int(b - 'a')
 	}
-	var pc int // program counter
+
+	// increment register
+	inc := func(r int) func() {
+		return func() {
+			registers[r]++
+			pc++
+		}
+	}
+	// decrement register
+	dec := func(r int) func() {
+		return func() {
+			registers[r]--
+			pc++
+		}
+	}
+	tinc := func(ct bool, r int) func(rt bool) {
+		ff := inc(r)
+		ft := dec(r)
+
+		var toggled bool
+		return func(t bool) {
+			if t {
+				toggled = !toggled
+				return
+			}
+			f := ff
+			if toggled {
+				f = ft
+			}
+			f()
+		}
+	}
+
+	tdec := func(ct bool, r int) func(rt bool) {
+		ff := dec(r)
+		ft := inc(r)
+
+		var toggled bool
+		return func(t bool) {
+			if t {
+				toggled = !toggled
+				return
+			}
+			f := ff
+			if toggled {
+				f = ft
+			}
+			f()
+		}
+	}
+
+	tgl := func(r int) func() {
+		return func() {
+			n := registers[r]
+			(words[pc+n])(true)
+		}
+	}
+
+	ttgl := func(t bool, r int) func() {
+		var toggled bool
+		if t {
+			toggled = !toggled
+		}
+		if toggled {
+			return inc(r)
+		}
+		return tgl(r)
+	}
 
 	// copy immediate
 	cpyi := func(n, r int) func() {
@@ -28,20 +102,6 @@ func Day23(lines []string, part1 bool) (int, error) {
 	cpyr := func(rx, ry int) func() {
 		return func() {
 			registers[ry] = registers[rx]
-			pc++
-		}
-	}
-	// increment register
-	inc := func(r int) func() {
-		return func() {
-			registers[r]++
-			pc++
-		}
-	}
-	// decrement register
-	dec := func(r int) func() {
-		return func() {
-			registers[r]--
 			pc++
 		}
 	}
@@ -67,29 +127,54 @@ func Day23(lines []string, part1 bool) (int, error) {
 			pc += n
 		}
 	}
+
+	tcpy := func(t bool, a, b string) func(rt bool) {
+		// figure out compile time part
+		var ff, ft func()
+		r0 := a[0]
+		r1 := register(b[0])
+
+		if isRegister(r0) {
+			ft = jnzr(register(r0), r1)
+		} else {
+			ft = jnzi(toint(a), r1)
+		}
+		if isRegister(r0) {
+			ff = cpyr(register(r0), r1)
+		} else {
+			ff = cpyi(toint(a), r1)
+		}
+
+		var toggled bool
+		return func(t bool) {
+			if t {
+				toggled = !toggled
+				return
+			}
+			f := ff
+			if toggled {
+				f = ft
+			}
+			f()
+		}
+	}
+
 	if !part1 {
 		registers[register('c')] = 1
 	}
 
 	// assemble phase
 
-	var f func()
-	words := make([]func(), len(lines))
+	var f func(t bool)
 	for i, line := range lines {
 		fs := strings.Fields(line)
 		switch fs[0] {
 		case "cpy":
-			r0 := fs[1][0]
-			r1 := register(fs[2][0])
-			if isRegister(r0) {
-				f = cpyr(register(r0), r1)
-			} else {
-				f = cpyi(toint(fs[1]), r1)
-			}
+			f = tcpy(false, fs[1], fs[2])
 		case "inc":
-			f = inc(register(fs[1][0]))
+			f = tinc(false, register(fs[1][0]))
 		case "dec":
-			f = dec(register(fs[1][0]))
+			f = tdec(false, register(fs[1][0]))
 		case "jnz":
 			r0 := fs[1][0]
 			n := toint(fs[2])
@@ -98,6 +183,9 @@ func Day23(lines []string, part1 bool) (int, error) {
 			} else {
 				f = jnzi(toint(fs[1]), n)
 			}
+		case "tgl":
+			f = ttgl(0, register(fs[1][0]))
+
 		default:
 			return 0, fmt.Errorf("line %d: unknown instruction %q", pc, line)
 		}
@@ -106,7 +194,7 @@ func Day23(lines []string, part1 bool) (int, error) {
 
 	// run phase
 	for pc < len(words) {
-		(words[pc])()
+		(words[pc])(false)
 	}
 	return registers[register('a')], nil
 }

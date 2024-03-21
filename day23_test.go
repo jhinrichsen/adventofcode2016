@@ -18,20 +18,20 @@ func day23(t *testing.T, part1 bool, filename string, want int) {
 	}
 }
 
-func TestDay12V2ExamplePart1(t *testing.T) {
-	day23(t, true, exampleFilename(12), 42)
+func TestDay23ExamplePart1(t *testing.T) {
+	day23(t, true, exampleFilename(23), 42)
 }
 
-func TestDay12V2Part1(t *testing.T) {
-	day23(t, true, filename(12), 317993)
+func TestDay23Part1(t *testing.T) {
+	day23(t, true, filename(23), 317993)
 }
 
-func TestDay12V2Part2(t *testing.T) {
-	day23(t, false, filename(12), 9227647)
+func TestDay23Part2(t *testing.T) {
+	day23(t, false, filename(23), 9227647)
 }
 
-func BenchmarkDay12V2Part1(b *testing.B) {
-	lines, err := linesFromFilename(filename(12))
+func BenchmarkDay23Part1(b *testing.B) {
+	lines, err := linesFromFilename(filename(23))
 	if err != nil {
 		b.Fatal(err)
 	}
@@ -41,7 +41,7 @@ func BenchmarkDay12V2Part1(b *testing.B) {
 	}
 }
 
-func BenchmarkDay12V2Part2(b *testing.B) {
+func BenchmarkDay23Part2(b *testing.B) {
 	lines, err := linesFromFilename(filename(12))
 	if err != nil {
 		b.Fatal(err)

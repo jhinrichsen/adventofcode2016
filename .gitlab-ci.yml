@@ -19,7 +19,7 @@ test-job:
     except:
         - README.adoc
     before_script:
-        - make setup
+        - make lint test
     script:
         - make lint test
     coverage: '/coverage: \d+\.\d+%/'

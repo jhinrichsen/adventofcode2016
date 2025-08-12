@@ -1,3 +1,5 @@
 *.out
 *.S
 *.test
+day00.go
+day00_test.go

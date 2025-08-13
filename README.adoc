@@ -5,8 +5,7 @@ image:https://gitlab.com/jhinrichsen/adventofcode2016/badges/main/pipeline.svg[l
 image:https://gitlab.com/jhinrichsen/adventofcode2016/badges/main/coverage.svg[link="https://gitlab.com/jhinrichsen/adventofcode2016/badges/main/coverage.svg",title="coverage report"]
 
 = Advent Of Code (AOC) 2016
-
-:doctype:book
+:doctype: book
 :toc:
 
 My take on aoc puzzles in Go.

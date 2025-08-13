@@ -1,12 +1,11 @@
+= Advent Of Code (AOC) 2016
+:doctype: book
+:toc:
 
 image:https://godoc.org/gitlab.com/jhinrichsen/adventofcode2016?status.svg["godoc", link="https://godoc.org/gitlab.com/jhinrichsen/adventofcode2016"]
 image:https://goreportcard.com/badge/gitlab.com/jhinrichsen/adventofcode2016["Go report card", link="https://goreportcard.com/report/gitlab.com/jhinrichsen/adventofcode2016"]
 image:https://gitlab.com/jhinrichsen/adventofcode2016/badges/main/pipeline.svg[link="https://gitlab.com/jhinrichsen/adventofcode2016/-/commits/main",title="pipeline status"]
 image:https://gitlab.com/jhinrichsen/adventofcode2016/badges/main/coverage.svg[link="https://gitlab.com/jhinrichsen/adventofcode2016/badges/main/coverage.svg",title="coverage report"]
-
-= Advent Of Code (AOC) 2016
-:doctype: book
-:toc:
 
 My take on aoc puzzles in Go.
 

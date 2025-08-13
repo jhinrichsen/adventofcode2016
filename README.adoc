@@ -1,9 +1,13 @@
-= Advent Of Code (AOC) 2016
 
 image:https://godoc.org/gitlab.com/jhinrichsen/adventofcode2016?status.svg["godoc", link="https://godoc.org/gitlab.com/jhinrichsen/adventofcode2016"]
 image:https://goreportcard.com/badge/gitlab.com/jhinrichsen/adventofcode2016["Go report card", link="https://goreportcard.com/report/gitlab.com/jhinrichsen/adventofcode2016"]
 image:https://gitlab.com/jhinrichsen/adventofcode2016/badges/main/pipeline.svg[link="https://gitlab.com/jhinrichsen/adventofcode2016/-/commits/main",title="pipeline status"]
 image:https://gitlab.com/jhinrichsen/adventofcode2016/badges/main/coverage.svg[link="https://gitlab.com/jhinrichsen/adventofcode2016/badges/main/coverage.svg",title="coverage report"]
+
+= Advent Of Code (AOC) 2016
+
+:doctype:book
+:toc:
 
 My take on aoc puzzles in Go.
 
@@ -105,7 +109,7 @@ Day5Part2-16      158M ± 0%       79M ± 0%   ~     (p=1.000 n=1+1)
 == Day 11: Radioisotope Thermoelectric Generators
 
 Now this puzzle is way beyond my capabilities, types of generators do not
-matter, never heard of Zobrist before, and the h() function for floors (1 * 
+matter, never heard of Zobrist before, and the h() function for floors (1 *
 first floor, 2 * second floor, 3 * third floor, 4 * fourth floor) reminds me of
 Columbus' egg: simple and easy after the fact.
 
@@ -416,7 +420,7 @@ implementations, but they focus on IPv4 and IPv6.
 
 So after a little googling i found out that this is related to Leetcode's 201.
 It is a solved problem for O(1) space and time complexity.
- 
+
 EDIT: Turned out i am on a wrong track, submasks is not going to solve the problem.
 Falling back to a regular algo.
 
@@ -430,7 +434,7 @@ Correct on first submission for both parts.
 goos: linux
 goarch: amd64
 pkg: gitlab.com/jhinrichsen/adventofcode2016
-cpu: AMD Ryzen 5 3400G with Radeon Vega Graphics    
+cpu: AMD Ryzen 5 3400G with Radeon Vega Graphics
 BenchmarkDay21Part2-8   	   10000	    107537 ns/op	   24888 B/op	     631 allocs/op
 BenchmarkDay21Part2-8   	   11295	    106726 ns/op	   24888 B/op	     631 allocs/op
 BenchmarkDay21Part2-8   	   10000	    103890 ns/op	   24888 B/op	     631 allocs/op

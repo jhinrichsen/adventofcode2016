@@ -201,6 +201,8 @@ func rotateRightN(s string, p int) string {
 }
 
 func rotateLeftPos(s string, pos string) string {
+	// This implements "rotate based on position" - same as rotateRightPos
+	// The "Left" in the name is misleading; both implement the same AoC operation
 	l := len(s)
 	idx := strings.Index(s, pos)
 	n := 1 + idx
@@ -208,13 +210,7 @@ func rotateLeftPos(s string, pos string) string {
 		n++
 	}
 	n = n % l
-	/*
-		if n > l/2 {
-			return rotateRightN(s, l-n)
-		}
-	*/
-	s2 := rotateLeftN(s, n)
-	return s2
+	return rotateRightN(s, n)
 }
 
 func rotateRightPos(s string, pos string) string {

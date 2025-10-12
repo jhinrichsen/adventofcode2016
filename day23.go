@@ -2,202 +2,171 @@ package adventofcode2016
 
 import (
 	"fmt"
+	"slices"
+	"strconv"
 	"strings"
 )
 
-// Day23 returns value of register a.
-// In contrast to day 12, we do not have just compile time parameters, but also runtime parameters.
-func Day23(lines []string, part1 bool) (int, error) {
+type Opcode int
 
-	// type rtf func(a, b int) // run time function
-	type rtf func(t bool)
+const (
+	CPY Opcode = iota
+	INC
+	DEC
+	JNZ
+	TGL
+)
 
-	var registers [4]int
-	var pc int // program counter
-	words := make([]rtf, len(lines))
+type Operand struct {
+	isRegister bool
+	register   int // 0-3 for a-d
+	immediate  int // literal value
+}
 
-	isRegister := func(r byte) bool {
-		return r >= 'a' && r <= 'd'
+type Instruction struct {
+	opcode  Opcode
+	arg1    Operand
+	arg2    Operand
+	hasArg2 bool
+}
+
+type Day23Puzzle struct {
+	instructions []Instruction
+}
+
+func parseOperand(s string) Operand {
+	if s >= "a" && s <= "d" {
+		return Operand{isRegister: true, register: int(s[0] - 'a')}
 	}
-	register := func(b byte) int {
-		return int(b - 'a')
-	}
+	val, _ := strconv.Atoi(s)
+	return Operand{isRegister: false, immediate: val}
+}
 
-	// increment register
-	inc := func(r int) func(t bool) {
-		return func(t bool) {
-			registers[r]++
-			pc++
-		}
+func parseOpcode(s string) Opcode {
+	switch s {
+	case "cpy":
+		return CPY
+	case "inc":
+		return INC
+	case "dec":
+		return DEC
+	case "jnz":
+		return JNZ
+	case "tgl":
+		return TGL
+	default:
+		return CPY // fallback
 	}
-	// decrement register
-	dec := func(r int) func(t bool) {
-		return func(t bool) {
-			registers[r]--
-			pc++
-		}
-	}
-	tinc := func(ct bool, r int) func(rt bool) {
-		ff := inc(r)
-		ft := dec(r)
+}
 
-		var toggled bool
-		return func(t bool) {
-			if t {
-				toggled = !toggled
-				return
-			}
-			f := ff
-			if toggled {
-				f = ft
-			}
-			f(false)
-		}
-	}
-
-	tdec := func(ct bool, r int) func(rt bool) {
-		ff := dec(r)
-		ft := inc(r)
-
-		var toggled bool
-		return func(t bool) {
-			if t {
-				toggled = !toggled
-				return
-			}
-			f := ff
-			if toggled {
-				f = ft
-			}
-			f(false)
-		}
-	}
-
-	tgl := func(r int) func() {
-		return func() {
-			n := registers[r]
-			(words[pc+n])(true)
-		}
-	}
-
-	ttgl := func(t bool, r int) func(t bool) {
-		var toggled bool
-		if t {
-			toggled = !toggled
-		}
-		return func(t bool) {
-			if toggled {
-				inc(r)(false)
-			} else {
-				tgl(r)()
-			}
-		}
-	}
-
-	// copy immediate
-	cpyi := func(n, r int) func(t bool) {
-		return func(t bool) {
-			registers[r] = n
-			pc++
-		}
-	}
-	// copy register
-	cpyr := func(rx, ry int) func(t bool) {
-		return func(t bool) {
-			registers[ry] = registers[rx]
-			pc++
-		}
-	}
-	jnzi := func(x, n int) func(t bool) {
-		return func(t bool) {
-			// no jump
-			if x == 0 {
-				pc++
-				return
-			}
-			// jump
-			pc += n
-		}
-	}
-	jnzr := func(r, n int) func(t bool) {
-		return func(t bool) {
-			// no jump
-			if registers[r] == 0 {
-				pc++
-				return
-			}
-			// jump
-			pc += n
-		}
-	}
-
-	tcpy := func(t bool, a, b string) func(rt bool) {
-		// figure out compile time part
-		var ff, ft func(t bool)
-		r0 := a[0]
-		r1 := register(b[0])
-
-		if isRegister(r0) {
-			ft = jnzr(register(r0), r1)
-		} else {
-			ft = jnzi(toint(a), r1)
-		}
-		if isRegister(r0) {
-			ff = cpyr(register(r0), r1)
-		} else {
-			ff = cpyi(toint(a), r1)
-		}
-
-		var toggled bool
-		return func(t bool) {
-			if t {
-				toggled = !toggled
-				return
-			}
-			f := ff
-			if toggled {
-				f = ft
-			}
-			f(false)
-		}
-	}
-
-	if !part1 {
-		registers[register('c')] = 1
-	}
-
-	// assemble phase
-
-	var f func(t bool)
+func NewDay23(lines []string) (Day23Puzzle, error) {
+	instructions := make([]Instruction, len(lines))
 	for i, line := range lines {
-		fs := strings.Fields(line)
-		switch fs[0] {
-		case "cpy":
-			f = tcpy(false, fs[1], fs[2])
-		case "inc":
-			f = tinc(false, register(fs[1][0]))
-		case "dec":
-			f = tdec(false, register(fs[1][0]))
-		case "jnz":
-			r0 := fs[1][0]
-			n := toint(fs[2])
-			if isRegister(r0) {
-				f = jnzr(register(r0), n)
-			} else {
-				f = jnzi(toint(fs[1]), n)
-			}
-		case "tgl":
-			f = ttgl(false, register(fs[1][0]))
-
-		default:
-			return 0, fmt.Errorf("line %d: unknown instruction %q", pc, line)
+		fields := strings.Fields(line)
+		if len(fields) < 2 {
+			continue
 		}
-		words[i] = f
+		opcode := parseOpcode(fields[0])
+		arg1 := parseOperand(fields[1])
+
+		var arg2 Operand
+		var hasArg2 bool
+		if len(fields) >= 3 {
+			arg2 = parseOperand(fields[2])
+			hasArg2 = true
+		}
+
+		// Validate instruction format during parsing
+		switch opcode {
+		case CPY, JNZ:
+			if !hasArg2 {
+				return Day23Puzzle{}, fmt.Errorf("line %d: %s instruction missing second argument", i+1, fields[0])
+			}
+		case INC, DEC:
+			if !arg1.isRegister {
+				return Day23Puzzle{}, fmt.Errorf("line %d: %s instruction requires register argument, got %s", i+1, fields[0], fields[1])
+			}
+		case TGL:
+			// TGL is valid with any arg1
+		}
+
+		instructions[i] = Instruction{
+			opcode:  opcode,
+			arg1:    arg1,
+			arg2:    arg2,
+			hasArg2: hasArg2,
+		}
+	}
+	return Day23Puzzle{instructions: instructions}, nil
+}
+
+func Day23(puzzle Day23Puzzle, part1 bool) int {
+	// create our working copy (toggle e.a. will change input)
+	instructions := slices.Clone(puzzle.instructions)
+
+	a := 12
+	if part1 {
+		a = 7
+	}
+	registers := [4]int{a, 0, 0, 0}
+
+	getValue := func(op Operand) int {
+		if op.isRegister {
+			return registers[op.register]
+		}
+		return op.immediate
 	}
 
-	// run phase
-	for pc < len(words) {
-		(words[pc])(false)
+	toggleInstruction := func(idx int) {
+		if idx < 0 || idx >= len(instructions) {
+			return // Outside program bounds
+		}
+
+		inst := &instructions[idx]
+		switch inst.opcode {
+		case INC:
+			inst.opcode = DEC
+		case DEC:
+			inst.opcode = INC
+		case TGL:
+			inst.opcode = INC
+		case JNZ:
+			inst.opcode = CPY
+		case CPY:
+			inst.opcode = JNZ
+		}
 	}
-	return registers[register('a')], nil
+
+	pc := 0
+	for pc < len(instructions) {
+		inst := instructions[pc]
+
+		switch inst.opcode {
+		case CPY:
+			if inst.hasArg2 && inst.arg2.isRegister {
+				value := getValue(inst.arg1)
+				registers[inst.arg2.register] = value
+			}
+		case INC:
+			registers[inst.arg1.register]++
+		case DEC:
+			registers[inst.arg1.register]--
+		case JNZ:
+			if inst.hasArg2 {
+				value := getValue(inst.arg1)
+				if value != 0 {
+					offset := getValue(inst.arg2)
+					pc += offset
+					continue
+				}
+			}
+		case TGL:
+			offset := getValue(inst.arg1)
+			target := pc + offset
+			toggleInstruction(target)
+		}
+		pc++
+	}
+
+	return registers[0]
 }

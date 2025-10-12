@@ -15,10 +15,7 @@ var day2Examples = []struct {
 
 func TestDay2ExamplePart1(t *testing.T) {
 	for _, tt := range day2Examples {
-		lines, err := linesFromFilename(exampleFilename(2))
-		if err != nil {
-			t.Fatal(err)
-		}
+		lines := linesFromFilename(t, exampleFilename(2))
 		want := tt.out
 		got, err := Day2(lines, tt.part1)
 		if err != nil {
@@ -39,10 +36,7 @@ func BenchmarkDay2Part2(b *testing.B) {
 }
 
 func benchDay2(b *testing.B, want string, part1 bool) {
-	lines, err := linesFromFilename(filename(2))
-	if err != nil {
-		b.Fatal(err)
-	}
+	lines := linesFromFilename(b, filename(2))
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		got, err := Day2(lines, part1)

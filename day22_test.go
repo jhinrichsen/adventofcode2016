@@ -10,10 +10,7 @@ func TestDay22Part1(t *testing.T) {
 		// does that count as 'off-by-one'? not sure...
 		want = 937
 	)
-	lines, err := linesFromFilename(filename(22))
-	if err != nil {
-		t.Fatal(err)
-	}
+	lines := linesFromFilename(t, filename(22))
 	got, err := Day22(lines, part1)
 	if err != nil {
 		t.Fatal(err)
@@ -30,10 +27,7 @@ func TestDay22Part2(t *testing.T) {
 		// want = 187 // fixing dim+1, too low
 		want = 188 // counting moves instead of images
 	)
-	lines, err := linesFromFilename(filename(22))
-	if err != nil {
-		t.Fatal(err)
-	}
+	lines := linesFromFilename(t, filename(22))
 	got, err := Day22(lines, part1)
 	if err != nil {
 		t.Fatal(err)
@@ -47,10 +41,7 @@ func BenchmarkDay22Part1(b *testing.B) {
 	const (
 		part1 = true
 	)
-	lines, err := linesFromFilename(filename(22))
-	if err != nil {
-		b.Fatal(err)
-	}
+	lines := linesFromFilename(b, filename(22))
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		_, _ = Day22(lines, part1)
@@ -61,10 +52,7 @@ func BenchmarkDay22Part2(b *testing.B) {
 	const (
 		part1 = false
 	)
-	lines, err := linesFromFilename(filename(22))
-	if err != nil {
-		b.Fatal(err)
-	}
+	lines := linesFromFilename(b, filename(22))
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		_, _ = Day22(lines, part1)

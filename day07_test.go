@@ -48,10 +48,7 @@ func BenchmarkDay7Part2(b *testing.B) {
 }
 
 func benchDay7(b *testing.B, part1 bool, want uint) {
-	lines, err := linesFromFilename(filename(7))
-	if err != nil {
-		b.Fatal(err)
-	}
+	lines := linesFromFilename(b, filename(7))
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		got := Day7(lines, part1)

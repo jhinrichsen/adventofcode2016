@@ -36,10 +36,7 @@ func TestDay8Example(t *testing.T) {
 		want  = 6
 		part1 = true
 	)
-	lines, err := linesFromFilename(exampleFilename(8))
-	if err != nil {
-		t.Fatal(err)
-	}
+	lines := linesFromFilename(t, exampleFilename(8))
 	screen := newDay8(7, 3)
 	var i uint
 	f := func(d day8) {
@@ -64,10 +61,7 @@ func BenchmarkDay8Part1(b *testing.B) {
 		want  = 128
 		part1 = true
 	)
-	lines, err := linesFromFilename(filename(8))
-	if err != nil {
-		b.Fatal(err)
-	}
+	lines := linesFromFilename(b, filename(8))
 	b.ResetTimer()
 	// save last screen
 	var save day8

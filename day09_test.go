@@ -62,10 +62,7 @@ func BenchmarkDay9Part2(b *testing.B) {
 }
 
 func benchDay9(b *testing.B, part1 bool, want uint) {
-	lines, err := linesFromFilename(filename(9))
-	if err != nil {
-		b.Fatal(err)
-	}
+	lines := linesFromFilename(b, filename(9))
 	s := strings.Join(lines, "")
 
 	var f func(string) uint

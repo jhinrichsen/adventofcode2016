@@ -17,16 +17,10 @@ func TestDay13Example(t *testing.T) {
 }
 
 func TestDay13ExampleString(t *testing.T) {
-	lines, err := linesFromFilename(exampleFilename(13))
-	if err != nil {
-		t.Fatal(err)
-	}
+	lines := linesFromFilename(t, exampleFilename(13))
 	want := strings.Join(lines, "\n")
 
 	d := newDay13(10)
-	if err != nil {
-		t.Fatal(err)
-	}
 	got := d.String()
 	if want != got {
 		t.Fatalf("want:\n%s\nbut got\n%s\n", want, got)

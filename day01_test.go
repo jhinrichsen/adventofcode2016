@@ -4,10 +4,10 @@ import (
 	"testing"
 )
 
-func TestDay1Examples(t *testing.T) {
-	var tableTests = []struct {
+func TestDay01Examples(t *testing.T) {
+	tests := []struct {
 		in    string
-		out   uint
+		want  uint
 		part2 bool
 	}{
 		{"R2, L3", 5, false},
@@ -28,52 +28,48 @@ func TestDay1Examples(t *testing.T) {
 		{"R8, R4, R4, R8", 4, true},
 	}
 
-	for _, tt := range tableTests {
-		t.Run(tt.in, func(t *testing.T) {
-			want := tt.out
-			got, err := day1(tt.in, tt.part2)
-			if err != nil {
-				t.Fatal(err)
-			}
-			if want != got {
-				t.Fatalf("want %d but got %d", want, got)
+	for _, tt := range tests {
+		name := tt.in
+		if tt.part2 {
+			name += " (part 2)"
+		}
+		t.Run(name, func(t *testing.T) {
+			got := Day01(tt.in, !tt.part2)
+			if got != tt.want {
+				t.Errorf("Day01() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func BenchmarkDay1Part1(b *testing.B) {
+func TestDay01Part1(t *testing.T) {
 	const want = 299
-	lines, err := linesFromFilename(filename(1))
-	if err != nil {
-		b.Fatal(err)
-	}
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		got, err := Day1Part1(lines[0])
-		if err != nil {
-			b.Fatal(err)
-		}
-		if want != got {
-			b.Fatalf("want %d but got %d", want, got)
-		}
+	lines := linesFromFilename(t, filename(1))
+	got := Day01(lines[0], true)
+	if got != want {
+		t.Errorf("Day01() = %v, want %v", got, want)
 	}
 }
 
-func BenchmarkDay1Part2(b *testing.B) {
+func TestDay01Part2(t *testing.T) {
 	const want = 181
-	lines, err := linesFromFilename(filename(1))
-	if err != nil {
-		b.Fatal(err)
+	lines := linesFromFilename(t, filename(1))
+	got := Day01(lines[0], false)
+	if got != want {
+		t.Errorf("Day01() = %v, want %v", got, want)
 	}
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		got, err := Day1Part2(lines[0])
-		if err != nil {
-			b.Fatal(err)
-		}
-		if want != got {
-			b.Fatalf("want %d but got %d", want, got)
-		}
+}
+
+func BenchmarkDay01Part1(b *testing.B) {
+	lines := linesFromFilename(b, filename(1))
+	for b.Loop() {
+		Day01(lines[0], true)
+	}
+}
+
+func BenchmarkDay01Part2(b *testing.B) {
+	lines := linesFromFilename(b, filename(1))
+	for b.Loop() {
+		Day01(lines[0], false)
 	}
 }

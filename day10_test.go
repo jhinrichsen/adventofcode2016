@@ -12,10 +12,7 @@ func TestDay10Example(t *testing.T) {
 		want  = 2
 		part1 = true
 	)
-	lines, err := linesFromFilename(exampleFilename(10))
-	if err != nil {
-		t.Fatal(err)
-	}
+	lines := linesFromFilename(t, exampleFilename(10))
 	got, err := Day10(lines, part1, 2, 5)
 	if err != nil {
 		t.Fatal(err)
@@ -30,10 +27,7 @@ func BenchmarkDay10Part1(b *testing.B) {
 		want  = 161
 		part1 = true
 	)
-	lines, err := linesFromFilename(filename(10))
-	if err != nil {
-		b.Fatal(err)
-	}
+	lines := linesFromFilename(b, filename(10))
 	for i := 0; i < b.N; i++ {
 		got, err := Day10(lines, part1, 61, 17)
 		if err != nil {
@@ -50,10 +44,7 @@ func BenchmarkDay10Part2(b *testing.B) {
 		want  = 133163
 		part1 = false
 	)
-	lines, err := linesFromFilename(filename(10))
-	if err != nil {
-		b.Fatal(err)
-	}
+	lines := linesFromFilename(b, filename(10))
 	for i := 0; i < b.N; i++ {
 		got, err := Day10(lines, part1, 0, 0)
 		if err != nil {

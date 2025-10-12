@@ -47,10 +47,7 @@ func TestDay4Example(t *testing.T) {
 
 func BenchmarkDay4Part1(b *testing.B) {
 	const want = 137896
-	lines, err := linesFromFilename(filename(4))
-	if err != nil {
-		b.Fatal(err)
-	}
+	lines := linesFromFilename(b, filename(4))
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		got, err := Day4Part1(lines)
@@ -65,10 +62,7 @@ func BenchmarkDay4Part1(b *testing.B) {
 
 func BenchmarkDay4Part2(b *testing.B) {
 	const want = 501
-	lines, err := linesFromFilename(filename(4))
-	if err != nil {
-		b.Fatal(err)
-	}
+	lines := linesFromFilename(b, filename(4))
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		got, err := Day4Part2(lines)

@@ -24,15 +24,15 @@ func Day23(lines []string, part1 bool) (int, error) {
 	}
 
 	// increment register
-	inc := func(r int) func() {
-		return func() {
+	inc := func(r int) func(t bool) {
+		return func(t bool) {
 			registers[r]++
 			pc++
 		}
 	}
 	// decrement register
-	dec := func(r int) func() {
-		return func() {
+	dec := func(r int) func(t bool) {
+		return func(t bool) {
 			registers[r]--
 			pc++
 		}
@@ -51,7 +51,7 @@ func Day23(lines []string, part1 bool) (int, error) {
 			if toggled {
 				f = ft
 			}
-			f()
+			f(false)
 		}
 	}
 
@@ -69,7 +69,7 @@ func Day23(lines []string, part1 bool) (int, error) {
 			if toggled {
 				f = ft
 			}
-			f()
+			f(false)
 		}
 	}
 
@@ -80,33 +80,36 @@ func Day23(lines []string, part1 bool) (int, error) {
 		}
 	}
 
-	ttgl := func(t bool, r int) func() {
+	ttgl := func(t bool, r int) func(t bool) {
 		var toggled bool
 		if t {
 			toggled = !toggled
 		}
-		if toggled {
-			return inc(r)
+		return func(t bool) {
+			if toggled {
+				inc(r)(false)
+			} else {
+				tgl(r)()
+			}
 		}
-		return tgl(r)
 	}
 
 	// copy immediate
-	cpyi := func(n, r int) func() {
-		return func() {
+	cpyi := func(n, r int) func(t bool) {
+		return func(t bool) {
 			registers[r] = n
 			pc++
 		}
 	}
 	// copy register
-	cpyr := func(rx, ry int) func() {
-		return func() {
+	cpyr := func(rx, ry int) func(t bool) {
+		return func(t bool) {
 			registers[ry] = registers[rx]
 			pc++
 		}
 	}
-	jnzi := func(x, n int) func() {
-		return func() {
+	jnzi := func(x, n int) func(t bool) {
+		return func(t bool) {
 			// no jump
 			if x == 0 {
 				pc++
@@ -116,8 +119,8 @@ func Day23(lines []string, part1 bool) (int, error) {
 			pc += n
 		}
 	}
-	jnzr := func(r, n int) func() {
-		return func() {
+	jnzr := func(r, n int) func(t bool) {
+		return func(t bool) {
 			// no jump
 			if registers[r] == 0 {
 				pc++
@@ -130,7 +133,7 @@ func Day23(lines []string, part1 bool) (int, error) {
 
 	tcpy := func(t bool, a, b string) func(rt bool) {
 		// figure out compile time part
-		var ff, ft func()
+		var ff, ft func(t bool)
 		r0 := a[0]
 		r1 := register(b[0])
 
@@ -155,7 +158,7 @@ func Day23(lines []string, part1 bool) (int, error) {
 			if toggled {
 				f = ft
 			}
-			f()
+			f(false)
 		}
 	}
 
@@ -184,7 +187,7 @@ func Day23(lines []string, part1 bool) (int, error) {
 				f = jnzi(toint(fs[1]), n)
 			}
 		case "tgl":
-			f = ttgl(0, register(fs[1][0]))
+			f = ttgl(false, register(fs[1][0]))
 
 		default:
 			return 0, fmt.Errorf("line %d: unknown instruction %q", pc, line)

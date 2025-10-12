@@ -5,10 +5,7 @@ import (
 )
 
 func day12(t *testing.T, part1 bool, filename string, want int) {
-	lines, err := linesFromFilename(filename)
-	if err != nil {
-		t.Fatal(err)
-	}
+	lines := linesFromFilename(t, filename)
 	got, err := Day12(lines, part1)
 	if err != nil {
 		t.Fatal(err)
@@ -31,20 +28,14 @@ func TestDay12Part2(t *testing.T) {
 }
 
 func BenchmarkDay12Part1(b *testing.B) {
-	lines, err := linesFromFilename(filename(12))
-	if err != nil {
-		b.Fatal(err)
-	}
+	lines := linesFromFilename(b, filename(12))
 	for i := 0; i < b.N; i++ {
 		Day12(lines, true)
 	}
 }
 
 func BenchmarkDay12Part2(b *testing.B) {
-	lines, err := linesFromFilename(filename(12))
-	if err != nil {
-		b.Fatal(err)
-	}
+	lines := linesFromFilename(b, filename(12))
 	for i := 0; i < b.N; i++ {
 		Day12(lines, false)
 	}

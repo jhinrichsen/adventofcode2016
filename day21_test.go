@@ -109,18 +109,12 @@ func TestMove(t *testing.T) {
 }
 
 func TestDay21Part1Example(t *testing.T) {
-	lines, err := linesFromFilename(exampleFilename(21))
-	if err != nil {
-		t.Fatal(err)
-	}
+	lines := linesFromFilename(t, exampleFilename(21))
 	testN(t, lines, day21ExampleResults, true)
 }
 
 func TestDay21Part2Example(t *testing.T) {
-	cmds, err := linesFromFilename(exampleFilename(21))
-	if err != nil {
-		t.Fatal(err)
-	}
+	cmds := linesFromFilename(t, exampleFilename(21))
 
 	// reverse commands and expected results
 	slices.Reverse(cmds)
@@ -138,10 +132,7 @@ func TestDay21Part1(t *testing.T) {
 		part1 = true // part1 is synomym to 'scramble'
 		want  = "gfdhebac"
 	)
-	lines, err := linesFromFilename(filename(21))
-	if err != nil {
-		t.Fatal(err)
-	}
+	lines := linesFromFilename(t, filename(21))
 	got, err := Day21(lines, input, part1)
 	diet(t, err)
 	if want != got {
@@ -154,10 +145,7 @@ func BenchmarkDay21Part1(b *testing.B) {
 		input = "abcdefgh"
 		part1 = true // part1 is synomym to 'scramble'
 	)
-	lines, err := linesFromFilename(filename(21))
-	if err != nil {
-		b.Fatal(err)
-	}
+	lines := linesFromFilename(b, filename(21))
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		_, _ = Day21(lines, input, part1)
@@ -170,10 +158,7 @@ func TestDay21Part2(t *testing.T) {
 		part1 = false // part1 is synomym to 'scramble'
 		want  = "dhaegfbc"
 	)
-	cmds, err := linesFromFilename(filename(21))
-	if err != nil {
-		t.Fatal(err)
-	}
+	cmds := linesFromFilename(t, filename(21))
 	got, err := Day21(cmds, input, part1)
 	diet(t, err)
 	if want != got {
@@ -186,10 +171,7 @@ func BenchmarkDay21Part2(b *testing.B) {
 		input = "fbgdceah"
 		part1 = false // part1 is synomym to 'scramble'
 	)
-	cmds, err := linesFromFilename(filename(21))
-	if err != nil {
-		b.Fatal(err)
-	}
+	cmds := linesFromFilename(b, filename(21))
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		_, _ = Day21(cmds, input, part1)

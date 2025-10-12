@@ -10,10 +10,7 @@ func TestDay20Part1Example(t *testing.T) {
 		part1 = true
 		want  = 3
 	)
-	lines, err := linesFromFilename(exampleFilename(day))
-	if err != nil {
-		t.Fatal(err)
-	}
+	lines := linesFromFilename(t, exampleFilename(day))
 	got, err := Day20(lines, part1)
 	if err != nil {
 		t.Fatal(err)
@@ -29,10 +26,7 @@ func TestDay20Part1(t *testing.T) {
 		part1 = true
 		want  = 23923783
 	)
-	lines, err := linesFromFilename(filename(day))
-	if err != nil {
-		t.Fatal(err)
-	}
+	lines := linesFromFilename(t, filename(day))
 	got, err := Day20(lines, part1)
 	if err != nil {
 		t.Fatal(err)
@@ -47,10 +41,7 @@ func BenchmarkDay20Part1(b *testing.B) {
 		day   = 20
 		part1 = true
 	)
-	lines, err := linesFromFilename(filename(day))
-	if err != nil {
-		b.Fatal(err)
-	}
+	lines := linesFromFilename(b, filename(day))
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		_, _ = Day20(lines, part1)
@@ -63,10 +54,7 @@ func TestDay20Part2(t *testing.T) {
 		part1 = false
 		want  = 125
 	)
-	lines, err := linesFromFilename(filename(day))
-	if err != nil {
-		t.Fatal(err)
-	}
+	lines := linesFromFilename(t, filename(day))
 	got, err := Day20(lines, part1)
 	if err != nil {
 		t.Fatal(err)
@@ -81,10 +69,7 @@ func BenchmarkDay20Part2(b *testing.B) {
 		day   = 20
 		part1 = false
 	)
-	lines, err := linesFromFilename(filename(day))
-	if err != nil {
-		b.Fatal(err)
-	}
+	lines := linesFromFilename(b, filename(day))
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		_, _ = Day20(lines, part1)

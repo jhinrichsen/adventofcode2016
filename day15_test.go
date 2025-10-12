@@ -10,10 +10,7 @@ func TestDay15Example(t *testing.T) {
 		want  = 5
 		part1 = true
 	)
-	lines, err := linesFromFilename(exampleFilename(15))
-	if err != nil {
-		t.Fatal(err)
-	}
+	lines := linesFromFilename(t, exampleFilename(15))
 	d, err := newDay15(lines)
 	if err != nil {
 		t.Fatal(err)
@@ -26,10 +23,7 @@ func TestDay15Example(t *testing.T) {
 */
 
 func testDay15(t *testing.T, want uint, f func(day15) uint) {
-	lines, err := linesFromFilename(filename(15))
-	if err != nil {
-		t.Fatal(err)
-	}
+	lines := linesFromFilename(t, filename(15))
 	d, err := newDay15(lines)
 	if err != nil {
 		t.Fatal(err)
@@ -80,10 +74,7 @@ func BenchmarkDay15Smart(b *testing.B) {
 		want  = 317371
 		part1 = true
 	)
-	lines, err := linesFromFilename(filename(15))
-	if err != nil {
-		b.Fatal(err)
-	}
+	lines := linesFromFilename(b, filename(15))
 	d, err := newDay15(lines)
 	if err != nil {
 		b.Fatal(err)

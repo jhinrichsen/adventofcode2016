@@ -30,6 +30,29 @@ Did not understand part 2, failing unit tests because i only marked end
 positions. Only when i https://goplay.space[turtle graphic'ed] the example it
 became clear that all steps count.
 
+----
+BenchmarkDay01Part1-16    	  237550	      4756 ns/op	    3072 B/op	       1 allocs/op
+BenchmarkDay01Part1-16    	  225342	      4797 ns/op	    3072 B/op	       1 allocs/op
+BenchmarkDay01Part1-16    	  247945	      4799 ns/op	    3072 B/op	       1 allocs/op
+BenchmarkDay01Part1-16    	  243835	      4817 ns/op	    3072 B/op	       1 allocs/op
+BenchmarkDay01Part1-16    	  240661	      4860 ns/op	    3072 B/op	       1 allocs/op
+BenchmarkDay01Part1-16    	  248244	      4849 ns/op	    3072 B/op	       1 allocs/op
+BenchmarkDay01Part1-16    	  250093	      4783 ns/op	    3072 B/op	       1 allocs/op
+BenchmarkDay01Part1-16    	  245457	      4886 ns/op	    3072 B/op	       1 allocs/op
+BenchmarkDay01Part1-16    	  260353	      4812 ns/op	    3072 B/op	       1 allocs/op
+BenchmarkDay01Part1-16    	  243624	      4854 ns/op	    3072 B/op	       1 allocs/op
+BenchmarkDay01Part2-16    	   19434	     62189 ns/op	   56968 B/op	      16 allocs/op
+BenchmarkDay01Part2-16    	   19213	     62785 ns/op	   56968 B/op	      16 allocs/op
+BenchmarkDay01Part2-16    	   19572	     61239 ns/op	   56968 B/op	      16 allocs/op
+BenchmarkDay01Part2-16    	   19057	     62577 ns/op	   56968 B/op	      16 allocs/op
+BenchmarkDay01Part2-16    	   18975	     62734 ns/op	   56968 B/op	      16 allocs/op
+BenchmarkDay01Part2-16    	   19156	     62686 ns/op	   56968 B/op	      16 allocs/op
+BenchmarkDay01Part2-16    	   19096	     63006 ns/op	   56968 B/op	      16 allocs/op
+BenchmarkDay01Part2-16    	   19382	     62064 ns/op	   56968 B/op	      16 allocs/op
+BenchmarkDay01Part2-16    	   19359	     62386 ns/op	   56968 B/op	      16 allocs/op
+BenchmarkDay01Part2-16    	   19684	     61495 ns/op	   56968 B/op	      16 allocs/op
+----
+
 == Day 2: Bathroom Security
 == Day 3: Squares With Three Sides
 == Day 4: Security Through Obscurity

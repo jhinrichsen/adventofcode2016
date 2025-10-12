@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestDay16ExamplePart1(t *testing.T) {
+func TestDay16Part1Example(t *testing.T) {
 	const (
 		input    = "10000"
 		disksize = 20

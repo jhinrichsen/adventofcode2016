@@ -20,6 +20,22 @@ func TestDay20Part1Example(t *testing.T) {
 	}
 }
 
+func TestDay20Part2Example(t *testing.T) {
+	const (
+		day   = 20
+		part1 = false
+		want  = 1
+	)
+	lines := linesFromFilename(t, exampleFilename(day))
+	got, err := Day20(lines, part1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if want != got {
+		t.Fatalf("want %d but got %d", want, got)
+	}
+}
+
 func TestDay20Part1(t *testing.T) {
 	const (
 		day   = 20
@@ -52,7 +68,7 @@ func TestDay20Part2(t *testing.T) {
 	const (
 		day   = 20
 		part1 = false
-		want  = 125
+		want  = 3195615
 	)
 	lines := linesFromFilename(t, filename(day))
 	got, err := Day20(lines, part1)

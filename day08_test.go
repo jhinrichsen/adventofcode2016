@@ -56,6 +56,18 @@ func TestDay8Example(t *testing.T) {
 	}
 }
 
+func TestDay8Part1(t *testing.T) {
+	const want = 128
+	lines := linesFromFilename(t, filename(8))
+	got, err := Day8(newDay8(width, height), lines, true, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got != want {
+		t.Errorf("Day8() = %v, want %v", got, want)
+	}
+}
+
 func BenchmarkDay8Part1(b *testing.B) {
 	const (
 		want  = 128

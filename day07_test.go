@@ -47,6 +47,24 @@ func BenchmarkDay7Part2(b *testing.B) {
 	benchDay7(b, part1, want)
 }
 
+func TestDay7Part1(t *testing.T) {
+	const want = 118
+	lines := linesFromFilename(t, filename(7))
+	got := Day7(lines, true)
+	if got != want {
+		t.Errorf("Day7() = %v, want %v", got, want)
+	}
+}
+
+func TestDay7Part2(t *testing.T) {
+	const want = 260
+	lines := linesFromFilename(t, filename(7))
+	got := Day7(lines, false)
+	if got != want {
+		t.Errorf("Day7() = %v, want %v", got, want)
+	}
+}
+
 func benchDay7(b *testing.B, part1 bool, want uint) {
 	lines := linesFromFilename(b, filename(7))
 	b.ResetTimer()

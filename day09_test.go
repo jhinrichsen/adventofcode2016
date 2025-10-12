@@ -61,6 +61,26 @@ func BenchmarkDay9Part2(b *testing.B) {
 	benchDay9(b, part1, want)
 }
 
+func TestDay9Part1(t *testing.T) {
+	const want = 150914
+	lines := linesFromFilename(t, filename(9))
+	s := strings.Join(lines, "")
+	got := Day9Part1(s)
+	if got != want {
+		t.Errorf("Day9Part1() = %v, want %v", got, want)
+	}
+}
+
+func TestDay9Part2(t *testing.T) {
+	const want = 11052855125
+	lines := linesFromFilename(t, filename(9))
+	s := strings.Join(lines, "")
+	got := Day9Part2(s)
+	if got != want {
+		t.Errorf("Day9Part2() = %v, want %v", got, want)
+	}
+}
+
 func benchDay9(b *testing.B, part1 bool, want uint) {
 	lines := linesFromFilename(b, filename(9))
 	s := strings.Join(lines, "")

@@ -6,7 +6,7 @@ import (
 
 const day5Input = "uqwqemis"
 
-func TestDay5ExamplePart1(t *testing.T) {
+func TestDay5Part1Example(t *testing.T) {
 	const (
 		want  = "18f47a30"
 		part1 = true
@@ -15,6 +15,22 @@ func TestDay5ExamplePart1(t *testing.T) {
 	got := Day5("abc", part1)
 	if want != got {
 		t.Fatalf("want %q but got %q", want, got)
+	}
+}
+
+func TestDay05Part1(t *testing.T) {
+	const want = "1a3099aa"
+	got := Day5(day5Input, true)
+	if got != want {
+		t.Errorf("Day5() = %v, want %v", got, want)
+	}
+}
+
+func TestDay05Part2(t *testing.T) {
+	const want = "694190cd"
+	got := Day5(day5Input, false)
+	if got != want {
+		t.Errorf("Day5() = %v, want %v", got, want)
 	}
 }
 
@@ -31,7 +47,7 @@ func BenchmarkDay5Part1(b *testing.B) {
 	}
 }
 
-func TestDay5ExamplePart2(t *testing.T) {
+func TestDay5Part2Example(t *testing.T) {
 	const (
 		want  = "05ace8e3"
 		part1 = false

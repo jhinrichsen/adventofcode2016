@@ -15,7 +15,7 @@ func day12v2(t *testing.T, part1 bool, filename string, want int) {
 	}
 }
 
-func TestDay12V2ExamplePart1(t *testing.T) {
+func TestDay12V2Part1Example(t *testing.T) {
 	day12v2(t, true, exampleFilename(12), 42)
 }
 

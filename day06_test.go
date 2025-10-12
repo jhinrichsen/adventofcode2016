@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestDay6ExamplePart1(t *testing.T) {
+func TestDay6Part1Example(t *testing.T) {
 	const (
 		want  = "easter"
 		part1 = true
@@ -31,7 +31,7 @@ func BenchmarkDay6Part1(b *testing.B) {
 	}
 }
 
-func TestDay6ExamplePart2(t *testing.T) {
+func TestDay6Part2Example(t *testing.T) {
 	const (
 		want  = "advent"
 		part1 = false
@@ -40,6 +40,24 @@ func TestDay6ExamplePart2(t *testing.T) {
 	got := Day6(lines, part1)
 	if want != got {
 		t.Fatalf("want %q but got %q", want, got)
+	}
+}
+
+func TestDay6Part1(t *testing.T) {
+	const want = "tzstqsua"
+	lines := linesFromFilename(t, filename(6))
+	got := Day6(lines, true)
+	if got != want {
+		t.Errorf("Day6() = %v, want %v", got, want)
+	}
+}
+
+func TestDay6Part2(t *testing.T) {
+	const want = "myregdnr"
+	lines := linesFromFilename(t, filename(6))
+	got := Day6(lines, false)
+	if got != want {
+		t.Errorf("Day6() = %v, want %v", got, want)
 	}
 }
 

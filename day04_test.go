@@ -45,6 +45,30 @@ func TestDay4Example(t *testing.T) {
 	}
 }
 
+func TestDay04Part1(t *testing.T) {
+	const want = 137896
+	lines := linesFromFilename(t, filename(4))
+	got, err := Day4Part1(lines)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got != want {
+		t.Errorf("Day4Part1() = %v, want %v", got, want)
+	}
+}
+
+func TestDay04Part2(t *testing.T) {
+	const want = 501
+	lines := linesFromFilename(t, filename(4))
+	got, err := Day4Part2(lines)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got != want {
+		t.Errorf("Day4Part2() = %v, want %v", got, want)
+	}
+}
+
 func BenchmarkDay4Part1(b *testing.B) {
 	const want = 137896
 	lines := linesFromFilename(b, filename(4))

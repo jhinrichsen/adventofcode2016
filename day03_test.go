@@ -4,6 +4,24 @@ import (
 	"testing"
 )
 
+func TestDay03Part1(t *testing.T) {
+	const want = 982
+	lines := linesFromFilename(t, filename(3))
+	got := Day3(lines, true)
+	if got != want {
+		t.Errorf("Day3() = %v, want %v", got, want)
+	}
+}
+
+func TestDay03Part2(t *testing.T) {
+	const want = 1826
+	lines := linesFromFilename(t, filename(3))
+	got := Day3(lines, false)
+	if got != want {
+		t.Errorf("Day3() = %v, want %v", got, want)
+	}
+}
+
 func BenchmarkDay3Part1(b *testing.B) {
 	const want = 982
 	benchDay3(b, true, want)

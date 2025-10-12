@@ -25,7 +25,7 @@ func TestMD5(t *testing.T) {
 	}
 }
 
-func TestDay17ExamplesPart1(t *testing.T) {
+func TestDay17Part1Examples(t *testing.T) {
 	for _, tt := range day17Examples {
 		id := tt.in
 		t.Run(id, func(t *testing.T) {
@@ -38,7 +38,7 @@ func TestDay17ExamplesPart1(t *testing.T) {
 	}
 }
 
-func TestDay17ExamplesPart2(t *testing.T) {
+func TestDay17Part2Examples(t *testing.T) {
 	for _, tt := range day17Examples {
 		id := tt.in
 		t.Run(id, func(t *testing.T) {

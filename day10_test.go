@@ -39,6 +39,30 @@ func BenchmarkDay10Part1(b *testing.B) {
 	}
 }
 
+func TestDay10Part1(t *testing.T) {
+	const want = 161
+	lines := linesFromFilename(t, filename(10))
+	got, err := Day10(lines, true, 61, 17)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got != want {
+		t.Errorf("Day10() = %v, want %v", got, want)
+	}
+}
+
+func TestDay10Part2(t *testing.T) {
+	const want = 133163
+	lines := linesFromFilename(t, filename(10))
+	got, err := Day10(lines, false, 0, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got != want {
+		t.Errorf("Day10() = %v, want %v", got, want)
+	}
+}
+
 func BenchmarkDay10Part2(b *testing.B) {
 	const (
 		want  = 133163

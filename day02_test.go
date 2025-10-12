@@ -13,7 +13,7 @@ var day2Examples = []struct {
 	{"part 2", false, "5DB3"},
 }
 
-func TestDay2ExamplePart1(t *testing.T) {
+func TestDay2Part1Example(t *testing.T) {
 	for _, tt := range day2Examples {
 		lines := linesFromFilename(t, exampleFilename(2))
 		want := tt.out
@@ -24,6 +24,30 @@ func TestDay2ExamplePart1(t *testing.T) {
 		if want != got {
 			t.Fatalf("want %q but got %q", want, got)
 		}
+	}
+}
+
+func TestDay02Part1(t *testing.T) {
+	const want = "65556"
+	lines := linesFromFilename(t, filename(2))
+	got, err := Day2(lines, true)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got != want {
+		t.Errorf("Day2() = %v, want %v", got, want)
+	}
+}
+
+func TestDay02Part2(t *testing.T) {
+	const want = "CB779"
+	lines := linesFromFilename(t, filename(2))
+	got, err := Day2(lines, false)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got != want {
+		t.Errorf("Day2() = %v, want %v", got, want)
 	}
 }
 

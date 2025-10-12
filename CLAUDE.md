@@ -14,6 +14,9 @@
 - Puzzles must not perform I/O
 - **ONLY** tests may read files using `input_test.go` functions
 
+### Advent of Code Part 2 Rule (CRITICAL)
+- **NEVER** implement Part 2 without the actual unlocked specification
+
 ### uint Pattern (MANDATORY)
 - **ALL** puzzle return types that are counts/sums/totals/amounts must be `uint`
 - Push `uint` contract up the entire call chain

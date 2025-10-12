@@ -1,41 +1,58 @@
 package adventofcode2016
 
-import (
-	"math"
-	"strconv"
-	"strings"
-)
-
 func Day01(line string, part1 bool) uint {
-	here := 0 + 0i
-	abs := func(f float64) uint {
-		return uint(math.Abs(f))
+	var x, y int
+	var dx, dy int = 0, 1
+
+	manhattan := func() uint {
+		if x < 0 {
+			x = -x
+		}
+		if y < 0 {
+			y = -y
+		}
+		return uint(x + y)
 	}
-	manhattanDistance := func() uint {
-		return abs(real(here)) + abs(imag(here))
+
+	type pos struct{ x, y int }
+	var positions map[pos]bool
+	if !part1 {
+		positions = make(map[pos]bool, len(line))
 	}
-	facing := 0 + 1i
-	positions := make(map[complex128]bool)
-	for _, s := range strings.Split(line, ", ") {
-		buf := []byte(s)
-		turn := buf[0]
-		s := string(buf[1:])
-		n, _ := strconv.Atoi(s)
+
+	i := 0
+	for i < len(line) {
+		turn := line[i]
+		i++
+
+		var n int
+		for i < len(line) && line[i] >= '0' && line[i] <= '9' {
+			n = n*10 + int(line[i]-'0')
+			i++
+		}
+
+		if i < len(line) && line[i] == ',' {
+			i += 2 // skip ", "
+		}
+
 		switch turn {
 		case 'R':
-			facing *= 0 - 1i
+			dx, dy = dy, -dx
 		case 'L':
-			facing *= 0 + 1i
+			dx, dy = -dy, dx
 		}
-		for i := 0; i < n; i++ {
-			here += facing
+
+		for j := 0; j < n; j++ {
+			x += dx
+			y += dy
 			if !part1 {
-				if positions[here] {
-					return manhattanDistance()
+				p := pos{x, y}
+				if positions[p] {
+					return manhattan()
 				}
-				positions[here] = true
+				positions[p] = true
 			}
 		}
 	}
-	return manhattanDistance()
+	return manhattan()
 }

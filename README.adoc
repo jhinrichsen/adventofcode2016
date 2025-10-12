@@ -30,28 +30,79 @@ Did not understand part 2, failing unit tests because i only marked end
 positions. Only when i https://goplay.space[turtle graphic'ed] the example it
 became clear that all steps count.
 
+=== Baseline (b0)
+
 ----
-BenchmarkDay01Part1-16    	  237550	      4756 ns/op	    3072 B/op	       1 allocs/op
-BenchmarkDay01Part1-16    	  225342	      4797 ns/op	    3072 B/op	       1 allocs/op
-BenchmarkDay01Part1-16    	  247945	      4799 ns/op	    3072 B/op	       1 allocs/op
-BenchmarkDay01Part1-16    	  243835	      4817 ns/op	    3072 B/op	       1 allocs/op
-BenchmarkDay01Part1-16    	  240661	      4860 ns/op	    3072 B/op	       1 allocs/op
-BenchmarkDay01Part1-16    	  248244	      4849 ns/op	    3072 B/op	       1 allocs/op
-BenchmarkDay01Part1-16    	  250093	      4783 ns/op	    3072 B/op	       1 allocs/op
-BenchmarkDay01Part1-16    	  245457	      4886 ns/op	    3072 B/op	       1 allocs/op
-BenchmarkDay01Part1-16    	  260353	      4812 ns/op	    3072 B/op	       1 allocs/op
-BenchmarkDay01Part1-16    	  243624	      4854 ns/op	    3072 B/op	       1 allocs/op
-BenchmarkDay01Part2-16    	   19434	     62189 ns/op	   56968 B/op	      16 allocs/op
-BenchmarkDay01Part2-16    	   19213	     62785 ns/op	   56968 B/op	      16 allocs/op
-BenchmarkDay01Part2-16    	   19572	     61239 ns/op	   56968 B/op	      16 allocs/op
-BenchmarkDay01Part2-16    	   19057	     62577 ns/op	   56968 B/op	      16 allocs/op
-BenchmarkDay01Part2-16    	   18975	     62734 ns/op	   56968 B/op	      16 allocs/op
-BenchmarkDay01Part2-16    	   19156	     62686 ns/op	   56968 B/op	      16 allocs/op
-BenchmarkDay01Part2-16    	   19096	     63006 ns/op	   56968 B/op	      16 allocs/op
-BenchmarkDay01Part2-16    	   19382	     62064 ns/op	   56968 B/op	      16 allocs/op
-BenchmarkDay01Part2-16    	   19359	     62386 ns/op	   56968 B/op	      16 allocs/op
-BenchmarkDay01Part2-16    	   19684	     61495 ns/op	   56968 B/op	      16 allocs/op
+BenchmarkDay01Part1-16    	  243794	      4844 ns/op	    3072 B/op	       1 allocs/op
+BenchmarkDay01Part1-16    	  242926	      4738 ns/op	    3072 B/op	       1 allocs/op
+BenchmarkDay01Part1-16    	  256244	      4729 ns/op	    3072 B/op	       1 allocs/op
+BenchmarkDay01Part1-16    	  256026	      4768 ns/op	    3072 B/op	       1 allocs/op
+BenchmarkDay01Part1-16    	  247738	      4787 ns/op	    3072 B/op	       1 allocs/op
+BenchmarkDay01Part1-16    	  239510	      4897 ns/op	    3072 B/op	       1 allocs/op
+BenchmarkDay01Part1-16    	  243981	      4845 ns/op	    3072 B/op	       1 allocs/op
+BenchmarkDay01Part1-16    	  245893	      4770 ns/op	    3072 B/op	       1 allocs/op
+BenchmarkDay01Part1-16    	  237333	      4831 ns/op	    3072 B/op	       1 allocs/op
+BenchmarkDay01Part1-16    	  251894	      4747 ns/op	    3072 B/op	       1 allocs/op
+BenchmarkDay01Part2-16    	   19252	     60324 ns/op	   56968 B/op	      16 allocs/op
+BenchmarkDay01Part2-16    	   20054	     60625 ns/op	   56968 B/op	      16 allocs/op
+BenchmarkDay01Part2-16    	   19999	     60741 ns/op	   56968 B/op	      16 allocs/op
+BenchmarkDay01Part2-16    	   19791	     60447 ns/op	   56968 B/op	      16 allocs/op
+BenchmarkDay01Part2-16    	   20576	     58433 ns/op	   56968 B/op	      16 allocs/op
+BenchmarkDay01Part2-16    	   20307	     59143 ns/op	   56968 B/op	      16 allocs/op
+BenchmarkDay01Part2-16    	   20000	     59220 ns/op	   56968 B/op	      16 allocs/op
+BenchmarkDay01Part2-16    	   20622	     58139 ns/op	   56968 B/op	      16 allocs/op
+BenchmarkDay01Part2-16    	   19995	     60393 ns/op	   56968 B/op	      16 allocs/op
+BenchmarkDay01Part2-16    	   20395	     58734 ns/op	   56968 B/op	      16 allocs/op
 ----
+
+=== Optimized (b1)
+
+----
+BenchmarkDay01Part1-16    	 1857224	       643.4 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay01Part1-16    	 1918333	       628.3 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay01Part1-16    	 1817522	       658.3 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay01Part1-16    	 1904164	       629.2 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay01Part1-16    	 1833458	       660.6 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay01Part1-16    	 1912692	       622.8 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay01Part1-16    	 1872750	       635.6 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay01Part1-16    	 1830340	       641.6 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay01Part1-16    	 1841138	       645.5 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay01Part1-16    	 1831188	       629.1 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay01Part2-16    	   47982	     24880 ns/op	   27304 B/op	       3 allocs/op
+BenchmarkDay01Part2-16    	   47668	     24933 ns/op	   27304 B/op	       3 allocs/op
+BenchmarkDay01Part2-16    	   48062	     24712 ns/op	   27304 B/op	       3 allocs/op
+BenchmarkDay01Part2-16    	   48225	     24709 ns/op	   27304 B/op	       3 allocs/op
+BenchmarkDay01Part2-16    	   50176	     24551 ns/op	   27304 B/op	       3 allocs/op
+BenchmarkDay01Part2-16    	   46537	     25228 ns/op	   27304 B/op	       3 allocs/op
+BenchmarkDay01Part2-16    	   46892	     24528 ns/op	   27304 B/op	       3 allocs/op
+BenchmarkDay01Part2-16    	   48720	     25207 ns/op	   27304 B/op	       3 allocs/op
+BenchmarkDay01Part2-16    	   48518	     24457 ns/op	   27304 B/op	       3 allocs/op
+BenchmarkDay01Part2-16    	   50025	     24205 ns/op	   27304 B/op	       3 allocs/op
+----
+
+=== Optimization Results (benchstat b0 b1)
+
+----
+              │      b0      │                 b1                  │
+              │    sec/op    │   sec/op     vs base                │
+Day01Part1-16   4778.5n ± 1%   638.6n ± 3%  -86.64% (p=0.000 n=10)
+Day01Part2-16    59.77µ ± 2%   24.71µ ± 2%  -58.66% (p=0.000 n=10)
+geomean          16.90µ        3.972µ       -76.49%
+
+              │      b0      │                    b1                     │
+              │     B/op     │     B/op      vs base                     │
+Day01Part1-16   3.000Ki ± 0%   0.000Ki ± 0%  -100.00% (p=0.000 n=10)
+Day01Part2-16   55.63Ki ± 0%   26.66Ki ± 0%   -52.07% (p=0.000 n=10)
+
+              │     b0      │                   b1                    │
+              │  allocs/op  │ allocs/op   vs base                     │
+Day01Part1-16    1.000 ± 0%   0.000 ± 0%  -100.00% (p=0.000 n=10)
+Day01Part2-16   16.000 ± 0%   3.000 ± 0%   -81.25% (p=0.000 n=10)
+----
+
+Key optimizations: replaced complex128 with int coordinates, removed strings.Split
+with direct parsing, eliminated strconv.Atoi with in-place parsing, conditional
+map allocation only for Part 2.
 
 == Day 2: Bathroom Security
 == Day 3: Squares With Three Sides

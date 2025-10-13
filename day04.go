@@ -20,7 +20,7 @@ func numeric(b byte) bool {
 
 const dash = '-'
 
-func newDay4(s string) (day4, error) {
+func newDay04(s string) (day4, error) {
 	var d day4
 	d.ID = []byte(s)
 
@@ -77,10 +77,10 @@ func (d day4) real() bool {
 }
 
 // Day4Part1 returns sum of sector IDs of all real rooms.
-func Day4Part1(lines []string) (uint, error) {
+func Day04Part1(lines []string) (uint, error) {
 	var sum uint
 	for i, line := range lines {
-		d, err := newDay4(line)
+		d, err := newDay04(line)
 		if err != nil {
 			return 0, fmt.Errorf("error in line %d: %w", i+1, err)
 		}
@@ -93,7 +93,7 @@ func Day4Part1(lines []string) (uint, error) {
 
 // Day4Part2 returns sector ID of decrypted real room "northpole object
 // storage".
-func Day4Part2(lines []string) (uint, error) {
+func Day04Part2(lines []string) (uint, error) {
 	const room = "northpole object storage"
 	for i, line := range lines {
 		// has word separator at the right place?
@@ -103,7 +103,7 @@ func Day4Part2(lines []string) (uint, error) {
 		if !p1 {
 			continue
 		}
-		d, err := newDay4(line)
+		d, err := newDay04(line)
 		if err != nil {
 			return 0, fmt.Errorf("error in line %d: %w", i+1, err)
 		}
@@ -119,7 +119,7 @@ func Day4Part2(lines []string) (uint, error) {
 }
 
 func decrypt(room string) string {
-	d, _ := newDay4(room)
+	d, _ := newDay04(room)
 	n := d.sector % 26
 	var sb strings.Builder
 	for i := 0; i < len(room); i++ {

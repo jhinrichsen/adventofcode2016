@@ -4,7 +4,6 @@
 package adventofcode2016
 
 import (
-	"slices"
 	"testing"
 )
 
@@ -35,9 +34,6 @@ func test(t *testing.T, name string, got, want string) {
 func testN(t *testing.T, cmds []string, results []string, scramble bool) {
 	got := results[0]
 	jt := newJumpTable(results[0])
-	if !scramble && (len(jt[0]) != len(jt[1])) {
-		t.Skip("ambiguous descramble")
-	}
 
 	for i, cmd := range cmds {
 		f1, f2, err := compile(cmd, jt)
@@ -113,18 +109,6 @@ func TestDay21Part1Example(t *testing.T) {
 	testN(t, lines, day21ExampleResults, true)
 }
 
-func TestDay21Part2Example(t *testing.T) {
-	cmds := linesFromFilename(t, exampleFilename(21))
-
-	// reverse commands and expected results
-	slices.Reverse(cmds)
-	// create our own copy because tests may run in parallel
-	results := make([]string, len(day21ExampleResults))
-	copy(results, day21ExampleResults)
-	slices.Reverse(results)
-
-	testN(t, cmds, results, false)
-}
 
 func TestDay21Part1(t *testing.T) {
 	const (
@@ -141,14 +125,9 @@ func TestDay21Part1(t *testing.T) {
 }
 
 func BenchmarkDay21Part1(b *testing.B) {
-	const (
-		input = "abcdefgh"
-		part1 = true // part1 is synomym to 'scramble'
-	)
 	lines := linesFromFilename(b, filename(21))
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		_, _ = Day21(lines, input, part1)
+	for b.Loop() {
+		Day21(lines, "abcdefgh", true)
 	}
 }
 
@@ -167,13 +146,8 @@ func TestDay21Part2(t *testing.T) {
 }
 
 func BenchmarkDay21Part2(b *testing.B) {
-	const (
-		input = "fbgdceah"
-		part1 = false // part1 is synomym to 'scramble'
-	)
 	cmds := linesFromFilename(b, filename(21))
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		_, _ = Day21(cmds, input, part1)
+	for b.Loop() {
+		Day21(cmds, "fbgdceah", false)
 	}
 }

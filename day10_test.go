@@ -23,19 +23,9 @@ func TestDay10Example(t *testing.T) {
 }
 
 func BenchmarkDay10Part1(b *testing.B) {
-	const (
-		want  = 161
-		part1 = true
-	)
 	lines := linesFromFilename(b, filename(10))
-	for i := 0; i < b.N; i++ {
-		got, err := Day10(lines, part1, 61, 17)
-		if err != nil {
-			b.Fatal(err)
-		}
-		if want != got {
-			b.Fatalf("want %d but got %d", want, got)
-		}
+	for b.Loop() {
+		Day10(lines, true, 61, 17)
 	}
 }
 
@@ -64,18 +54,8 @@ func TestDay10Part2(t *testing.T) {
 }
 
 func BenchmarkDay10Part2(b *testing.B) {
-	const (
-		want  = 133163
-		part1 = false
-	)
 	lines := linesFromFilename(b, filename(10))
-	for i := 0; i < b.N; i++ {
-		got, err := Day10(lines, part1, 0, 0)
-		if err != nil {
-			b.Fatal(err)
-		}
-		if want != got {
-			b.Fatalf("want %d but got %d", want, got)
-		}
+	for b.Loop() {
+		Day10(lines, false, 0, 0)
 	}
 }

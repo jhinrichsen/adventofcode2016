@@ -3,7 +3,7 @@ package adventofcode2016
 import "strings"
 
 // Day6 returns error corrected transmission.
-func Day6(lines []string, part1 bool) string {
+func Day06(lines []string, part1 bool) string {
 	var sb strings.Builder
 	for x := 0; x < len(lines[0]); x++ {
 		var freqs [26]uint

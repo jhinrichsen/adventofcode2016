@@ -6,7 +6,7 @@ import (
 )
 
 // Day5 solves day 1 part 1.
-func Day5(doorID string, part1 bool) string {
+func Day05(doorID string, part1 bool) string {
 	var password [8]byte
 	var idx int // 0..n-1
 	for i := 0; ; i++ {

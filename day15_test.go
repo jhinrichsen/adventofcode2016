@@ -55,16 +55,14 @@ func TestDay15Part1Smart(t *testing.T) {
 */
 
 func BenchmarkDay15Part1PlainVanilla(b *testing.B) {
-	const part1 = true
-	for i := 0; i < b.N; i++ {
-		_ = Day15Hardcoded(day15{}, part1)
+	for b.Loop() {
+		Day15Hardcoded(day15{}, true)
 	}
 }
 
 func BenchmarkDay15Part2PlainVanilla(b *testing.B) {
-	const part1 = false
-	for i := 0; i < b.N; i++ {
-		_ = Day15Hardcoded(day15{}, part1)
+	for b.Loop() {
+		Day15Hardcoded(day15{}, false)
 	}
 }
 

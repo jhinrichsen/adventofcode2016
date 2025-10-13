@@ -33,7 +33,7 @@ func palindromes4(s string) map[string]bool {
 
 // Day7 returns how many IP addresses support TLS (part1=true) or SSL
 // (part1=false).
-func Day7(lines []string, part1 bool) (n uint) {
+func Day07(lines []string, part1 bool) (n uint) {
 	var bracketPalindromes map[string]bool
 	var otherPalindromes map[string]bool
 

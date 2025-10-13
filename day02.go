@@ -1,9 +1,9 @@
 package adventofcode2016
 
-import "strings"
+import ()
 
-// Day2 solves day 2, both part 1 and part 2.
-func Day2(lines []string, part1 bool) (string, error) {
+// Day02 solves day 2, both part 1 and part 2.
+func Day02(input []byte, part1 bool) string {
 	// start at '5' for both parts
 	var here complex128
 	if part1 {
@@ -60,17 +60,29 @@ func Day2(lines []string, part1 bool) (string, error) {
 		'L': -1 + 0i,
 	}
 
-	var code strings.Builder
-	for _, line := range lines {
-		for _, b := range []byte(line) {
-			step := steps[b]
+	var code []byte
+	for _, b := range input {
+		if b == '\n' {
+			// End of line - record digit
+			digit := digits[here]
+			code = append(code, digit)
+		} else if step, ok := steps[b]; ok {
+			// Valid movement instruction
 			if inBound(here + step) {
 				here += step
 			}
 		}
-		digit := digits[here]
-		code.WriteByte(digit)
-
+		// Ignore invalid characters
 	}
-	return code.String(), nil
+	// Handle final line if input doesn't end with newline
+	if len(input) > 0 && input[len(input)-1] != '\n' {
+		digit := digits[here]
+		code = append(code, digit)
+	}
+
+	// Return "0" if no valid output was generated (garbage input)
+	if len(code) == 0 {
+		return "0"
+	}
+	return string(code)
 }

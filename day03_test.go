@@ -7,38 +7,32 @@ import (
 func TestDay03Part1(t *testing.T) {
 	const want = 982
 	lines := linesFromFilename(t, filename(3))
-	got := Day3(lines, true)
+	got := Day03(lines, true)
 	if got != want {
-		t.Errorf("Day3() = %v, want %v", got, want)
+		t.Errorf("Day03() = %v, want %v", got, want)
 	}
 }
 
 func TestDay03Part2(t *testing.T) {
 	const want = 1826
 	lines := linesFromFilename(t, filename(3))
-	got := Day3(lines, false)
+	got := Day03(lines, false)
 	if got != want {
-		t.Errorf("Day3() = %v, want %v", got, want)
+		t.Errorf("Day03() = %v, want %v", got, want)
 	}
 }
 
-func BenchmarkDay3Part1(b *testing.B) {
-	const want = 982
-	benchDay3(b, true, want)
-}
-
-func BenchmarkDay3Part2(b *testing.B) {
-	const want = 1826
-	benchDay3(b, false, want)
-}
-
-func benchDay3(b *testing.B, part1 bool, want uint) {
+func BenchmarkDay03Part1(b *testing.B) {
 	lines := linesFromFilename(b, filename(3))
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		got := Day3(lines, part1)
-		if want != got {
-			b.Fatalf("want %d but got %d", want, got)
-		}
+	for b.Loop() {
+		Day03(lines, true)
 	}
 }
+
+func BenchmarkDay03Part2(b *testing.B) {
+	lines := linesFromFilename(b, filename(3))
+	for b.Loop() {
+		Day03(lines, false)
+	}
+}
+

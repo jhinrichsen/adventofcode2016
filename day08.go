@@ -12,7 +12,7 @@ type day8 struct {
 	width, height uint8
 }
 
-func newDay8(width, height uint8) day8 {
+func newDay08(width, height uint8) day8 {
 	var d day8
 	d.width = width
 	d.height = height
@@ -85,7 +85,7 @@ func (a day8) String() string {
 type day8Callback func(day8)
 
 // Day8 returns the number of lit lights (lights in status 'on').
-func Day8(screen day8, lines []string, part1 bool, f day8Callback) (uint, error) {
+func Day08(screen day8, lines []string, part1 bool, f day8Callback) (uint, error) {
 	for _, line := range lines {
 		var col uint8
 

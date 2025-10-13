@@ -22,8 +22,8 @@ func trianglePossible(t1, t2, t3 uint) bool {
 	return t1+t2 > t3
 }
 
-// Day3 returns number of triangles.
-func Day3(lines []string, part1 bool) (possible uint) {
+// Day03 returns number of triangles.
+func Day03(lines []string, part1 bool) (possible uint) {
 	chunk := func(lines []string) (g [Angles][Angles]uint) {
 		for y := 0; y < Angles; y++ {
 			fs := strings.Fields(lines[y])

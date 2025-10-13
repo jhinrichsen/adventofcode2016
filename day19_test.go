@@ -49,8 +49,8 @@ func TestDay19Part1(t *testing.T) {
 }
 
 func BenchmarkDay19Part1(b *testing.B) {
-	for i := 0; i < b.N; i++ {
-		_ = Day19Part1(5)
+	for b.Loop() {
+		Day19Part1(5)
 	}
 }
 
@@ -79,7 +79,7 @@ func TestDay19Part2(t *testing.T) {
 }
 
 func BenchmarkDay19Part2(b *testing.B) {
-	for i := 0; i < b.N; i++ {
-		_ = Day19Part2(3001330)
+	for b.Loop() {
+		Day19Part2(3001330)
 	}
 }

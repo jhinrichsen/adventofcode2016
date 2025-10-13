@@ -29,12 +29,8 @@ func TestDay14Part1(t *testing.T) {
 }
 
 func BenchmarkDay14Part1(b *testing.B) {
-	const (
-		salt  = "ngcjuoqr"
-		part1 = true
-	)
-	for i := 0; i < b.N; i++ {
-		Day14(salt, part1)
+	for b.Loop() {
+		Day14("ngcjuoqr", true)
 	}
 }
 

@@ -4,28 +4,40 @@ import (
 	"testing"
 )
 
-func day23(t *testing.T, part1 bool, filename string, want int) {
-	lines := linesFromFilename(t, filename)
+func TestDay23Part1Example(t *testing.T) {
+	lines := linesFromFilename(t, exampleFilename(23))
 	puzzle, err := NewDay23(lines)
 	if err != nil {
 		t.Fatal(err)
 	}
-	got := Day23(puzzle, part1)
-	if want != got {
-		t.Fatalf("want %d but got %d", want, got)
+	got := Day23(puzzle, true)
+	if 3 != got {
+		t.Fatalf("want %d but got %d", 3, got)
 	}
 }
 
-func TestDay23Part1Example(t *testing.T) {
-	day23(t, true, exampleFilename(23), 3)
-}
-
 func TestDay23Part1(t *testing.T) {
-	day23(t, true, filename(23), 11478)
+	lines := linesFromFilename(t, filename(23))
+	puzzle, err := NewDay23(lines)
+	if err != nil {
+		t.Fatal(err)
+	}
+	got := Day23(puzzle, true)
+	if 11478 != got {
+		t.Fatalf("want %d but got %d", 11478, got)
+	}
 }
 
 func TestDay23Part2(t *testing.T) {
-	day23(t, false, filename(23), 479008038)
+	lines := linesFromFilename(t, filename(23))
+	puzzle, err := NewDay23(lines)
+	if err != nil {
+		t.Fatal(err)
+	}
+	got := Day23(puzzle, false)
+	if 479008038 != got {
+		t.Fatalf("want %d but got %d", 479008038, got)
+	}
 }
 
 func BenchmarkDay23Part1(b *testing.B) {
@@ -34,8 +46,7 @@ func BenchmarkDay23Part1(b *testing.B) {
 	if err != nil {
 		b.Fatal(err)
 	}
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		Day23(puzzle, true)
 	}
 }
@@ -46,8 +57,7 @@ func BenchmarkDay23Part2(b *testing.B) {
 	if err != nil {
 		b.Fatal(err)
 	}
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		Day23(puzzle, false)
 	}
 }

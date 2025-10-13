@@ -38,23 +38,15 @@ func TestDay22Part2(t *testing.T) {
 }
 
 func BenchmarkDay22Part1(b *testing.B) {
-	const (
-		part1 = true
-	)
 	lines := linesFromFilename(b, filename(22))
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		_, _ = Day22(lines, part1)
+	for b.Loop() {
+		Day22(lines, true)
 	}
 }
 
 func BenchmarkDay22Part2(b *testing.B) {
-	const (
-		part1 = false
-	)
 	lines := linesFromFilename(b, filename(22))
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		_, _ = Day22(lines, part1)
+	for b.Loop() {
+		Day22(lines, false)
 	}
 }

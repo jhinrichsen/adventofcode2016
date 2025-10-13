@@ -29,14 +29,14 @@ func TestDay12Part2(t *testing.T) {
 
 func BenchmarkDay12Part1(b *testing.B) {
 	lines := linesFromFilename(b, filename(12))
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		Day12(lines, true)
 	}
 }
 
 func BenchmarkDay12Part2(b *testing.B) {
 	lines := linesFromFilename(b, filename(12))
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		Day12(lines, false)
 	}
 }

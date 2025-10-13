@@ -1,7 +1,7 @@
 package adventofcode2016
 
 // Day9Part1 returns decompressed length of strings.
-func Day9Part1(s string) (sum uint) {
+func Day09Part1(s string) (sum uint) {
 	var times uint = 1        // how many times to repeat a character
 	var repeat uint           // number of characters to repeat
 	var inMarker bool         // state maching: parsing marker
@@ -45,7 +45,7 @@ func Day9Part1(s string) (sum uint) {
 // repeats need to be considered, probably needing a stack container e.a.
 // Instead, iterate from right to left, resolving any (repeat x time)
 // immediately.
-func Day9Part2(s string) (sum uint) {
+func Day09Part2(s string) (sum uint) {
 	var inMarker bool         // state maching: parsing marker
 	var marker1, marker2 uint // temporary marker content while parsing
 	factors := make([]uint, len(s)+1)

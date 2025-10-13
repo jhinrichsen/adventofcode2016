@@ -220,8 +220,6 @@ goarch: amd64
 pkg: gitlab.com/jhinrichsen/adventofcode2016
 cpu: Intel(R) Core(TM) i9-9980HK CPU @ 2.40GHz
 BenchmarkDay18Part2-16    	       3	 373477125 ns/op	134400981 B/op	 1200004 allocs/op
-PASS
-ok  	gitlab.com/jhinrichsen/adventofcode2016	2.419
 ----
 
 Let's see 373477125 ns/op = 373477 μs/op = 373 ms/op.
@@ -444,8 +442,6 @@ cpu: Intel(R) Core(TM) i9-9980HK CPU @ 2.40GHz
 BenchmarkDay18Part2V1-16    	       3	 366501483 ns/op
 BenchmarkDay18Part2V2-16    	      13	  83858027 ns/op
 BenchmarkDay18Part2V3-16    	      18	  65084887 ns/op
-PASS
-ok  	gitlab.com/jhinrichsen/adventofcode2016	4.932s
 ----
 
 
@@ -480,8 +476,6 @@ BenchmarkDay19Part2-16    	 2748680	       436.1 ns/op	       0 B/op	       0 al
 BenchmarkDay19Part2-16    	 2747872	       436.5 ns/op	       0 B/op	       0 allocs/op
 BenchmarkDay19Part2-16    	 2749844	       436.5 ns/op	       0 B/op	       0 allocs/op
 BenchmarkDay19Part2-16    	 2746927	       436.3 ns/op	       0 B/op	       0 allocs/op
-PASS
-ok  	gitlab.com/jhinrichsen/adventofcode2016	30.260s
 ----
 
 
@@ -569,7 +563,39 @@ Day12Part2-16     27.7M ± 0%      0.0M ± 0%  -100.00%  (p=0.000 n=10+10)     <
 <2> allocated memory drops from 1 GB to [bench12V2part2.bench]2 KB
 <3> number of allocations drops from 27 million to [bench12V2part2.bench]49
 
-== Benchmarks
+== Day 24: Air Duct Spelunking
+
+A Traveling Salesman Problem (TSP) variant. Visit all numbered locations on a grid starting from '0':
+
+- Part 1: Visit all locations once
+- Part 2: Visit all locations and return to start
+
+Implementation uses BFS to calculate distances between all location pairs, then dynamic programming with bitmasks to solve the TSP efficiently.
+
+----
+BenchmarkDay24Part1-16    	    1190	    991302 ns/op	 1147359 B/op	    2624 allocs/op
+BenchmarkDay24Part1-16    	    1228	    994289 ns/op	 1147346 B/op	    2624 allocs/op
+BenchmarkDay24Part1-16    	    1218	   1008029 ns/op	 1147346 B/op	    2624 allocs/op
+BenchmarkDay24Part1-16    	    1184	    999666 ns/op	 1147345 B/op	    2624 allocs/op
+BenchmarkDay24Part1-16    	    1224	   1002278 ns/op	 1147346 B/op	    2624 allocs/op
+BenchmarkDay24Part1-16    	    1174	    985787 ns/op	 1147346 B/op	    2624 allocs/op
+BenchmarkDay24Part1-16    	    1208	    975947 ns/op	 1147346 B/op	    2624 allocs/op
+BenchmarkDay24Part1-16    	    1128	   1008564 ns/op	 1147345 B/op	    2624 allocs/op
+BenchmarkDay24Part1-16    	    1195	    997686 ns/op	 1147346 B/op	    2624 allocs/op
+BenchmarkDay24Part1-16    	    1206	    997956 ns/op	 1147346 B/op	    2624 allocs/op
+BenchmarkDay24Part2-16    	    1159	    985133 ns/op	 1147345 B/op	    2624 allocs/op
+BenchmarkDay24Part2-16    	    1213	    989973 ns/op	 1147346 B/op	    2624 allocs/op
+BenchmarkDay24Part2-16    	    1188	   1002023 ns/op	 1147346 B/op	    2624 allocs/op
+BenchmarkDay24Part2-16    	    1138	   1013379 ns/op	 1147346 B/op	    2624 allocs/op
+BenchmarkDay24Part2-16    	    1207	    994808 ns/op	 1147345 B/op	    2624 allocs/op
+BenchmarkDay24Part2-16    	    1230	   1010918 ns/op	 1147346 B/op	    2624 allocs/op
+BenchmarkDay24Part2-16    	    1208	    997412 ns/op	 1147346 B/op	    2624 allocs/op
+BenchmarkDay24Part2-16    	    1221	    993217 ns/op	 1147346 B/op	    2624 allocs/op
+BenchmarkDay24Part2-16    	    1191	    982728 ns/op	 1147347 B/op	    2624 allocs/op
+BenchmarkDay24Part2-16    	    1202	    980059 ns/op	 1147346 B/op	    2624 allocs/op
+----
+
+== Benchmarks archive
 
 === Go 1.16.6
 
@@ -604,5 +630,4 @@ BenchmarkDay7Part2-16                 	     559	   2165888 ns/op	 1969477 B/op	 
 BenchmarkDay8Part1-16                 	   31016	     38769 ns/op	    5648 B/op	     113 allocs/op
 BenchmarkDay9Part1-16                 	   35505	     34320 ns/op	       0 B/op	       0 allocs/op
 BenchmarkDay9Part2-16                 	   14134	     93560 ns/op	   98304 B/op	       1 allocs/op
-PASS
 ----

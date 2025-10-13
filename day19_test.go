@@ -50,7 +50,7 @@ func TestDay19Part1(t *testing.T) {
 
 func BenchmarkDay19Part1(b *testing.B) {
 	for b.Loop() {
-		Day19Part1(5)
+		Day19Part1(3001330)
 	}
 }
 

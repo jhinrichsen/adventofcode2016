@@ -573,6 +573,10 @@ A Traveling Salesman Problem (TSP) variant. Visit all numbered locations on a gr
 Implementation uses BFS to calculate distances between all location pairs, then dynamic programming with bitmasks to solve the TSP efficiently.
 
 ----
+goos: linux
+goarch: amd64
+pkg: gitlab.com/jhinrichsen/adventofcode2016
+cpu: AMD Ryzen 7 7840HS w/ Radeon 780M Graphics
 BenchmarkDay24Part1-16    	    1190	    991302 ns/op	 1147359 B/op	    2624 allocs/op
 BenchmarkDay24Part1-16    	    1228	    994289 ns/op	 1147346 B/op	    2624 allocs/op
 BenchmarkDay24Part1-16    	    1218	   1008029 ns/op	 1147346 B/op	    2624 allocs/op
@@ -593,6 +597,29 @@ BenchmarkDay24Part2-16    	    1208	    997412 ns/op	 1147346 B/op	    2624 allo
 BenchmarkDay24Part2-16    	    1221	    993217 ns/op	 1147346 B/op	    2624 allocs/op
 BenchmarkDay24Part2-16    	    1191	    982728 ns/op	 1147347 B/op	    2624 allocs/op
 BenchmarkDay24Part2-16    	    1202	    980059 ns/op	 1147346 B/op	    2624 allocs/op
+----
+
+== Day 25: Clock Signal
+
+Find the lowest positive integer to initialize register 'a' that generates an alternating 0,1,0,1,0,1... clock signal using assembunny code with a new `out` instruction.
+
+Implementation extends the Day 23 assembunny interpreter with output capability and tests values starting from 1 until finding one that produces the correct alternating pattern.
+
+----
+goos: linux
+goarch: amd64
+pkg: gitlab.com/jhinrichsen/adventofcode2016
+cpu: AMD Ryzen 7 7840HS w/ Radeon 780M Graphics
+BenchmarkDay25-16    	      45	  25393751 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay25-16    	      43	  25661439 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay25-16    	      44	  25497368 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay25-16    	      45	  25461541 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay25-16    	      48	  25331664 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay25-16    	      45	  25377476 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay25-16    	      43	  25654570 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay25-16    	      44	  25393981 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay25-16    	      45	  25450240 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay25-16    	      43	  25365834 ns/op	       0 B/op	       0 allocs/op
 ----
 
 == Benchmarks archive

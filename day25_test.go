@@ -25,3 +25,13 @@ func BenchmarkDay25(b *testing.B) {
 		Day25(puzzle)
 	}
 }
+
+func BenchmarkDay25Part1(b *testing.B) {
+	puzzle, err := NewDay25(linesFromFilename(b, filename(25)))
+	if err != nil {
+		b.Fatal(err)
+	}
+	for b.Loop() {
+		Day25(puzzle)
+	}
+}

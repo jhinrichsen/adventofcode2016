@@ -17,10 +17,69 @@ low level performance tweaking stuff.
 More like NASA landing Rover on Mars, than trial and error.
 
 All answers are hardcoded into the test cases.
-Although most puzzles are user specific input, you might want to avoid looking
-at the test cases.
+Although most puzzles are user specific input, you might want to avoid looking at the test cases.
 
-image::img/events_2023-10.png[Events as of October 2023]
+image::img/logo.png[50/50 as of October 2025]
+
+== Benchmark overview
+
+Go 1.24 on a framework 16" laptop.
+
+----
+goos: linux
+goarch: amd64
+pkg: gitlab.com/jhinrichsen/adventofcode2016
+cpu: AMD Ryzen 7 7840HS w/ Radeon 780M Graphics
+BenchmarkDay01Part1-16    	 1656710	       727.9 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay01Part2-16    	   45070	     26080 ns/op	   27304 B/op	       3 allocs/op
+BenchmarkDay02Part1-16    	   15328	     78720 ns/op	     472 B/op	       5 allocs/op
+BenchmarkDay02Part2-16    	   13533	     88583 ns/op	     472 B/op	       5 allocs/op
+BenchmarkDay03Part1-16    	    8804	    118155 ns/op	   91296 B/op	    1902 allocs/op
+BenchmarkDay03Part2-16    	    8391	    125034 ns/op	   91296 B/op	    1902 allocs/op
+BenchmarkDay04Part1-16    	    1242	    946645 ns/op	  210504 B/op	    6545 allocs/op
+BenchmarkDay04Part2-16    	 1250593	       954.4 ns/op	     328 B/op	      11 allocs/op
+BenchmarkDay05Part1-16    	       1	2898970343 ns/op	669832344 B/op	50204194 allocs/op
+BenchmarkDay05Part2-16    	       1	4562634061 ns/op	1053777032 B/op	78981055 allocs/op
+BenchmarkDay06Part1-16    	  334426	      3267 ns/op	       8 B/op	       1 allocs/op
+BenchmarkDay06Part2-16    	  350838	      3266 ns/op	       8 B/op	       1 allocs/op
+BenchmarkDay07Part1-16    	    1534	    758771 ns/op	  754816 B/op	   14392 allocs/op
+BenchmarkDay07Part2-16    	     692	   1712594 ns/op	 2353136 B/op	   24375 allocs/op
+BenchmarkDay08Part1-16    	   75135	     15544 ns/op	    5648 B/op	     113 allocs/op
+BenchmarkDay08Part2-16    	   18579	     64434 ns/op	   51688 B/op	     406 allocs/op
+BenchmarkDay09Part1-16    	   61696	     19234 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay09Part2-16    	   18458	     64078 ns/op	   98304 B/op	       1 allocs/op
+BenchmarkDay10Part1-16    	   10000	    100339 ns/op	  143880 B/op	     895 allocs/op
+BenchmarkDay10Part2-16    	    8344	    131196 ns/op	  143880 B/op	     895 allocs/op
+BenchmarkDay11Part1-16    	       3	 358643112 ns/op	143302608 B/op	 5881495 allocs/op
+BenchmarkDay11Part2-16    	       1	4763550029 ns/op	1782716120 B/op	71525915 allocs/op
+BenchmarkDay12Part1-16    	      33	  33665406 ns/op	35621681 B/op	  954125 allocs/op
+BenchmarkDay12Part2-16    	       2	 978571830 ns/op	1033505760 B/op	27683145 allocs/op
+BenchmarkDay13Part1-16    	   21258	     55975 ns/op	  143320 B/op	     507 allocs/op
+BenchmarkDay13Part2-16    	   25026	     48187 ns/op	  138000 B/op	     392 allocs/op
+BenchmarkDay14Part1-16    	      19	  60268762 ns/op	 3188592 B/op	   78429 allocs/op
+BenchmarkDay14Part2-16    	       1	5668310167 ns/op	2725497968 B/op	85152381 allocs/op
+BenchmarkDay15Part1-16    	    4854	    222126 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay15Part2-16    	     801	   1460991 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay16Part1-16    	  349983	      3088 ns/op	    3056 B/op	      31 allocs/op
+BenchmarkDay16Part2-16    	       3	 370692189 ns/op	507080421 B/op	     505 allocs/op
+BenchmarkDay17Part1-16    	  136984	      8368 ns/op	    4216 B/op	     123 allocs/op
+BenchmarkDay17Part2-16    	      40	  25100872 ns/op	22259857 B/op	  207514 allocs/op
+BenchmarkDay18Part1-16    	  435823	      2575 ns/op	     224 B/op	       2 allocs/op
+BenchmarkDay18Part2-16    	      42	  24498572 ns/op	     224 B/op	       2 allocs/op
+BenchmarkDay19Part1-16    	749127668	         1.590 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay19Part2-16    	 6137907	       194.9 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay20Part1-16    	   12322	     96786 ns/op	   60592 B/op	    1118 allocs/op
+BenchmarkDay20Part2-16    	   12520	     95233 ns/op	   60592 B/op	    1118 allocs/op
+BenchmarkDay21Part1-16    	   53961	     22193 ns/op	   25000 B/op	     613 allocs/op
+BenchmarkDay21Part2-16    	   52744	     22594 ns/op	   25144 B/op	     631 allocs/op
+BenchmarkDay22Part1-16    	     177	   6716288 ns/op	  342520 B/op	    2896 allocs/op
+BenchmarkDay22Part2-16    	      84	  14014255 ns/op	14498526 B/op	    3504 allocs/op
+BenchmarkDay23Part1-16    	    8822	    117971 ns/op	    1792 B/op	       1 allocs/op
+BenchmarkDay23Part2-16    	       1	6783703953 ns/op	    1792 B/op	       1 allocs/op
+BenchmarkDay24Part1-16    	    1174	   1004159 ns/op	 1147345 B/op	    2624 allocs/op
+BenchmarkDay24Part2-16    	    1132	   1041069 ns/op	 1147345 B/op	    2624 allocs/op
+BenchmarkDay25Part1-16    	      44	  24855781 ns/op	       0 B/op	       0 allocs/op
+----
 
 == Day 1: No Time for a Taxicab
 

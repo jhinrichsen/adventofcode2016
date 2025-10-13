@@ -74,3 +74,15 @@ func TestDay17Part2(t *testing.T) {
 		t.Fatalf("want %d but got %d", want, got)
 	}
 }
+
+func BenchmarkDay17Part1(b *testing.B) {
+	for b.Loop() {
+		Day17("edjrjqaa", maxMoves, true)
+	}
+}
+
+func BenchmarkDay17Part2(b *testing.B) {
+	for b.Loop() {
+		Day17("edjrjqaa", maxMoves, false)
+	}
+}

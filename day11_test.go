@@ -31,3 +31,15 @@ func TestDay11Part2(t *testing.T) {
 		t.Fatalf("want %d but got %d", want, got)
 	}
 }
+
+func BenchmarkDay11Part1(b *testing.B) {
+	for b.Loop() {
+		Day11(true)
+	}
+}
+
+func BenchmarkDay11Part2(b *testing.B) {
+	for b.Loop() {
+		Day11(false)
+	}
+}

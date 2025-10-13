@@ -66,8 +66,6 @@ func TestDay08Part1(t *testing.T) {
 	if got != want {
 		t.Errorf("Day08() = %v, want %v", got, want)
 	}
-	// Print the display to see what letters are shown
-	t.Logf("Display:\n%s", screen.String())
 }
 
 func TestDay08Part2(t *testing.T) {
@@ -80,28 +78,11 @@ func TestDay08Part2(t *testing.T) {
 
 	display := screen.String()
 
-	// Print the visual display to stdout for manual analysis
-	t.Logf("Full display:\n%s", display)
-
-	// Let's analyze each 5-character wide letter manually
-	displayLines := strings.Split(strings.TrimSpace(display), "\n")
-	for i := 0; i < 10; i++ { // 10 letters expected
-		t.Logf("Letter %d (cols %d-%d):", i+1, i*5, i*5+4)
-		for _, line := range displayLines {
-			if i*5+4 < len(line) {
-				t.Logf("  %s", line[i*5:i*5+5])
-			}
-		}
-		t.Logf("")
-	}
-
 	charSet := map[rune]bool{'#': true, '.': false}
 	got, err := aococr.ParseLetters(display, charSet)
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	t.Logf("OCR result: %q (length: %d)", got, len(got))
 
 	const want = "EOARGPHYAO"
 	if want != got {

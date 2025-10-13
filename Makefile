@@ -36,3 +36,8 @@ README.html: README.adoc
 README.pdf: README.adoc
 	asciidoctor-pdf -a allow-uri-read $<
 
+.PHONY: totalruntime
+totalruntime:
+        go test -run=^$$ -bench=Day -benchmem | tee benches/fedora42_go1.24.8_linux_amd64.txt
+        awk -f total.awk < benches/fedora42_go1.24.8_linux_amd64.txt
+

@@ -66,6 +66,18 @@ func BenchmarkDay15Part2PlainVanilla(b *testing.B) {
 	}
 }
 
+func BenchmarkDay15Part1(b *testing.B) {
+	for b.Loop() {
+		Day15Hardcoded(day15{}, true)
+	}
+}
+
+func BenchmarkDay15Part2(b *testing.B) {
+	for b.Loop() {
+		Day15Hardcoded(day15{}, false)
+	}
+}
+
 /* Not working, commented out
 func BenchmarkDay15Smart(b *testing.B) {
 	const (

@@ -16,8 +16,11 @@ include:
 
 test-job:
     stage: test
-    except:
-        - README.adoc
+    rules:
+        - changes:
+              - README.adoc
+          when: never
+        - when: on_success
     before_script:
         - make lint test
     script:

@@ -109,7 +109,6 @@ func TestDay21Part1Example(t *testing.T) {
 	testN(t, lines, day21ExampleResults, true)
 }
 
-
 func TestDay21Part1(t *testing.T) {
 	const (
 		input = "abcdefgh"

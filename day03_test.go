@@ -35,4 +35,3 @@ func BenchmarkDay03Part2(b *testing.B) {
 		Day03(lines, false)
 	}
 }
-

@@ -1,7 +1,5 @@
 package adventofcode2016
 
-import ()
-
 // Day02 solves day 2, both part 1 and part 2.
 func Day02(input []byte, part1 bool) string {
 	// start at '5' for both parts

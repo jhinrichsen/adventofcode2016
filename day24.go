@@ -120,9 +120,9 @@ func bfsDistances(puzzle Day24Puzzle, start byte) map[byte]uint {
 				next := image.Point{X: current.X + dir.X, Y: current.Y + dir.Y}
 
 				if next.X >= 0 && next.X < puzzle.dimX &&
-				   next.Y >= 0 && next.Y < puzzle.dimY &&
-				   !visited[next.Y][next.X] &&
-				   puzzle.grid[next.Y][next.X] != '#' {
+					next.Y >= 0 && next.Y < puzzle.dimY &&
+					!visited[next.Y][next.X] &&
+					puzzle.grid[next.Y][next.X] != '#' {
 					visited[next.Y][next.X] = true
 					queue = append(queue, next)
 				}

@@ -38,6 +38,5 @@ README.pdf: README.adoc
 
 .PHONY: totalruntime
 totalruntime:
-        go test -run=^$$ -bench=Day -benchmem | tee benches/fedora42_go1.24.8_linux_amd64.txt
-        awk -f total.awk < benches/fedora42_go1.24.8_linux_amd64.txt
-
+	go test -run=^$$ -bench=Day -benchmem | tee benches/fedora42_go1.24.8_linux_amd64.txt
+	awk -f total.awk < benches/fedora42_go1.24.8_linux_amd64.txt

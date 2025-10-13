@@ -53,4 +53,3 @@ func BenchmarkDay02Part2(b *testing.B) {
 		Day02(input, false)
 	}
 }
-

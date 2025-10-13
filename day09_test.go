@@ -80,4 +80,3 @@ func TestDay09Part2(t *testing.T) {
 		t.Errorf("Day09Part2() = %v, want %v", got, want)
 	}
 }
-

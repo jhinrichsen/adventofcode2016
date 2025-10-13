@@ -11,7 +11,7 @@ func TestDay23Part1Example(t *testing.T) {
 		t.Fatal(err)
 	}
 	got := Day23(puzzle, true)
-	if 3 != got {
+	if got != 3 {
 		t.Fatalf("want %d but got %d", 3, got)
 	}
 }
@@ -23,7 +23,7 @@ func TestDay23Part1(t *testing.T) {
 		t.Fatal(err)
 	}
 	got := Day23(puzzle, true)
-	if 11478 != got {
+	if got != 11478 {
 		t.Fatalf("want %d but got %d", 11478, got)
 	}
 }
@@ -35,7 +35,7 @@ func TestDay23Part2(t *testing.T) {
 		t.Fatal(err)
 	}
 	got := Day23(puzzle, false)
-	if 479008038 != got {
+	if got != 479008038 {
 		t.Fatalf("want %d but got %d", 479008038, got)
 	}
 }

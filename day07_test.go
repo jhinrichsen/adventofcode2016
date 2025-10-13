@@ -62,4 +62,3 @@ func TestDay07Part2(t *testing.T) {
 		t.Errorf("Day07() = %v, want %v", got, want)
 	}
 }
-

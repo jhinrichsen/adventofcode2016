@@ -38,26 +38,6 @@ func exampleFilename(day uint8) string {
 	return fmt.Sprintf("testdata/day%02d_example.txt", day)
 }
 
-func exampleNFilename(day uint8, n int) string {
-	return fmt.Sprintf("testdata/day%02d_example%d.txt", day, n)
-}
-
-func example1Filename(day uint8) string {
-	return exampleNFilename(day, 1)
-}
-
-func example2Filename(day uint8) string {
-	return exampleNFilename(day, 2)
-}
-
-func example3Filename(day uint8) string {
-	return exampleNFilename(day, 3)
-}
-
-func example4Filename(day uint8) string {
-	return exampleNFilename(day, 4)
-}
-
 func filename(day uint8) string {
 	return fmt.Sprintf("testdata/day%02d.txt", day)
 }
@@ -91,4 +71,3 @@ func exampleFile(tb testing.TB, day uint8) []byte {
 
 	return buf
 }
-

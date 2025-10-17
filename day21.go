@@ -6,6 +6,7 @@ package adventofcode2016
 import (
 	"fmt"
 	"slices"
+	"strconv"
 	"strings"
 )
 
@@ -40,8 +41,8 @@ func Day21(cmds []string, phrase string, part1 bool) (string, error) {
 // compile reads one input line, and creates a scrambler, and an optional descrambler.
 func compile(cmd string, jt jumpTable) (stepfn, stepfn, error) {
 	tokens := strings.Fields(cmd)
-	num := func(n int) int {
-		return toint(tokens[n])
+	num := func(n int) (int, error) {
+		return strconv.Atoi(tokens[n])
 	}
 	switch tokens[0] {
 	case "swap":
@@ -56,8 +57,14 @@ func compile(cmd string, jt jumpTable) (stepfn, stepfn, error) {
 				},
 				nil
 		}
-		p1 := toint(a1)
-		p2 := toint(a2)
+		p1, err := strconv.Atoi(a1)
+		if err != nil {
+			return nil, nil, err
+		}
+		p2, err := strconv.Atoi(a2)
+		if err != nil {
+			return nil, nil, err
+		}
 		return func(s string) string {
 				return swapPosition(s, p1, p2)
 			},
@@ -66,8 +73,14 @@ func compile(cmd string, jt jumpTable) (stepfn, stepfn, error) {
 			},
 			nil
 	case "reverse":
-		p1 := num(2)
-		p2 := num(4)
+		p1, err := num(2)
+		if err != nil {
+			return nil, nil, err
+		}
+		p2, err := num(4)
+		if err != nil {
+			return nil, nil, err
+		}
 		// reverse is reverse no matter from what point of view
 		return func(s string) string {
 				return reverse(s, p1, p2)
@@ -92,26 +105,40 @@ func compile(cmd string, jt jumpTable) (stepfn, stepfn, error) {
 				},
 				nil
 		case "left":
+			n, err := num(2)
+			if err != nil {
+				return nil, nil, err
+			}
 			return func(s string) string {
-					return rotateLeftN(s, num(2))
+					return rotateLeftN(s, n)
 				},
 				func(s string) string {
-					return rotateRightN(s, num(2))
+					return rotateRightN(s, n)
 				},
 				nil
 		case "right":
+			n, err := num(2)
+			if err != nil {
+				return nil, nil, err
+			}
 			return func(s string) string {
-					return rotateRightN(s, num(2))
+					return rotateRightN(s, n)
 				},
 				func(s string) string {
-					return rotateLeftN(s, num(2))
+					return rotateLeftN(s, n)
 				},
 				nil
 		}
 		panic("bad index 1")
 	case "move":
-		p1 := num(2)
-		p2 := num(5)
+		p1, err := num(2)
+		if err != nil {
+			return nil, nil, err
+		}
+		p2, err := num(5)
+		if err != nil {
+			return nil, nil, err
+		}
 		return func(s string) string {
 				return move(s, p1, p2)
 			},

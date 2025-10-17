@@ -2,6 +2,7 @@ package adventofcode2016
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 )
 
@@ -84,7 +85,11 @@ func Day12V2(lines []string, part1 bool) (int, error) {
 			if isRegister(r0) {
 				f = cpyr(register(r0), r1)
 			} else {
-				f = cpyi(toint(fs[1]), r1)
+				n, err := strconv.Atoi(fs[1])
+				if err != nil {
+					return 0, err
+				}
+				f = cpyi(n, r1)
 			}
 		case "inc":
 			f = inc(register(fs[1][0]))
@@ -92,11 +97,18 @@ func Day12V2(lines []string, part1 bool) (int, error) {
 			f = dec(register(fs[1][0]))
 		case "jnz":
 			r0 := fs[1][0]
-			n := toint(fs[2])
+			n, err := strconv.Atoi(fs[2])
+			if err != nil {
+				return 0, err
+			}
 			if isRegister(r0) {
 				f = jnzr(register(r0), n)
 			} else {
-				f = jnzi(toint(fs[1]), n)
+				x, err := strconv.Atoi(fs[1])
+				if err != nil {
+					return 0, err
+				}
+				f = jnzi(x, n)
 			}
 		default:
 			return 0, fmt.Errorf("line %d: unknown instruction %q", pc, line)

@@ -591,6 +591,53 @@ Zoomed:
 
 image::img/day22_zoomed.png[Day 22 maze (zoomed)]
 
+Animated solution visualization showing the data movement to solve Part 2:
+
+image::img/day22.gif[Day 22 animated solution, width=600]
+
+The animation shows how the empty node (hole) moves through the grid to eventually bring the goal data (red pixel at top-right) to the top-left position. Gray intensity represents node usage percentage. Animation plays in ~9.4 seconds (50ms per frame).
+
+=== Refactoring: Removing I/O from puzzle function
+
+Moved GIF visualization generation from main puzzle function into a separate test (`TestDay22Part2Visualization`). The visualization test:
+
+- Generates output to `img/day22.gif`
+- Skips if file already exists (delete to regenerate)
+- Skipped in short mode (`-short` flag)
+- Creates `img/` directory automatically
+
+This refactoring removes all I/O operations from the puzzle function, making it pure computation and significantly improving benchmark performance.
+
+=== Baseline (b0)
+
+Before refactoring (with GIF generation in puzzle function):
+
+----
+BenchmarkDay22Part1-16    	     177	   6716288 ns/op	  342520 B/op	    2896 allocs/op
+BenchmarkDay22Part2-16    	      84	  14014255 ns/op	14498526 B/op	    3504 allocs/op
+----
+
+=== Optimized (benchstat b0 b1)
+
+----
+                 │      b0       │                 b1                  │
+                 │    sec/op     │    sec/op     vs base               │
+Day22Part1-16      6.716m ± ?%    6.224m ± 2%        ~ (p=0.190 n=1+10)
+Day22Part2-16     14.014m ± ?%    6.245m ± 1%  -55.43% (p=0.000 n=1+10)
+
+                 │      b0       │                    b1                     │
+                 │      B/op     │      B/op       vs base                   │
+Day22Part1-16     334.5Ki ± ?%    334.5Ki ± 0%        ~ (p=0.912 n=1+10)
+Day22Part2-16    14157.7Ki ± ?%    340.1Ki ± 0%  -97.60% (p=0.000 n=1+10)
+
+                 │      b0      │                  b1                   │
+                 │  allocs/op   │  allocs/op   vs base                  │
+Day22Part1-16      2.896k ± ?%    2.896k ± 0%       ~ (p=0.674 n=1+10)
+Day22Part2-16      3.504k ± ?%    2.901k ± 0%  -17.21% (p=0.000 n=1+10)
+----
+
+Removing I/O from the puzzle function resulted in significant performance improvements for Part 2: 55% faster runtime, 97.6% memory reduction, and 17.2% fewer allocations.
+
 == Day 23: Safe Cracking
 
 Basically an extension to the assembunny code from Day 12, is what the

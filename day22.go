@@ -2,11 +2,7 @@ package adventofcode2016
 
 import (
 	"fmt"
-	"image"
-	"image/color"
-	"image/gif"
 	"math"
-	"os"
 	"strconv"
 	"strings"
 )
@@ -131,33 +127,12 @@ func Day22(lines []string, part1 bool) (uint, error) {
 		return viable, nil
 	}
 
-	// normalize used% to 255 grayscales
-	per8 := make(map[coordinate]uint8, dim.x*dim.y)
-	for k, v := range m {
-		n := uint8((255 * v.used) / (v.used + v.avail))
-		per8[k] = n
-	}
-	// top right pixel is our special index 1
-	per8[coordinate{dim.x - 1, 0}] = 1
-
-	// convert gray to RGBA
-	var palette color.Palette
-	for i := 0; i < 256; i++ {
-		palette = append(palette, color.Gray{Y: uint8(i)})
-	}
-	// index 1 is red
-	palette[1] = color.RGBA{R: 255, G: 0, B: 0, A: 255}
-
-	// create image
+	// Part 2: Count moves to get data from top-right to top-left
 	type path struct {
 		direction coordinate
 		n         int
 	}
 	var (
-		images []*image.Paletted
-		delays []int
-
-		rect  = image.Rect(0, 0, dim.x, dim.y)
 		left  = coordinate{-1, 0}
 		right = coordinate{+1, 0}
 		up    = coordinate{0, -1}
@@ -167,7 +142,6 @@ func Day22(lines []string, part1 bool) (uint, error) {
 			{up, 22},
 			{right, 22},
 		}
-		next coordinate
 	)
 
 	// repeat sequence to move red hole to the left
@@ -179,37 +153,10 @@ func Day22(lines []string, part1 bool) (uint, error) {
 			{right, 1},
 		}...)
 	}
-	for i := 0; i < len(paths); i++ {
-		direction := paths[i].direction
-		n := paths[i].n
-		for j := 0; j < n; j++ {
-			next.x = empty.x + direction.x
-			next.y = empty.y + direction.y
-
-			// swap empty and next
-			tmp := per8[next]
-			per8[next] = per8[empty]
-			per8[empty] = tmp
-			empty = next
-
-			g := image.NewPaletted(rect, palette)
-			for k, v := range per8 {
-				g.SetColorIndex(k.x, k.y, v)
-			}
-			images = append(images, g)
-			delays = append(delays, 100) // 10 * 100ms
-		}
-	}
-	f, err := os.Create("day22.gif")
-	if err != nil {
-		return viable, err
-	}
-	defer f.Close()
-	err = gif.EncodeAll(f, &gif.GIF{Image: images, Delay: delays})
 
 	var count uint
 	for i := 0; i < len(paths); i++ {
 		count += uint(paths[i].n)
 	}
-	return count, err
+	return count, nil
 }

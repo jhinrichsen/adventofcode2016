@@ -591,20 +591,32 @@ Zoomed:
 
 image::img/day22_zoomed.png[Day 22 maze (zoomed)]
 
-Animated solution visualization showing the data movement to solve Part 2:
+Animated solution visualization showing the data movement to solve Part 2 (GIF format):
 
-image::img/day22.gif[Day 22 animated solution, width=600]
+image::img/day22.gif[Day 22 animated solution (GIF), width=600]
 
 The animation shows how the empty node (hole) moves through the grid to eventually bring the goal data (red pixel at top-right) to the top-left position. Gray intensity represents node usage percentage. Animation plays in ~9.4 seconds (50ms per frame).
 
+Animated solution visualization using APNG (Animated PNG) format for better quality:
+
+image::img/day22.apng[Day 22 animated solution (APNG), width=600]
+
+Same animation as above but using APNG with RGBA color space instead of GIF's indexed palette, providing better scaling quality without pixelation artifacts.
+
+NOTE: APNG (Animated Portable Network Graphics) was published to the W3C PNG specification in June 2024. While widely supported in browsers since ~2017, it is not yet implemented in Go's standard `image/png` package. This implementation uses a custom APNG encoder in `apng.go`.
+
 === Refactoring: Removing I/O from puzzle function
 
-Moved GIF visualization generation from main puzzle function into a separate test (`TestDay22Part2Visualization`). The visualization test:
+Moved visualization generation from main puzzle function into separate tests. Two visualization formats are available:
 
-- Generates output to `img/day22.gif`
-- Skips if file already exists (delete to regenerate)
+- `TestDay22Part2Visualization` - generates `img/day22.gif` (indexed color, 319KB)
+- `TestDay22Part2VisualizationAPNG` - generates `img/day22.apng` (RGBA color, 365KB)
+
+Both tests:
+
+- Skip if file already exists (delete to regenerate)
 - Skipped in short mode (`-short` flag)
-- Creates `img/` directory automatically
+- Create `img/` directory automatically
 
 This refactoring removes all I/O operations from the puzzle function, making it pure computation and significantly improving benchmark performance.
 

@@ -43,7 +43,7 @@ func TestDay13Part1(t *testing.T) {
 
 func BenchmarkDay13Part1(b *testing.B) {
 	for b.Loop() {
-		Day13Part1(1362, 1+1i, 31+39i)
+		_, _ = Day13Part1(1362, 1+1i, 31+39i)
 	}
 }
 

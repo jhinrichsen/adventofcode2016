@@ -126,7 +126,7 @@ func TestDay21Part1(t *testing.T) {
 func BenchmarkDay21Part1(b *testing.B) {
 	lines := linesFromFilename(b, filename(21))
 	for b.Loop() {
-		Day21(lines, "abcdefgh", true)
+		_, _ = Day21(lines, "abcdefgh", true)
 	}
 }
 
@@ -147,6 +147,6 @@ func TestDay21Part2(t *testing.T) {
 func BenchmarkDay21Part2(b *testing.B) {
 	cmds := linesFromFilename(b, filename(21))
 	for b.Loop() {
-		Day21(cmds, "fbgdceah", false)
+		_, _ = Day21(cmds, "fbgdceah", false)
 	}
 }

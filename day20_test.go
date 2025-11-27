@@ -55,7 +55,7 @@ func TestDay20Part1(t *testing.T) {
 func BenchmarkDay20Part1(b *testing.B) {
 	lines := linesFromFilename(b, filename(20))
 	for b.Loop() {
-		Day20(lines, true)
+		_, _ = Day20(lines, true)
 	}
 }
 
@@ -78,6 +78,6 @@ func TestDay20Part2(t *testing.T) {
 func BenchmarkDay20Part2(b *testing.B) {
 	lines := linesFromFilename(b, filename(20))
 	for b.Loop() {
-		Day20(lines, false)
+		_, _ = Day20(lines, false)
 	}
 }

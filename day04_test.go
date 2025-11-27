@@ -82,14 +82,14 @@ func TestDay04Part2(t *testing.T) {
 func BenchmarkDay04Part1(b *testing.B) {
 	lines := linesFromFilename(b, filename(4))
 	for b.Loop() {
-		Day04Part1(lines)
+		_, _ = Day04Part1(lines)
 	}
 }
 
 func BenchmarkDay04Part2(b *testing.B) {
 	lines := linesFromFilename(b, filename(4))
 	for b.Loop() {
-		Day04Part2(lines)
+		_, _ = Day04Part2(lines)
 	}
 }
 

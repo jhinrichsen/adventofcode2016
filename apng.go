@@ -370,7 +370,7 @@ func (m *memRW) Bytes() []byte { return m.b }
 
 func crc32Of(typ string, data []byte) uint32 {
 	h := crc32.NewIEEE()
-	io.WriteString(h, typ)
-	h.Write(data)
+	_, _ = io.WriteString(h, typ)
+	_, _ = h.Write(data)
 	return h.Sum32()
 }

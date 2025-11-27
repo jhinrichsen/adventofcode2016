@@ -31,7 +31,7 @@ func BenchmarkDay12V2Part1(b *testing.B) {
 	lines := linesFromFilename(b, filename(12))
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		Day12V2(lines, true)
+		_, _ = Day12V2(lines, true)
 	}
 }
 
@@ -39,6 +39,6 @@ func BenchmarkDay12V2Part2(b *testing.B) {
 	lines := linesFromFilename(b, filename(12))
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		Day12V2(lines, false)
+		_, _ = Day12V2(lines, false)
 	}
 }

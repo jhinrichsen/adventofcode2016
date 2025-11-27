@@ -93,7 +93,7 @@ func TestDay08Part2(t *testing.T) {
 func BenchmarkDay08Part1(b *testing.B) {
 	lines := linesFromFilename(b, filename(8))
 	for b.Loop() {
-		Day08(newDay08(width, height), lines, true, nil)
+		_, _ = Day08(newDay08(width, height), lines, true, nil)
 	}
 }
 
@@ -102,7 +102,7 @@ func BenchmarkDay08Part2(b *testing.B) {
 	charSet := map[rune]bool{'#': true, '.': false}
 	for b.Loop() {
 		screen := newDay08(width, height)
-		Day08(screen, lines, false, nil)
-		aococr.ParseLetters(screen.String(), charSet)
+		_, _ = Day08(screen, lines, false, nil)
+		_, _ = aococr.ParseLetters(screen.String(), charSet)
 	}
 }

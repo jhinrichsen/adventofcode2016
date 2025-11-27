@@ -34,12 +34,12 @@ func TestDay11Part2(t *testing.T) {
 
 func BenchmarkDay11Part1(b *testing.B) {
 	for b.Loop() {
-		Day11(true)
+		_, _ = Day11(true)
 	}
 }
 
 func BenchmarkDay11Part2(b *testing.B) {
 	for b.Loop() {
-		Day11(false)
+		_, _ = Day11(false)
 	}
 }

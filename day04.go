@@ -1,142 +1,169 @@
 package adventofcode2016
 
-import (
-	"fmt"
-	"sort"
-	"strings"
-)
-
-type day4 struct {
-	sector   uint
-	letters  [26]byte
-	checksum [5]byte
-	ID       []byte
-}
-
-// avoid rune conversion
+// numeric returns true if b is an ASCII digit
 func numeric(b byte) bool {
 	return '0' <= b && b <= '9'
 }
 
-const dash = '-'
+// Day04Part1 returns sum of sector IDs of all real rooms.
+func Day04Part1(input []byte) uint {
+	var sum uint
+	var letters [26]byte
+	var checksum [5]byte
+	var sector uint
+	var checksumIdx int
+	inChecksum := false
 
-func newDay04(s string) (day4, error) {
-	var d day4
-	d.ID = []byte(s)
-
-	for i, b := range d.ID {
-		if b == dash {
-			continue
-		}
-		if numeric(b) {
-			d.sector = d.sector*10 + uint(b) - '0'
-			continue
-		}
-		if b == '[' {
-			/*
-				Golang happily unrolls this loop into a copy()
-				command:
-
-				for j := 0; j < len(d.checksum); j++ {
-					d.checksum[j] = d.ID[i+1+j]
+	for i := 0; i < len(input); i++ {
+		b := input[i]
+		switch {
+		case b >= 'a' && b <= 'z':
+			if inChecksum {
+				if checksumIdx < 5 {
+					checksum[checksumIdx] = b
+					checksumIdx++
 				}
-			*/
-			copy(d.checksum[:], d.ID[i+1:i+1+5])
-			return d, nil
+			} else {
+				letters[b-'a']++
+			}
+		case b >= '0' && b <= '9':
+			sector = sector*10 + uint(b-'0')
+		case b == '[':
+			inChecksum = true
+		case b == ']':
+			// End of checksum
+		case b == '\n':
+			// End of room - check if real
+			if checksumIdx == 5 && isRealRoom(letters, checksum) {
+				sum += sector
+			}
+			// Reset for next room
+			letters = [26]byte{}
+			checksum = [5]byte{}
+			sector = 0
+			checksumIdx = 0
+			inChecksum = false
 		}
-		d.letters[b-'a']++
 	}
-	return d, fmt.Errorf("missing checksum in %q", s)
+	// Handle last room if no trailing newline
+	if checksumIdx == 5 && isRealRoom(letters, checksum) {
+		sum += sector
+	}
+	return sum
 }
 
-type day4Sector struct {
-	b byte
-	n byte
-}
+// isRealRoom checks if checksum matches the 5 most common letters (ties broken alphabetically)
+func isRealRoom(letters [26]byte, checksum [5]byte) bool {
+	// Find top 5 letters by frequency, alphabetical tiebreaker
+	var result [5]byte
+	var used [26]bool
 
-func (d day4) real() bool {
-	// sort letters by occurence
-	var sectors []day4Sector
-	for b, n := range d.letters {
-		sectors = append(sectors, day4Sector{byte(b) + 'a', n})
-	}
-	sort.Slice(sectors, func(i, j int) bool {
-		if sectors[i].n < sectors[j].n {
+	for pos := 0; pos < 5; pos++ {
+		bestIdx := -1
+		var bestCount byte
+		for i := 0; i < 26; i++ {
+			if used[i] {
+				continue
+			}
+			if letters[i] > bestCount {
+				bestCount = letters[i]
+				bestIdx = i
+			}
+		}
+		if bestIdx == -1 || bestCount == 0 {
 			return false
 		}
-		if sectors[i].n > sectors[j].n {
-			return true
-		}
-		return sectors[i].b < sectors[j].b
-	})
-	var ck [5]byte
-	for i := 0; i < len(ck); i++ {
-		ck[i] = sectors[i].b
+		result[pos] = byte(bestIdx) + 'a'
+		used[bestIdx] = true
 	}
-	return ck == d.checksum
+	return result == checksum
 }
 
-// Day4Part1 returns sum of sector IDs of all real rooms.
-func Day04Part1(lines []string) (uint, error) {
-	var sum uint
-	for i, line := range lines {
-		d, err := newDay04(line)
-		if err != nil {
-			return 0, fmt.Errorf("error in line %d: %w", i+1, err)
-		}
-		if d.real() {
-			sum += d.sector
+// Day04Part2 returns sector ID of decrypted real room "northpole object storage".
+func Day04Part2(input []byte) uint {
+	// Target decrypted: "northpole object storage"
+	// Encrypted format has dashes at positions 9, 16, 24 (before sector)
+	// Quick filter: check dash positions before full parsing
+
+	var roomStart int
+	for i := 0; i < len(input); i++ {
+		if input[i] == '\n' {
+			room := input[roomStart:i]
+			// Quick filter: "northpole object storage" encrypted has dashes at 9, 16, 24
+			if len(room) > 25 && room[9] == '-' && room[16] == '-' && room[24] == '-' {
+				// Parse and check this room
+				var letters [26]byte
+				var checksum [5]byte
+				var sector uint
+				var checksumIdx int
+				inChecksum := false
+
+				for j := 0; j < len(room); j++ {
+					b := room[j]
+					switch {
+					case b >= 'a' && b <= 'z':
+						if inChecksum {
+							if checksumIdx < 5 {
+								checksum[checksumIdx] = b
+								checksumIdx++
+							}
+						} else {
+							letters[b-'a']++
+						}
+					case b >= '0' && b <= '9':
+						sector = sector*10 + uint(b-'0')
+					case b == '[':
+						inChecksum = true
+					}
+				}
+
+				if checksumIdx == 5 && isRealRoom(letters, checksum) {
+					if decryptsToTarget(room, sector) {
+						return sector
+					}
+				}
+			}
+			roomStart = i + 1
 		}
 	}
-	return sum, nil
+	return 0
 }
 
-// Day4Part2 returns sector ID of decrypted real room "northpole object
-// storage".
-func Day04Part2(lines []string) (uint, error) {
-	const room = "northpole object storage"
-	for i, line := range lines {
-		// has word separator at the right place?
-		p1 := line[9] == dash &&
-			line[16] == dash &&
-			line[24] == dash
-		if !p1 {
-			continue
-		}
-		d, err := newDay04(line)
-		if err != nil {
-			return 0, fmt.Errorf("error in line %d: %w", i+1, err)
-		}
-		p2 := d.real()
-		if !p2 {
-			continue
-		}
-		if decrypt(line) == room {
-			return d.sector, nil
-		}
-	}
-	return 0, fmt.Errorf("not found")
-}
+// decryptsToTarget checks if room decrypts to "northpole object storage"
+func decryptsToTarget(room []byte, sector uint) bool {
+	target := []byte("northpole object storage")
+	n := byte(sector % 26)
+	targetIdx := 0
 
-func decrypt(room string) string {
-	d, _ := newDay04(room)
-	n := d.sector % 26
-	var sb strings.Builder
 	for i := 0; i < len(room); i++ {
 		b := room[i]
-		if numeric(b) {
+		if b >= '0' && b <= '9' {
 			break
 		}
 		if b == '-' {
-			sb.WriteByte(' ')
+			// Final dash before sector means we're done with the name
+			if targetIdx >= len(target) {
+				break
+			}
+			if target[targetIdx] != ' ' {
+				return false
+			}
+			targetIdx++
 			continue
 		}
-		b += byte(n)
-		if b > 'z' {
-			b -= 26
+		if b >= 'a' && b <= 'z' {
+			if targetIdx >= len(target) {
+				return false
+			}
+			decrypted := b + n
+			if decrypted > 'z' {
+				decrypted -= 26
+			}
+			if target[targetIdx] != decrypted {
+				return false
+			}
+			targetIdx++
 		}
-		sb.WriteByte(b)
 	}
-	// strip trailing space
-	return strings.TrimSpace(sb.String())
+	return targetIdx == len(target)
 }

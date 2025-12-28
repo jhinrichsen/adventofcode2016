@@ -8,141 +8,136 @@ const (
 )
 
 type day8 struct {
-	grid          [][]bool
-	width, height uint8
+	grid          [width][height]bool // Fixed-size array, zero allocations
+	w, h          int
+	tmpCol        [height]bool // Reusable temp buffer for column rotation
+	tmpRow        [width]bool  // Reusable temp buffer for row rotation
 }
 
-func newDay08(width, height uint8) day8 {
-	var d day8
-	d.width = width
-	d.height = height
-	d.grid = make([][]bool, d.width)
-	for a := range d.grid {
-		d.grid[a] = make([]bool, d.height)
-	}
-	return d
+func newDay08(w, h uint8) day8 {
+	return day8{w: int(w), h: int(h)}
 }
 
-func (a *day8) rect(x, y uint) {
-	for i := 0; i < int(x); i++ {
-		for j := 0; j < int(y); j++ {
+func (a *day8) rect(x, y int) {
+	for i := range x {
+		for j := range y {
 			a.grid[i][j] = true
 		}
 	}
 }
 
-func (a *day8) rotate(col bool, n uint, by uint) {
-	var u0 uint8
-	if col {
-		tmp := make([]bool, height)
-		for y := u0; y < a.height; y++ {
-			tmp[y] = a.grid[n][y]
-		}
-		for src := u0; src < a.height; src++ {
-			dst := (uint(src) + by) % uint(a.height)
-			a.grid[n][dst] = tmp[src]
-		}
-	} else {
-		tmp := make([]bool, a.width)
-		for x := u0; x < a.width; x++ {
-			tmp[x] = a.grid[x][n]
-		}
-		for src := u0; src < a.width; src++ {
-			dst := (uint(src) + by) % uint(a.width)
-			a.grid[dst][n] = tmp[src]
-		}
+func (a *day8) rotateCol(col, by int) {
+	h := a.h
+	// Copy column to temp buffer
+	for y := range h {
+		a.tmpCol[y] = a.grid[col][y]
+	}
+	// Rotate using temp buffer
+	for src := range h {
+		dst := (src + by) % h
+		a.grid[col][dst] = a.tmpCol[src]
 	}
 }
 
-func (a day8) lit() (n uint) {
-	for x := 0; x < int(a.width); x++ {
-		for y := 0; y < int(a.height); y++ {
+func (a *day8) rotateRow(row, by int) {
+	w := a.w
+	// Copy row to temp buffer
+	for x := range w {
+		a.tmpRow[x] = a.grid[x][row]
+	}
+	// Rotate using temp buffer
+	for src := range w {
+		dst := (src + by) % w
+		a.grid[dst][row] = a.tmpRow[src]
+	}
+}
+
+func (a *day8) lit() uint {
+	var n uint
+	for x := range a.w {
+		for y := range a.h {
 			if a.grid[x][y] {
 				n++
 			}
 		}
 	}
-	return
+	return n
 }
 
 func (a day8) String() string {
 	var sb strings.Builder
-	for y := 0; y < int(a.height); y++ {
-		for x := 0; x < int(a.width); x++ {
+	sb.Grow(a.h * (a.w + 1)) // Pre-allocate
+	for y := range a.h {
+		for x := range a.w {
 			if a.grid[x][y] {
 				sb.WriteByte('#')
 			} else {
 				sb.WriteByte('.')
-
 			}
 		}
-		sb.WriteString("\n")
+		sb.WriteByte('\n')
 	}
 	return sb.String()
 }
 
 // day8Callback will receive a 2D string representation of each and every step.
-type day8Callback func(day8)
+type day8Callback func(*day8)
 
-// Day8 returns the number of lit lights (lights in status 'on').
-func Day08(screen day8, lines []string, part1 bool, f day8Callback) (uint, error) {
+// Day08 returns the number of lit lights (lights in status 'on').
+func Day08(screen *day8, lines []string, part1 bool, f day8Callback) (uint, error) {
 	for _, line := range lines {
 		var col uint8
 
-		rect := line[1] == 'e'
-		var rx, ry uint
+		isRect := line[1] == 'e'
+		var rx, ry int
 
-		rotate := line[1] == 'o'
+		isRotate := line[1] == 'o'
 		var rot byte // x or y
-		var rotN uint
-		var by uint
-
-		var b byte
-		add := func(n *uint) {
-			if numeric(b) {
-				*n *= 10
-				*n += uint(b - '0')
-			}
-		}
+		var rotN, by int
 
 		// state machine parser
 		for j := 0; j < len(line); j++ {
-			b = line[j]
+			b := line[j]
 			if b == ' ' {
 				col++
 				j++
 				b = line[j]
 			}
-			if rect {
+			if isRect {
 				// sample: rect 2x4
 				if col == 1 {
 					if b == 'x' {
 						rx = ry
 						ry = 0
-					} else {
-						add(&ry)
+					} else if b >= '0' && b <= '9' {
+						ry = ry*10 + int(b-'0')
 					}
 				}
-			} else if rotate {
+			} else if isRotate {
 				// sample: rotate column x=1 by 1
 				if col == 2 {
 					// once
 					if rot == 0 {
 						rot = b
-					} else {
-						add(&rotN)
+					} else if b >= '0' && b <= '9' {
+						rotN = rotN*10 + int(b-'0')
 					}
 				} else if col == 4 {
-					add(&by)
+					if b >= '0' && b <= '9' {
+						by = by*10 + int(b-'0')
+					}
 				}
 			}
-			// ignore other lines
 		}
 
-		if rect {
+		if isRect {
 			screen.rect(rx, ry)
-		} else if rotate {
-			screen.rotate(rot == 'x', rotN, by)
+		} else if isRotate {
+			if rot == 'x' {
+				screen.rotateCol(rotN, by)
+			} else {
+				screen.rotateRow(rotN, by)
+			}
 		}
 
 		if f != nil {

@@ -6,8 +6,8 @@ import (
 
 func TestDay03Part1(t *testing.T) {
 	const want = 982
-	lines := linesFromFilename(t, filename(3))
-	got := Day03(lines, true)
+	input := file(t, 3)
+	got := Day03(input, true)
 	if got != want {
 		t.Errorf("Day03() = %v, want %v", got, want)
 	}
@@ -15,23 +15,23 @@ func TestDay03Part1(t *testing.T) {
 
 func TestDay03Part2(t *testing.T) {
 	const want = 1826
-	lines := linesFromFilename(t, filename(3))
-	got := Day03(lines, false)
+	input := file(t, 3)
+	got := Day03(input, false)
 	if got != want {
 		t.Errorf("Day03() = %v, want %v", got, want)
 	}
 }
 
 func BenchmarkDay03Part1(b *testing.B) {
-	lines := linesFromFilename(b, filename(3))
+	input := file(b, 3)
 	for b.Loop() {
-		Day03(lines, true)
+		Day03(input, true)
 	}
 }
 
 func BenchmarkDay03Part2(b *testing.B) {
-	lines := linesFromFilename(b, filename(3))
+	input := file(b, 3)
 	for b.Loop() {
-		Day03(lines, false)
+		Day03(input, false)
 	}
 }

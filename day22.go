@@ -1,126 +1,121 @@
 package adventofcode2016
 
 import (
-	"fmt"
 	"math"
-	"strconv"
-	"strings"
 )
 
 // Day22: Grid Computing
 func Day22(lines []string, part1 bool) (uint, error) {
-	// 'node-x1-y2' -> 1, 2, nil
-	parseNode := func(s string) (int, int, error) {
-		parts := strings.Split(s, "-")
-		x, err := strconv.Atoi(parts[1][1:])
-		if err != nil {
-			return 0, 0, err
+	// Inline parsing: 'node-x1-y2' -> 1, 2
+	parseNode := func(s string) (int, int) {
+		// Format: /dev/grid/node-xN-yM
+		// Find "node-x" then parse numbers
+		i := 0
+		for i < len(s) && s[i] != 'x' {
+			i++
 		}
-		y, err := strconv.Atoi(parts[2][1:])
-		if err != nil {
-			return x, 0, err
+		i++ // skip 'x'
+		x := 0
+		for i < len(s) && s[i] >= '0' && s[i] <= '9' {
+			x = x*10 + int(s[i]-'0')
+			i++
 		}
-		return x, y, nil
+		i++ // skip '-'
+		i++ // skip 'y'
+		y := 0
+		for i < len(s) && s[i] >= '0' && s[i] <= '9' {
+			y = y*10 + int(s[i]-'0')
+			i++
+		}
+		return x, y
 	}
 
-	// from 'man df':
-	//        -h, --human-readable
-	//              print sizes in powers of 1024 (e.g., 1023M)
-	//
-	//       -H, --si
-	//              print sizes in powers of 1000 (e.g., 1.1G)
-	// A 64 bit unsigned integer can hole 20 digits, PB has 15 digits.
-	parseHuman := func(s string) (uint64, error) {
-		idx := len(s) - 1
-		n, err := strconv.Atoi(s[:idx])
-		if err != nil {
-			return 0, err
+	// Parse human-readable size like "72T" or "20T"
+	// Returns value in TB (we can use TB as base unit since all values use T)
+	parseSize := func(s string) uint64 {
+		n := uint64(0)
+		for i := 0; i < len(s)-1; i++ { // -1 to skip unit suffix
+			n = n*10 + uint64(s[i]-'0')
 		}
-		var unit uint64
-		// our puzzle input uses 'df -h', so:
-		const (
-			KB = 1024    // 10^3
-			MB = KB * KB // 10^6
-			GB = MB * KB // 10^9
-			TB = GB * KB // 10^12
-			PB = TB * KB // 10^15
-		)
-
-		switch s[idx:][0] {
-		case 'K':
-			unit = KB
-		case 'M':
-			unit = MB
-		case 'T':
-			unit = TB
-		default:
-			return 0, fmt.Errorf("unknown unit in %q", s)
-		}
-		return uint64(n) * unit, nil
+		return n
 	}
 
-	// use a map for now, because dimensions for an array are unknown yet, and see how fast this is.
-	type coordinate struct {
-		x, y int
+	// Skip whitespace, return position of next non-space
+	skipSpace := func(s string, i int) int {
+		for i < len(s) && s[i] == ' ' {
+			i++
+		}
+		return i
 	}
+
+	// Find end of field (next space or end of string)
+	fieldEnd := func(s string, i int) int {
+		for i < len(s) && s[i] != ' ' {
+			i++
+		}
+		return i
+	}
+
 	type df struct {
 		used, avail uint64
 	}
-	estimatedNodes := int(math.Sqrt(float64(len(lines)))) // assume square, we could look it up, but that's sort of cheating...
-	m := make(map[coordinate]df, estimatedNodes)
+	estimatedNodes := int(math.Sqrt(float64(len(lines))))
+	nodes := make([]df, 0, estimatedNodes)
 
-	var dim, empty coordinate
-	// root@ebhq-gridcenter# df -h
-	// Filesystem              Size  Used  Avail  Use%
-	// /dev/grid/node-x0-y0     92T   72T    20T   78%
-	for i, line := range lines {
-		if line[0] != '/' {
+	var dimX, dimY int
+	var emptyX, emptyY int
+
+	for _, line := range lines {
+		if len(line) == 0 || line[0] != '/' {
 			continue
 		}
-		parts := strings.Fields(line)
-		x, y, err := parseNode(strings.Split(parts[0], "/")[3])
-		if err != nil {
-			return 0, fmt.Errorf("line %d: %w", i+1, err)
+
+		// Parse: /dev/grid/node-xN-yM   Size  Used  Avail  Use%
+		i := 0
+		end := fieldEnd(line, i)
+		x, y := parseNode(line[i:end])
+
+		dimX = max(dimX, x)
+		dimY = max(dimY, y)
+
+		// Skip to Used field (skip Size)
+		i = skipSpace(line, end)
+		i = fieldEnd(line, i) // skip Size
+		i = skipSpace(line, i)
+		end = fieldEnd(line, i)
+		used := parseSize(line[i:end])
+
+		// Parse Avail
+		i = skipSpace(line, end)
+		end = fieldEnd(line, i)
+		avail := parseSize(line[i:end])
+
+		if used == 0 {
+			emptyX, emptyY = x, y
 		}
 
-		dim.x = max(dim.x, x)
-		dim.y = max(dim.y, y)
-
-		used, err := parseHuman(parts[2])
-		if err != nil {
-			return 0, fmt.Errorf("error parsing line %d: %w", i, err)
-		}
-
-		avail, err := parseHuman(parts[3])
-		if err != nil {
-			return 0, fmt.Errorf("error parsing line %d: %w", i, err)
-		}
-		m[coordinate{x, y}] = df{used, avail}
+		nodes = append(nodes, df{used, avail})
 	}
 
 	// dimension is one larger than max index
-	dim.x++
-	dim.y++
+	dimX++
+	dimY++
+	_ = emptyX
+	_ = emptyY
 
-	// part 1
+	// part 1: count viable pairs
 	var viable uint
-	for ca, na := range m {
-		for cb, nb := range m {
-			// 'Nodes A and B are not the same node.'
-			if ca == cb {
+	for i, na := range nodes {
+		if na.used == 0 {
+			continue
+		}
+		for j, nb := range nodes {
+			if i == j {
 				continue
 			}
-			// 'Node A is not empty (its Used is not zero).'
-			if na.used == 0 {
-				empty.x = ca.x
-				empty.y = ca.y
-				continue
+			if na.used <= nb.avail {
+				viable++
 			}
-			// 'The data on node A (its Used) would fit on node B (its Avail).'
-			if na.used > nb.avail {
-				continue
-			}
-			viable++
 		}
 	}
 	if part1 {
@@ -129,28 +124,24 @@ func Day22(lines []string, part1 bool) (uint, error) {
 
 	// Part 2: Count moves to get data from top-right to top-left
 	type path struct {
-		direction coordinate
-		n         int
+		dx, dy int
+		n      int
 	}
 	var (
-		left  = coordinate{-1, 0}
-		right = coordinate{+1, 0}
-		up    = coordinate{0, -1}
-		down  = coordinate{0, +1}
 		paths = []path{
-			{left, 4},
-			{up, 22},
-			{right, 22},
+			{-1, 0, 4},  // left 4
+			{0, -1, 22}, // up 22
+			{1, 0, 22},  // right 22
 		}
 	)
 
 	// repeat sequence to move red hole to the left
-	for i := 0; i < dim.x-2; i++ {
+	for i := 0; i < dimX-2; i++ {
 		paths = append(paths, []path{
-			{down, 1},
-			{left, 2},
-			{up, 1},
-			{right, 1},
+			{0, 1, 1},   // down 1
+			{-1, 0, 2},  // left 2
+			{0, -1, 1},  // up 1
+			{1, 0, 1},   // right 1
 		}...)
 	}
 

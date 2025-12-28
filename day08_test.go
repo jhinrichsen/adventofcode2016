@@ -38,7 +38,7 @@ func TestDay08Example(t *testing.T) {
 	lines := linesFromFilename(t, exampleFilename(8))
 	screen := newDay08(7, 3)
 	var i uint
-	f := func(d day8) {
+	f := func(d *day8) {
 		want := strings.Join(steps[i], "\n")
 		got := d.String()
 		if want != got {
@@ -46,7 +46,7 @@ func TestDay08Example(t *testing.T) {
 		}
 		i++
 	}
-	got, err := Day08(screen, lines, part1, f)
+	got, err := Day08(&screen, lines, part1, f)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -59,7 +59,7 @@ func TestDay08Part1(t *testing.T) {
 	const want = 128
 	lines := linesFromFilename(t, filename(8))
 	screen := newDay08(width, height)
-	got, err := Day08(screen, lines, true, nil)
+	got, err := Day08(&screen, lines, true, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -71,7 +71,7 @@ func TestDay08Part1(t *testing.T) {
 func TestDay08Part2(t *testing.T) {
 	lines := linesFromFilename(t, filename(8))
 	screen := newDay08(width, height)
-	_, err := Day08(screen, lines, false, nil)
+	_, err := Day08(&screen, lines, false, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -93,7 +93,8 @@ func TestDay08Part2(t *testing.T) {
 func BenchmarkDay08Part1(b *testing.B) {
 	lines := linesFromFilename(b, filename(8))
 	for b.Loop() {
-		_, _ = Day08(newDay08(width, height), lines, true, nil)
+		screen := newDay08(width, height)
+		_, _ = Day08(&screen, lines, true, nil)
 	}
 }
 
@@ -102,7 +103,7 @@ func BenchmarkDay08Part2(b *testing.B) {
 	charSet := map[rune]bool{'#': true, '.': false}
 	for b.Loop() {
 		screen := newDay08(width, height)
-		_, _ = Day08(screen, lines, false, nil)
+		_, _ = Day08(&screen, lines, false, nil)
 		_, _ = aococr.ParseLetters(screen.String(), charSet)
 	}
 }

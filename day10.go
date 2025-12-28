@@ -1,26 +1,12 @@
 package adventofcode2016
 
-import (
-	"fmt"
-	"strconv"
-	"strings"
-)
-
-// bot is also used for outputs.
-type bot struct {
-	ID     string
-	n      int // input counter, type int because of index into []input
-	input  [2]uint
-	output [2]string // ID of other bots/ outputs, low is low index (0)
-}
-
-func (a *bot) send(value uint) {
-	a.input[a.n] = value
-	a.n++
-}
-
-func (a bot) active() bool {
-	return a.n == 2
+// bot10 is used for bots and outputs in Day10.
+type bot10 struct {
+	n         int      // input counter
+	input     [2]uint  // chip values
+	lowID     int      // destination for low chip (negative = output)
+	highID    int      // destination for high chip (negative = output)
+	hasOutput bool     // whether output destinations are set
 }
 
 // Day10 solves day 10. For part 2, value1 and value2 are ignored.
@@ -29,68 +15,110 @@ func Day10(lines []string, part1 bool, value1, value2 uint) (uint, error) {
 	if value1 > value2 {
 		value1, value2 = value2, value1
 	}
-	bots := make(map[string]bot)
-	active := make(map[string]bool)
-	for i, line := range lines {
-		fs := strings.Fields(line)
-		if fs[0] == "value" {
+
+	bots := make(map[int]*bot10)
+	outputs := make(map[int]*bot10)
+	var active []int // bot IDs that have 2 chips
+
+	getBot := func(id int) *bot10 {
+		if b, ok := bots[id]; ok {
+			return b
+		}
+		b := &bot10{}
+		bots[id] = b
+		return b
+	}
+
+	getOutput := func(id int) *bot10 {
+		if b, ok := outputs[id]; ok {
+			return b
+		}
+		b := &bot10{}
+		outputs[id] = b
+		return b
+	}
+
+	for _, line := range lines {
+		if line[0] == 'v' {
 			// parse "value 5 goes to bot 2"
-			vi, err := strconv.Atoi(fs[1])
-			if err != nil {
-				return 0, fmt.Errorf("line %d: not a number: %q",
-					i, fs[1])
+			i := 6 // skip "value "
+			var val uint
+			for line[i] != ' ' {
+				val = val*10 + uint(line[i]-'0')
+				i++
 			}
-			v := uint(vi)
-			ID := fs[4] + fs[5]
-			if len(ID) == 0 {
-				return 0, fmt.Errorf("line %d: missing ID in %q",
-					i, line)
+			// skip " goes to bot "
+			i += 13
+			var botID int
+			for i < len(line) {
+				botID = botID*10 + int(line[i]-'0')
+				i++
 			}
-			b := bots[ID]
-			b.ID = ID
-			b.send(v)
-			bots[ID] = b
-			if b.active() {
-				active[ID] = true
+			b := getBot(botID)
+			b.input[b.n] = val
+			b.n++
+			if b.n == 2 && b.hasOutput {
+				active = append(active, botID)
 			}
 		} else {
 			// parse "bot 2 gives low to bot 1 and high to bot 0"
-			if len(fs) != 12 {
-				msg := "want 12 columns but got %d: %q"
-				return 0,
-					fmt.Errorf(msg, len(fs), line)
+			// or   "bot 2 gives low to output 1 and high to bot 0"
+			i := 4 // skip "bot "
+			var botID int
+			for line[i] != ' ' {
+				botID = botID*10 + int(line[i]-'0')
+				i++
 			}
-			ID := fs[0] + fs[1]
-			if len(ID) == 0 {
-				return 0, fmt.Errorf("line %d: missing ID in %q",
-					i, line)
+			// skip " gives low to "
+			i += 14
+			lowIsOutput := line[i] == 'o'
+			if lowIsOutput {
+				i += 7 // skip "output "
+			} else {
+				i += 4 // skip "bot "
 			}
-			b := bots[ID]
-			b.ID = ID
-			ID0 := fs[5] + fs[6]
-			ID1 := fs[10] + fs[11]
-			b.output = [...]string{
-				ID0,
-				ID1,
+			var lowID int
+			for line[i] != ' ' {
+				lowID = lowID*10 + int(line[i]-'0')
+				i++
 			}
-			bots[ID] = b
-			// register output bots
-			if _, ok := bots[ID0]; !ok {
-				bots[ID0] = bot{ID: ID0}
+			// skip " and high to "
+			i += 13
+			highIsOutput := line[i] == 'o'
+			if highIsOutput {
+				i += 7 // skip "output "
+			} else {
+				i += 4 // skip "bot "
 			}
-			if _, ok := bots[ID1]; !ok {
-				bots[ID1] = bot{ID: ID1}
+			var highID int
+			for i < len(line) {
+				highID = highID*10 + int(line[i]-'0')
+				i++
+			}
+
+			b := getBot(botID)
+			if lowIsOutput {
+				b.lowID = -(lowID + 1) // negative = output, +1 to distinguish from 0
+			} else {
+				b.lowID = lowID + 1 // positive = bot, +1 to distinguish from unset
+			}
+			if highIsOutput {
+				b.highID = -(highID + 1)
+			} else {
+				b.highID = highID + 1
+			}
+			b.hasOutput = true
+			if b.n == 2 {
+				active = append(active, botID)
 			}
 		}
 	}
 
 	for len(active) > 0 {
-		var k string
-		for k = range active {
-			break
-		}
-		delete(active, k)
-		b := bots[k]
+		botID := active[len(active)-1]
+		active = active[:len(active)-1]
+
+		b := bots[botID]
 		l, h := b.input[0], b.input[1]
 		if l > h {
 			l, h = h, l
@@ -98,39 +126,48 @@ func Day10(lines []string, part1 bool, value1, value2 uint) (uint, error) {
 
 		// this bot?
 		if part1 && l == value1 && h == value2 {
-			x, err := strconv.Atoi(b.ID[3:])
-			if err != nil {
-				return 0, fmt.Errorf("error converting bot ID "+
-					"%q to number", b.ID)
-			}
-			return uint(x), nil
+			return uint(botID), nil
 		}
-		if low, ok := bots[b.output[0]]; ok {
-			low.send(l)
-			bots[low.ID] = low
-			if low.active() {
-				active[low.ID] = true
-			}
+
+		// send low
+		if b.lowID < 0 {
+			// output
+			out := getOutput(-(b.lowID + 1))
+			out.input[out.n] = l
+			out.n++
 		} else {
-			return 0, fmt.Errorf("%q has unknown low bot %q",
-				b.ID, b.output[0])
+			// bot
+			dest := getBot(b.lowID - 1)
+			dest.input[dest.n] = l
+			dest.n++
+			if dest.n == 2 && dest.hasOutput {
+				active = append(active, b.lowID-1)
+			}
 		}
-		if high, ok := bots[b.output[1]]; ok {
-			high.send(h)
-			bots[high.ID] = high
-			if high.active() {
-				active[high.ID] = true
-			}
+
+		// send high
+		if b.highID < 0 {
+			// output
+			out := getOutput(-(b.highID + 1))
+			out.input[out.n] = h
+			out.n++
 		} else {
-			return 0, fmt.Errorf("%q has unknown high bot %q",
-				b.ID, b.output[1])
+			// bot
+			dest := getBot(b.highID - 1)
+			dest.input[dest.n] = h
+			dest.n++
+			if dest.n == 2 && dest.hasOutput {
+				active = append(active, b.highID-1)
+			}
 		}
 	}
+
 	product := uint(1)
-	for _, ID := range []string{"output0", "output1", "output2"} {
-		b := bots[ID]
-		for i := 0; i < b.n; i++ {
-			product *= b.input[i]
+	for i := 0; i < 3; i++ {
+		if out, ok := outputs[i]; ok {
+			for j := 0; j < out.n; j++ {
+				product *= out.input[j]
+			}
 		}
 	}
 	return product, nil

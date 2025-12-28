@@ -1,57 +1,53 @@
 package adventofcode2016
 
 import (
-	"fmt"
-	"sort"
-	"strconv"
-	"strings"
+	"slices"
 )
-
-// Trying to find a solution in the bitmask space, to no avail...
 
 type _range struct {
 	lower, upper uint32
 }
 
 func Day20(lines []string, part1 bool) (uint32, error) {
-	var ranges []_range
-	for i := 0; i < len(lines); i++ {
-		if len(lines[i]) == 0 {
+	// Pre-allocate ranges slice
+	ranges := make([]_range, 0, len(lines))
+
+	for _, line := range lines {
+		if len(line) == 0 {
 			continue
 		}
-		parts := strings.Split(lines[i], "-")
-		if len(parts) != 2 {
-			return 0, fmt.Errorf("line %d: want two ranges but got %q", i, lines[i])
-		}
 
-		a, err := strconv.Atoi(parts[0])
-		if err != nil {
-			return 0, fmt.Errorf("line %d: first operand not a number: %q", i, lines[i])
+		// Parse "lower-upper" inline
+		var lower, upper uint32
+		i := 0
+		for i < len(line) && line[i] != '-' {
+			lower = lower*10 + uint32(line[i]-'0')
+			i++
 		}
-		b, err := strconv.Atoi(parts[1])
-		if err != nil {
-			return 0, fmt.Errorf("line %d: first operand not a number: %q", i, lines[i])
+		i++ // skip '-'
+		for i < len(line) {
+			upper = upper*10 + uint32(line[i]-'0')
+			i++
 		}
-		ranges = append(ranges, _range{uint32(a), uint32(b)})
+		ranges = append(ranges, _range{lower, upper})
 	}
 
-	sort.Slice(ranges, func(i, j int) bool {
-		// two key sort
-		if ranges[i].lower == ranges[j].lower {
-			return ranges[i].upper < ranges[j].upper
+	slices.SortFunc(ranges, func(a, b _range) int {
+		if a.lower != b.lower {
+			return int(a.lower) - int(b.lower)
 		}
-		return ranges[i].lower < ranges[j].lower
+		return int(a.upper) - int(b.upper)
 	})
 
 	var end, gaps, first uint32
-	for i := range ranges {
-		if end < ranges[i].lower {
+	for _, r := range ranges {
+		if end < r.lower {
 			if gaps == 0 {
-				first = ranges[i].lower - 1
+				first = r.lower - 1
 			}
-			gaps += ranges[i].lower - end
+			gaps += r.lower - end
 		}
-		end = max(end, ranges[i].upper+1)
+		end = max(end, r.upper+1)
 	}
 	if part1 {
 		return first, nil

@@ -3,115 +3,97 @@ package adventofcode2016
 import (
 	"crypto/md5"
 	"encoding/hex"
-	"strings"
 )
 
-const (
-	dimX           = 4
-	dimY           = 4
-	startPosition  = 0 + 3i
-	finishPosition = 3 + 0i
-)
-
-type direction struct {
-	rel complex64 // relative direction such as (0,1) for down
-	rep string    // textual representation
-	idx int       // index of direction into MD5
+// day17State represents position and path
+type day17State struct {
+	x, y int
+	path []byte
 }
 
-type state struct {
-	pos      complex64
-	passcode string
+// isOpen checks if a door is open based on MD5 nibble (b-f = open)
+func isOpen(nibble byte) bool {
+	return nibble >= 0xb
 }
 
-func (a state) newState(d direction) state {
-	return state{a.pos + d.rel, a.passcode + d.rep}
-}
-
-// returns a list of possible moves
-func (a state) next() []state {
-	var ss []state
-
-	// 4 possible directions in the order of open doors index in MD5
-	var (
-		up    = direction{0 + 1i, "U", 0}
-		down  = direction{0 - 1i, "D", 1}
-		left  = direction{-1 + 0i, "L", 2}
-		right = direction{1 + 0i, "R", 3}
-	)
-
-	// "Any b, c, d, e, or f means that the corresponding door is open"
-	open := func(b byte) bool {
-		return b >= 'b' && b <= 'f'
-	}
-
-	// filter 1: door must be open
-	doors := md5s(a.passcode)
-
-	x := real(a.pos)
-	y := imag(a.pos)
-
-	if open(doors[up.idx]) && y < dimY-1 {
-		ss = append(ss, a.newState(up))
-	}
-	if open(doors[down.idx]) && y > 0 {
-		ss = append(ss, a.newState(down))
-	}
-	if open(doors[left.idx]) && x > 0 {
-		ss = append(ss, a.newState(left))
-	}
-	if open(doors[right.idx]) && x < dimX-1 {
-		ss = append(ss, a.newState(right))
-	}
-
-	return ss
-}
-
-type states map[state]bool
-
+// md5s returns hex-encoded MD5 hash (for test compatibility)
 func md5s(s string) string {
 	hash := md5.Sum([]byte(s))
 	return hex.EncodeToString(hash[:])
 }
 
-// Day17 returns  the shortest path through the maze.
-// Cowardly refusing to potentially loop forever
-// returns the empty string if maxMoves have been tried and nothing found.
+// Day17 returns the shortest (part1) or longest (part2) path through the maze.
 func Day17(passcode string, maxMoves int, part1 bool) string {
-	ss := make(states)
-	// populate with start position
-	ss[state{startPosition, passcode}] = true
-	prospects := make(states)
-	var fittest string
+	passcodeBytes := []byte(passcode)
+	passcodeLen := len(passcode)
 
-	for i := 0; i < maxMoves; i++ {
-		for s := range ss {
-			for _, s2 := range s.next() {
-				prospects[s2] = true
-			}
-		}
+	// Pre-allocate buffer for MD5 input
+	hashInput := make([]byte, passcodeLen+maxMoves)
+	copy(hashInput, passcodeBytes)
 
-		// check which prospects ended
-		for p := range prospects {
-			// PERF move this check into block above to avoid
-			// setting a prospect, and removing it below
-			if p.pos == finishPosition {
-				// strip original passcode from result
-				fittest = strings.TrimPrefix(p.passcode, passcode)
-				if part1 {
-					// part 1: find the shortest path
-					return fittest
-				}
-				// remove prospect from pool
-				delete(prospects, p)
-			}
-		}
+	var longest string
+	queue := []day17State{{0, 3, nil}} // start at (0,3)
 
-		if len(prospects) == 0 {
-			break
-		}
-		ss, prospects = prospects, ss
-		clear(prospects)
+	dirs := [4]struct {
+		dx, dy int
+		ch     byte
+	}{
+		{0, 1, 'U'},  // up (y increases)
+		{0, -1, 'D'}, // down
+		{-1, 0, 'L'}, // left
+		{1, 0, 'R'},  // right
 	}
-	return fittest
+
+	for len(queue) > 0 {
+		cur := queue[0]
+		queue = queue[1:]
+
+		if len(cur.path) >= maxMoves {
+			continue
+		}
+
+		// Build hash input: passcode + path
+		copy(hashInput[passcodeLen:], cur.path)
+		hash := md5.Sum(hashInput[:passcodeLen+len(cur.path)])
+
+		// Check each direction
+		for i, dir := range dirs {
+			// Get nibble for this direction (first 4 chars of hex = first 2 bytes)
+			var nibble byte
+			if i < 2 {
+				nibble = hash[0] >> (4 * (1 - i)) & 0xF
+			} else {
+				nibble = hash[1] >> (4 * (3 - i)) & 0xF
+			}
+
+			if !isOpen(nibble) {
+				continue
+			}
+
+			nx, ny := cur.x+dir.dx, cur.y+dir.dy
+			if nx < 0 || nx >= 4 || ny < 0 || ny >= 4 {
+				continue
+			}
+
+			newPath := make([]byte, len(cur.path)+1)
+			copy(newPath, cur.path)
+			newPath[len(cur.path)] = dir.ch
+
+			// Check if reached destination (3, 0)
+			if nx == 3 && ny == 0 {
+				pathStr := string(newPath)
+				if part1 {
+					return pathStr
+				}
+				if len(pathStr) > len(longest) {
+					longest = pathStr
+				}
+				continue // Don't add to queue - path ends here
+			}
+
+			queue = append(queue, day17State{nx, ny, newPath})
+		}
+	}
+
+	return longest
 }

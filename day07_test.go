@@ -23,7 +23,7 @@ func TestDay07Examples(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.in, func(t *testing.T) {
 			want := tt.out
-			got := Day07([]string{tt.in}, tt.part1)
+			got := Day07([]byte(tt.in), tt.part1)
 			if want != got {
 				t.Fatalf("want %d but got %d", want, got)
 			}
@@ -32,23 +32,23 @@ func TestDay07Examples(t *testing.T) {
 }
 
 func BenchmarkDay07Part1(b *testing.B) {
-	lines := linesFromFilename(b, filename(7))
+	input := file(b, 7)
 	for b.Loop() {
-		Day07(lines, true)
+		Day07(input, true)
 	}
 }
 
 func BenchmarkDay07Part2(b *testing.B) {
-	lines := linesFromFilename(b, filename(7))
+	input := file(b, 7)
 	for b.Loop() {
-		Day07(lines, false)
+		Day07(input, false)
 	}
 }
 
 func TestDay07Part1(t *testing.T) {
 	const want = 118
-	lines := linesFromFilename(t, filename(7))
-	got := Day07(lines, true)
+	input := file(t, 7)
+	got := Day07(input, true)
 	if got != want {
 		t.Errorf("Day07() = %v, want %v", got, want)
 	}
@@ -56,8 +56,8 @@ func TestDay07Part1(t *testing.T) {
 
 func TestDay07Part2(t *testing.T) {
 	const want = 260
-	lines := linesFromFilename(t, filename(7))
-	got := Day07(lines, false)
+	input := file(t, 7)
+	got := Day07(input, false)
 	if got != want {
 		t.Errorf("Day07() = %v, want %v", got, want)
 	}

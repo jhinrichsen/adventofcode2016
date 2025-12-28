@@ -23,62 +23,86 @@ image::img/logo.png[50/50 as of October 2025]
 
 == Benchmark overview
 
-Go 1.24 on a framework 16" laptop.
+Go 1.24 on a framework 16" laptop. Total runtime: 8.3 seconds (down from 24.3s).
+
+=== Optimization Summary (December 2025)
+
+Key optimizations applied:
+
+- Day02: 94% faster (complex128/map → array lookup)
+- Day03: 58% faster, 99.95% fewer allocs (inline byte parsing)
+- Day04: 74% faster Part1 (selection instead of sort)
+- Day05: 44% faster, 100% fewer allocs (eliminate fmt.Sprintf)
+- Day07: 53% faster (inline pattern matching)
+- Day08: 8% faster Part1, 99% fewer allocs (fixed-size arrays)
+- Day10: 82% faster, 86% less memory (int keys, inline parsing)
+- Day12: 94% faster, 99.99% less memory (compile once, run many)
+- Day14: 17% faster Part2, 99.78% less memory (buffer reuse)
+- Day16: 84% faster, 92% less memory (in-place operations)
+- Day11: 99.9% faster Part2 (uint64 state, slice queue vs channel)
+- Day13: 38% faster, 85% less memory (BFS replaces A* library)
+- Day17: 39% faster, 64% fewer allocs (avoid hex encoding)
+- Day20: 55% faster, 99.9% fewer allocs (inline parsing, pre-allocate)
+- Day21: 60% faster, 58% fewer allocs ([]byte in-place ops, inline parsing)
+- Day22: 93% faster, 99.7% fewer allocs (inline parsing, slice vs map)
+- Day23: 99.99997% faster Part2 (peephole multiply optimization)
+- Day24: 43% faster, 98% fewer allocs (reuse BFS arrays, fixed-size tables)
+- Day25: 60% faster (peephole multiply optimization)
 
 ----
 goos: linux
 goarch: amd64
 pkg: gitlab.com/jhinrichsen/adventofcode2016
 cpu: AMD Ryzen 7 7840HS w/ Radeon 780M Graphics
-BenchmarkDay01Part1-16    	 1656710	       727.9 ns/op	       0 B/op	       0 allocs/op
-BenchmarkDay01Part2-16    	   45070	     26080 ns/op	   27304 B/op	       3 allocs/op
-BenchmarkDay02Part1-16    	   15328	     78720 ns/op	     472 B/op	       5 allocs/op
-BenchmarkDay02Part2-16    	   13533	     88583 ns/op	     472 B/op	       5 allocs/op
-BenchmarkDay03Part1-16    	    8804	    118155 ns/op	   91296 B/op	    1902 allocs/op
-BenchmarkDay03Part2-16    	    8391	    125034 ns/op	   91296 B/op	    1902 allocs/op
-BenchmarkDay04Part1-16    	    1242	    946645 ns/op	  210504 B/op	    6545 allocs/op
-BenchmarkDay04Part2-16    	 1250593	       954.4 ns/op	     328 B/op	      11 allocs/op
-BenchmarkDay05Part1-16    	       1	2898970343 ns/op	669832344 B/op	50204194 allocs/op
-BenchmarkDay05Part2-16    	       1	4562634061 ns/op	1053777032 B/op	78981055 allocs/op
-BenchmarkDay06Part1-16    	  334426	      3267 ns/op	       8 B/op	       1 allocs/op
-BenchmarkDay06Part2-16    	  350838	      3266 ns/op	       8 B/op	       1 allocs/op
-BenchmarkDay07Part1-16    	    1534	    758771 ns/op	  754816 B/op	   14392 allocs/op
-BenchmarkDay07Part2-16    	     692	   1712594 ns/op	 2353136 B/op	   24375 allocs/op
-BenchmarkDay08Part1-16    	   75135	     15544 ns/op	    5648 B/op	     113 allocs/op
-BenchmarkDay08Part2-16    	   18579	     64434 ns/op	   51688 B/op	     406 allocs/op
-BenchmarkDay09Part1-16    	   61696	     19234 ns/op	       0 B/op	       0 allocs/op
-BenchmarkDay09Part2-16    	   18458	     64078 ns/op	   98304 B/op	       1 allocs/op
-BenchmarkDay10Part1-16    	   10000	    100339 ns/op	  143880 B/op	     895 allocs/op
-BenchmarkDay10Part2-16    	    8344	    131196 ns/op	  143880 B/op	     895 allocs/op
-BenchmarkDay11Part1-16    	       3	 358643112 ns/op	143302608 B/op	 5881495 allocs/op
-BenchmarkDay11Part2-16    	       1	4763550029 ns/op	1782716120 B/op	71525915 allocs/op
-BenchmarkDay12Part1-16    	      33	  33665406 ns/op	35621681 B/op	  954125 allocs/op
-BenchmarkDay12Part2-16    	       2	 978571830 ns/op	1033505760 B/op	27683145 allocs/op
-BenchmarkDay13Part1-16    	   21258	     55975 ns/op	  143320 B/op	     507 allocs/op
-BenchmarkDay13Part2-16    	   25026	     48187 ns/op	  138000 B/op	     392 allocs/op
-BenchmarkDay14Part1-16    	      19	  60268762 ns/op	 3188592 B/op	   78429 allocs/op
-BenchmarkDay14Part2-16    	       1	5668310167 ns/op	2725497968 B/op	85152381 allocs/op
-BenchmarkDay15Part1-16    	    4854	    222126 ns/op	       0 B/op	       0 allocs/op
-BenchmarkDay15Part2-16    	     801	   1460991 ns/op	       0 B/op	       0 allocs/op
-BenchmarkDay16Part1-16    	  349983	      3088 ns/op	    3056 B/op	      31 allocs/op
-BenchmarkDay16Part2-16    	       3	 370692189 ns/op	507080421 B/op	     505 allocs/op
-BenchmarkDay17Part1-16    	  136984	      8368 ns/op	    4216 B/op	     123 allocs/op
-BenchmarkDay17Part2-16    	      40	  25100872 ns/op	22259857 B/op	  207514 allocs/op
-BenchmarkDay18Part1-16    	  435823	      2575 ns/op	     224 B/op	       2 allocs/op
-BenchmarkDay18Part2-16    	      42	  24498572 ns/op	     224 B/op	       2 allocs/op
-BenchmarkDay19Part1-16    	749127668	         1.590 ns/op	       0 B/op	       0 allocs/op
-BenchmarkDay19Part2-16    	 6137907	       194.9 ns/op	       0 B/op	       0 allocs/op
-BenchmarkDay20Part1-16    	   12322	     96786 ns/op	   60592 B/op	    1118 allocs/op
-BenchmarkDay20Part2-16    	   12520	     95233 ns/op	   60592 B/op	    1118 allocs/op
-BenchmarkDay21Part1-16    	   53961	     22193 ns/op	   25000 B/op	     613 allocs/op
-BenchmarkDay21Part2-16    	   52744	     22594 ns/op	   25144 B/op	     631 allocs/op
-BenchmarkDay22Part1-16    	     177	   6716288 ns/op	  342520 B/op	    2896 allocs/op
-BenchmarkDay22Part2-16    	      84	  14014255 ns/op	14498526 B/op	    3504 allocs/op
-BenchmarkDay23Part1-16    	    8822	    117971 ns/op	    1792 B/op	       1 allocs/op
-BenchmarkDay23Part2-16    	       1	6783703953 ns/op	    1792 B/op	       1 allocs/op
-BenchmarkDay24Part1-16    	    1174	   1004159 ns/op	 1147345 B/op	    2624 allocs/op
-BenchmarkDay24Part2-16    	    1132	   1041069 ns/op	 1147345 B/op	    2624 allocs/op
-BenchmarkDay25Part1-16    	      44	  24855781 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay01Part1-16    	 1541383	       779.6 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay01Part2-16    	   51010	     23139 ns/op	   27304 B/op	       3 allocs/op
+BenchmarkDay02Part1-16    	  257245	      5062 ns/op	       5 B/op	       1 allocs/op
+BenchmarkDay02Part2-16    	  236128	      4922 ns/op	       5 B/op	       1 allocs/op
+BenchmarkDay03Part1-16    	   27085	     44208 ns/op	   49152 B/op	       1 allocs/op
+BenchmarkDay03Part2-16    	   27583	     44236 ns/op	   49152 B/op	       1 allocs/op
+BenchmarkDay04Part1-16    	    4975	    238531 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay04Part2-16    	  119175	     10202 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay05Part1-16    	       1	1552754378 ns/op	      16 B/op	       1 allocs/op
+BenchmarkDay05Part2-16    	       1	2369545169 ns/op	      16 B/op	       1 allocs/op
+BenchmarkDay06Part1-16    	  382866	      3174 ns/op	       8 B/op	       1 allocs/op
+BenchmarkDay06Part2-16    	  333178	      3635 ns/op	       8 B/op	       1 allocs/op
+BenchmarkDay07Part1-16    	    3872	    306136 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay07Part2-16    	    1699	    707359 ns/op	  545280 B/op	    5340 allocs/op
+BenchmarkDay08Part1-16    	   97779	     12072 ns/op	     384 B/op	       1 allocs/op
+BenchmarkDay08Part2-16    	   21392	     55556 ns/op	   45672 B/op	     285 allocs/op
+BenchmarkDay09Part1-16    	   77074	     15649 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay09Part2-16    	   22851	     52028 ns/op	   98304 B/op	       1 allocs/op
+BenchmarkDay10Part1-16    	   71790	     16379 ns/op	   19432 B/op	     221 allocs/op
+BenchmarkDay10Part2-16    	   56568	     21221 ns/op	   21376 B/op	     247 allocs/op
+BenchmarkDay11Part1-16    	    1220	    968070 ns/op	  758124 B/op	     126 allocs/op
+BenchmarkDay11Part2-16    	     237	   4964689 ns/op	 3584171 B/op	     379 allocs/op
+BenchmarkDay12Part1-16    	     612	   1888919 ns/op	    2168 B/op	      49 allocs/op
+BenchmarkDay12Part2-16    	      22	  50846584 ns/op	    2168 B/op	      49 allocs/op
+BenchmarkDay13Part1-16    	   36789	     32567 ns/op	   22840 B/op	     130 allocs/op
+BenchmarkDay13Part2-16    	   52790	     22454 ns/op	   19432 B/op	      87 allocs/op
+BenchmarkDay14Part1-16    	      21	  51272377 ns/op	 2968128 B/op	      21 allocs/op
+BenchmarkDay14Part2-16    	       1	4085563922 ns/op	 2968128 B/op	      21 allocs/op
+BenchmarkDay15Part1-16    	    4124	    273466 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay15Part2-16    	     633	   1827760 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay16Part1-16    	 2972598	       394 ns/op	     312 B/op	       2 allocs/op
+BenchmarkDay16Part2-16    	      20	  51980732 ns/op	35651612 B/op	       2 allocs/op
+BenchmarkDay17Part1-16    	  317466	      3571 ns/op	    3808 B/op	      48 allocs/op
+BenchmarkDay17Part2-16    	      78	  14691620 ns/op	12252758 B/op	   44081 allocs/op
+BenchmarkDay18Part1-16    	  465811	      2491 ns/op	     224 B/op	       2 allocs/op
+BenchmarkDay18Part2-16    	      45	  24008904 ns/op	     224 B/op	       2 allocs/op
+BenchmarkDay19Part1-16    	887596429	         1.214 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay19Part2-16    	 6223927	       190.4 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay20Part1-16    	   29977	     40636 ns/op	    9472 B/op	       1 allocs/op
+BenchmarkDay20Part2-16    	   30824	     39080 ns/op	    9472 B/op	       1 allocs/op
+BenchmarkDay21Part1-16    	  188674	      6402 ns/op	   11432 B/op	     217 allocs/op
+BenchmarkDay21Part2-16    	  181971	      6609 ns/op	   11432 B/op	     217 allocs/op
+BenchmarkDay22Part1-16    	    2601	    443924 ns/op	   49924 B/op	       7 allocs/op
+BenchmarkDay22Part2-16    	    2607	    453276 ns/op	   55632 B/op	      12 allocs/op
+BenchmarkDay23Part1-16    	 1252933	       953 ns/op	    1792 B/op	       1 allocs/op
+BenchmarkDay23Part2-16    	  599818	      2113 ns/op	    1792 B/op	       1 allocs/op
+BenchmarkDay24Part1-16    	    2364	    489321 ns/op	  222596 B/op	      47 allocs/op
+BenchmarkDay24Part2-16    	    2455	    485009 ns/op	  222592 B/op	      47 allocs/op
+BenchmarkDay25Part1-16    	     128	   9281678 ns/op	       0 B/op	       0 allocs/op
 ----
 
 == Day 1: No Time for a Taxicab
@@ -164,79 +188,285 @@ with direct parsing, eliminated strconv.Atoi with in-place parsing, conditional
 map allocation only for Part 2.
 
 == Day 2: Bathroom Security
+
+Navigate a keypad using U/D/L/R instructions. Part 1 uses a 3x3 numeric keypad, Part 2 uses a diamond-shaped keypad with hex digits.
+
+=== Baseline (b0)
+
+----
+BenchmarkDay02Part1-16    	   14877	     80540 ns/op	     461 B/op	       4 allocs/op
+BenchmarkDay02Part2-16    	   13309	     89981 ns/op	     461 B/op	       4 allocs/op
+----
+
+=== Optimized (b1)
+
+Replaced `complex128` coordinates and `map` lookups with `[5][5]byte` arrays and simple `int` x,y coordinates:
+
+----
+BenchmarkDay02Part1-16    	  262135	      4733 ns/op	       5 B/op	       1 allocs/op
+BenchmarkDay02Part2-16    	  252264	      4840 ns/op	       5 B/op	       1 allocs/op
+----
+
+=== Optimization Results (benchstat b0 b1)
+
+----
+              │ /tmp/day02_b0.txt │          /tmp/day02_b1.txt          │
+              │      sec/op       │   sec/op     vs base                │
+Day02Part1-16        80.739µ ± 1%   4.782µ ± 2%  -94.08% (p=0.000 n=10)
+Day02Part2-16        89.991µ ± 1%   4.845µ ± 1%  -94.62% (p=0.000 n=10)
+geomean               85.24µ        4.813µ       -94.35%
+
+              │ /tmp/day02_b0.txt │         /tmp/day02_b1.txt          │
+              │       B/op        │    B/op     vs base                │
+Day02Part1-16        461.000 ± 0%   5.000 ± 0%  -98.92% (p=0.000 n=10)
+Day02Part2-16        461.000 ± 0%   5.000 ± 0%  -98.92% (p=0.000 n=10)
+geomean                461.0        5.000       -98.92%
+
+              │ /tmp/day02_b0.txt │         /tmp/day02_b1.txt          │
+              │     allocs/op     │ allocs/op   vs base                │
+Day02Part1-16          4.000 ± 0%   1.000 ± 0%  -75.00% (p=0.000 n=10)
+Day02Part2-16          4.000 ± 0%   1.000 ± 0%  -75.00% (p=0.000 n=10)
+geomean                4.000        1.000       -75.00%
+----
+
+Key optimizations: array-based grid lookup replaces map access, direct byte comparison replaces complex128 arithmetic.
+
 == Day 3: Squares With Three Sides
+
+Count valid triangles where the sum of any two sides must be greater than the remaining side.
+Part 1: triangles are in rows. Part 2: triangles are in columns (read 3 rows at a time).
+
+=== Baseline (b0)
+
+----
+BenchmarkDay03Part1-16    	   11752	    102289 ns/op	   91296 B/op	    1902 allocs/op
+BenchmarkDay03Part2-16    	   10000	    108691 ns/op	   91296 B/op	    1902 allocs/op
+----
+
+=== Optimized (b1)
+
+Replaced `strings.Fields()` and `strconv.Atoi()` with direct byte parsing. Pre-allocated nums slice:
+
+----
+BenchmarkDay03Part1-16    	   26677	     44967 ns/op	   49152 B/op	       1 allocs/op
+BenchmarkDay03Part2-16    	   27814	     43299 ns/op	   49152 B/op	       1 allocs/op
+----
+
+=== Optimization Results (benchstat b0 b1)
+
+----
+              │ /tmp/day03_b0.txt │          /tmp/day03_b1.txt          │
+              │      sec/op       │   sec/op     vs base                │
+Day03Part1-16        102.30µ ± 1%   43.90µ ± 2%  -57.08% (p=0.000 n=10)
+Day03Part2-16        108.82µ ± 1%   43.82µ ± 1%  -59.73% (p=0.000 n=10)
+geomean               105.5µ        43.86µ       -58.43%
+
+              │ /tmp/day03_b0.txt │          /tmp/day03_b1.txt           │
+              │       B/op        │     B/op      vs base                │
+Day03Part1-16        89.16Ki ± 0%   48.00Ki ± 0%  -46.16% (p=0.000 n=10)
+Day03Part2-16        89.16Ki ± 0%   48.00Ki ± 0%  -46.16% (p=0.000 n=10)
+geomean              89.16Ki        48.00Ki       -46.16%
+
+              │ /tmp/day03_b0.txt │         /tmp/day03_b1.txt          │
+              │     allocs/op     │ allocs/op   vs base                │
+Day03Part1-16       1902.000 ± 0%   1.000 ± 0%  -99.95% (p=0.000 n=10)
+Day03Part2-16       1902.000 ± 0%   1.000 ± 0%  -99.95% (p=0.000 n=10)
+geomean               1.902k        1.000       -99.95%
+----
+
+Key optimizations: inline byte parsing eliminates string allocations, single pre-allocated slice for all numbers.
+
 == Day 4: Security Through Obscurity
 
-Part 2 needs to find sector ID of room "north pole objects". After finding
-nothing, dumping all decrypted rooms, grep'ing for "north" one finally finds
-the correct room "northpole object storage".
+Decrypt room names and find valid rooms (checksum = 5 most common letters).
+Part 2 finds the room that decrypts to "northpole object storage".
+
+=== Baseline (b0)
 
 ----
-BenchmarkDay4Part1
-BenchmarkDay4Part1-16                418           2771044 ns/op         1099945 B/op      12315 allocs/op
-BenchmarkDay4Part2
-BenchmarkDay4Part2-16             270402              4263 ns/op            1610 B/op         19 allocs/op
+BenchmarkDay04Part1-16    	    1341	    875981 ns/op	  210508 B/op	    6545 allocs/op
+BenchmarkDay04Part2-16    	 1303376	       922.3 ns/op	     328 B/op	      11 allocs/op
 ----
 
-Use a 26 bytes array to count letter occurences instead of a sparse map[byte]uint:
+=== Optimized (b1)
+
+Replaced `sort.Slice` with O(5*26) selection for top-5 letters. Zero allocations via inline byte parsing:
 
 ----
-BenchmarkDay4Part1
-BenchmarkDay4Part1-16                854           1279735 ns/op          217994 B/op       6545 allocs/op
-BenchmarkDay4Part2
-BenchmarkDay4Part2-16             857664              1381 ns/op             336 B/op         11 allocs/op
+BenchmarkDay04Part1-16    	    4497	    230079 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay04Part2-16    	  124969	      9615 ns/op	       0 B/op	       0 allocs/op
 ----
 
-Part #1 is 100% faster, part #2 300 % faster.
+=== Optimization Results (benchstat b0 b1)
 
-1381 nanoseconds (ns) are 1.4 microseconds (μs).
-Light will travel around 500 meters in 1.6 μs.
-I mean this is incredibly fast, nay?
+----
+              │ /tmp/day04_b0.txt │           /tmp/day04_b1.txt           │
+              │      sec/op       │    sec/op     vs base                 │
+Day04Part1-16         875.6µ ± 0%    231.6µ ± 1%   -73.55% (p=0.000 n=10)
+Day04Part2-16         932.1n ± 1%   9652.5n ± 1%  +935.51% (p=0.000 n=10)
+geomean               28.57µ         47.28µ        +65.50%
 
-Fastest reported times on reddit are 2 ms versus my 1.2 ms, but then those
-numbers are from hardware that is at least 4 years older than my MacBook Pro
-(16-inch, 2019, 2,4 GHz 8-Core Intel Core i9). I'm rolling my own parser
-though, instead of using `scanf(3)` e.a.
+              │ /tmp/day04_b0.txt │            /tmp/day04_b1.txt            │
+              │       B/op        │    B/op     vs base                     │
+Day04Part1-16        205.6Ki ± 0%   0.0Ki ± 0%  -100.00% (p=0.000 n=10)
+Day04Part2-16          328.0 ± 0%     0.0 ± 0%  -100.00% (p=0.000 n=10)
+
+              │ /tmp/day04_b0.txt │            /tmp/day04_b1.txt             │
+              │     allocs/op     │  allocs/op   vs base                     │
+Day04Part1-16         6.545k ± 0%   0.000k ± 0%  -100.00% (p=0.000 n=10)
+Day04Part2-16          11.00 ± 0%     0.00 ± 0%  -100.00% (p=0.000 n=10)
+----
+
+Part1 4x faster with 0 allocations. Part2 slower due to scanning `[]byte` instead of pre-split `[]string`, but net benefit since Part1 dominates runtime (876µs vs 0.9µs).
 
 == Day 5: How About a Nice Game of Chess?
 
-----
-BenchmarkDay5Part1
-BenchmarkDay5Part1-16    	       1	8290784618 ns/op	1741396552 B/op	100409235 allocs/op
-BenchmarkDay5Part2
-BenchmarkDay5Part2-16    	       1	13266456586 ns/op	2739557288 B/op	157963381 allocs/op
-----
+Find password by MD5 hashing doorID + incrementing counter until hash starts with 5 zeros.
 
-Comparing the binary MD5 instead of the hex representation:
+=== Baseline (b0)
 
 ----
-BenchmarkDay5Part1
-BenchmarkDay5Part1-16    	       1	4014164864 ns/op	669773280 B/op	50204243 allocs/op
-BenchmarkDay5Part2
-BenchmarkDay5Part2-16    	       1	6278619828 ns/op	1053675720 B/op	78981141 allocs/op
+BenchmarkDay05Part1-16    	       1	2604944656 ns/op	669841320 B/op	50204188 allocs/op
+BenchmarkDay05Part2-16    	       1	4074941531 ns/op	1053774040 B/op	78981018 allocs/op
 ----
 
-Twice as fast,  `benchstat` reports:
+=== Optimized (b1)
+
+Eliminated `fmt.Sprintf` allocations by pre-allocating buffer and using inline integer-to-string conversion:
 
 ----
-name          old time/op    new time/op    delta
-Day5Part1-16     8.29s ± 0%     4.01s ± 0%   ~     (p=1.000 n=1+1)
-Day5Part2-16     13.3s ± 0%      6.3s ± 0%   ~     (p=1.000 n=1+1)
-
-name          old alloc/op   new alloc/op   delta
-Day5Part1-16    1.74GB ± 0%    0.67GB ± 0%   ~     (p=1.000 n=1+1)
-Day5Part2-16    2.74GB ± 0%    1.05GB ± 0%   ~     (p=1.000 n=1+1)
-
-name          old allocs/op  new allocs/op  delta
-Day5Part1-16      100M ± 0%       50M ± 0%   ~     (p=1.000 n=1+1)
-Day5Part2-16      158M ± 0%       79M ± 0%   ~     (p=1.000 n=1+1)
+BenchmarkDay05Part1-16    	       1	1472863692 ns/op	      16 B/op	       1 allocs/op
+BenchmarkDay05Part2-16    	       1	2283156725 ns/op	      16 B/op	       1 allocs/op
 ----
+
+=== Optimization Results (benchstat b0 b1)
+
+----
+              │ /tmp/day05_b0.txt │          /tmp/day05_b1.txt           │
+              │      sec/op       │   sec/op     vs base                 │
+Day05Part1-16         2.584        1.454         -43.73%
+Day05Part2-16         4.071        2.283         -43.92%
+geomean               3.243        1.822         -43.82%
+
+              │  /tmp/day05_b0.txt  │           /tmp/day05_b1.txt           │
+              │        B/op         │    B/op      vs base                  │
+Day05Part1-16    669831192.00        16.00         -100.00%
+Day05Part2-16   1053778648.00        16.00         -100.00%
+geomean               801.2Mi        16.00         -100.00%
+
+              │ /tmp/day05_b0.txt  │           /tmp/day05_b1.txt           │
+              │     allocs/op      │  allocs/op   vs base                  │
+Day05Part1-16   50204181.000        1.000          -100.00%
+Day05Part2-16   78981076.000        1.000          -100.00%
+geomean               62.97M        1.000          -100.00%
+----
+
+Key optimizations: eliminated 50M+ allocations per part by avoiding `fmt.Sprintf` in hot loop. Direct binary comparison of MD5 hash bytes instead of hex conversion.
 
 == Day 6: Signals and Noise
+
+Already well optimized (~3µs, 1 alloc). No changes needed.
+
 == Day 7: Internet Protocol Version 7
+
+Check IPs for TLS (ABBA pattern) and SSL (ABA/BAB matching) support.
+
+=== Baseline (b0)
+
+----
+BenchmarkDay07Part1-16    	    1729	    663743 ns/op	  754819 B/op	   14392 allocs/op
+BenchmarkDay07Part2-16    	     811	   1454955 ns/op	 2353149 B/op	   24375 allocs/op
+----
+
+=== Optimized (b1)
+
+Replaced map-based palindrome collection with inline pattern matching:
+
+----
+BenchmarkDay07Part1-16    	    4009	    288499 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay07Part2-16    	    1569	    757032 ns/op	  545280 B/op	    5340 allocs/op
+----
+
+=== Optimization Results (benchstat b0 b1)
+
+----
+              │ /tmp/day07_b0.txt │          /tmp/day07_b1.txt          │
+              │      sec/op       │    sec/op     vs base               │
+Day07Part1-16        655.4µ        300.1µ        -54.21%
+Day07Part2-16       1474.2µ        708.8µ        -51.92%
+geomean              982.9µ        461.2µ        -53.08%
+
+              │ /tmp/day07_b0.txt │             /tmp/day07_b1.txt             │
+              │       B/op        │     B/op       vs base                    │
+Day07Part1-16       737.1Ki        0.0Ki          -100.00%
+Day07Part2-16      2298.0Ki        532.5Ki        -76.83%
+
+              │ /tmp/day07_b0.txt │            /tmp/day07_b1.txt             │
+              │     allocs/op     │  allocs/op    vs base                    │
+Day07Part1-16        14.39k        0.00k          -100.00%
+Day07Part2-16       24.375k        5.340k         -78.09%
+----
+
+Part1 now zero-allocation. Part2 still allocates for region slices but 78% fewer allocs overall.
+
 == Day 8: Two-Factor Authentication
+
+=== Optimization (December 2025)
+
+Used fixed-size arrays instead of slices for the screen buffer.
+
+----
+              │ /tmp/day08_b0.txt │          /tmp/day08_b1.txt           │
+              │      sec/op       │    sec/op     vs base                │
+Day08Part1-16        13.16µ ± ∞ ¹   12.13µ ± ∞ ¹       ~ (p=0.100 n=3)
+Day08Part2-16        61.31µ ± ∞ ¹   55.56µ ± ∞ ¹       ~ (p=0.200 n=3)
+geomean              28.41µ         25.96µ        -8.62%
+
+              │ /tmp/day08_b0.txt │           /tmp/day08_b1.txt            │
+              │       B/op        │     B/op       vs base                 │
+Day08Part1-16        5648.0 ± ∞ ¹     384.0 ± ∞ ¹        ~ (p=0.100 n=3)
+Day08Part2-16       50.42Ki ± ∞ ¹   44.60Ki ± ∞ ¹        ~ (p=0.100 n=3)
+geomean             16.68Ki         4.090Ki        -75.48%
+
+              │ /tmp/day08_b0.txt │          /tmp/day08_b1.txt           │
+              │     allocs/op     │  allocs/op   vs base                 │
+Day08Part1-16       113.000 ± ∞ ¹   1.000 ± ∞ ¹        ~ (p=0.100 n=3)
+Day08Part2-16         403.0 ± ∞ ¹   285.0 ± ∞ ¹        ~ (p=0.100 n=3)
+geomean               213.4         16.88        -92.09%
+----
+
+8% faster, 75% less memory, 92% fewer allocations.
+
 == Day 9: Explosives in Cyberspace
+
 == Day 10: Balance Bots
+
+=== Optimization (December 2025)
+
+Used integer keys instead of string keys for bot map, inline parsing replaces `strings.Fields` and `strconv.Atoi`.
+
+----
+              │ /tmp/day10_b0.txt │           /tmp/day10_b1.txt           │
+              │      sec/op       │    sec/op     vs base                 │
+Day10Part1-16        89.19µ ± ∞ ¹   16.29µ ± ∞ ¹        ~ (p=0.100 n=3)
+Day10Part2-16       115.64µ ± ∞ ¹   21.22µ ± ∞ ¹        ~ (p=0.100 n=3)
+geomean              101.6µ         18.59µ        -81.69%
+
+              │ /tmp/day10_b0.txt │           /tmp/day10_b1.txt            │
+              │       B/op        │     B/op       vs base                 │
+Day10Part1-16      140.51Ki ± ∞ ¹   18.98Ki ± ∞ ¹        ~ (p=0.100 n=3)
+Day10Part2-16      140.51Ki ± ∞ ¹   20.88Ki ± ∞ ¹        ~ (p=0.100 n=3)
+geomean             140.5Ki         19.90Ki        -85.83%
+
+              │ /tmp/day10_b0.txt │          /tmp/day10_b1.txt           │
+              │     allocs/op     │  allocs/op   vs base                 │
+Day10Part1-16         895.0 ± ∞ ¹   221.0 ± ∞ ¹        ~ (p=0.100 n=3)
+Day10Part2-16         895.0 ± ∞ ¹   247.0 ± ∞ ¹        ~ (p=0.100 n=3)
+geomean               895.0         233.6        -73.90%
+----
+
+82% faster, 86% less memory, 74% fewer allocations.
+
 == Day 11: Radioisotope Thermoelectric Generators
 
 Now this puzzle is way beyond my capabilities, types of generators do not
@@ -244,14 +474,135 @@ matter, never heard of Zobrist before, and the h() function for floors (1 *
 first floor, 2 * second floor, 3 * third floor, 4 * fourth floor) reminds me of
 Columbus' egg: simple and easy after the fact.
 
+=== Optimization (December 2025)
+
+Complete rewrite using uint64 state encoding and slice-based queue instead of channels.
+
+----
+              │ /tmp/day11_b0.txt │           /tmp/day11_b1.txt           │
+              │      sec/op       │    sec/op     vs base                 │
+Day11Part1-16     345361.7µ ± ∞ ¹   954.4µ ± ∞ ¹        ~ (p=0.100 n=3)
+Day11Part2-16     4606.937m ± ∞ ¹   4.974m ± ∞ ¹        ~ (p=0.100 n=3)
+geomean               1.261         2.179m        -99.83%
+
+              │ /tmp/day11_b0.txt │           /tmp/day11_b1.txt            │
+              │       B/op        │     B/op       vs base                 │
+Day11Part1-16    139929.8Ki ± ∞ ¹   740.4Ki ± ∞ ¹        ~ (p=0.100 n=3)
+Day11Part2-16    1700.125Mi ± ∞ ¹   3.418Mi ± ∞ ¹        ~ (p=0.100 n=3)
+geomean             482.0Mi         1.572Mi        -99.67%
+
+              │ /tmp/day11_b0.txt │           /tmp/day11_b1.txt           │
+              │     allocs/op     │  allocs/op   vs base                  │
+Day11Part1-16     5881475.0 ± ∞ ¹   126.0 ± ∞ ¹         ~ (p=0.100 n=3)
+Day11Part2-16    71525849.0 ± ∞ ¹   379.0 ± ∞ ¹         ~ (p=0.100 n=3)
+geomean              20.51M         218.5        -100.00%
+----
+
+99.8% faster, 99.7% less memory, 99.99% fewer allocations.
+
 == Day 12: Leonardo's Monorail
+
+=== Optimization (December 2025)
+
+Delegates to Day12V2 which compiles once and runs many times, vs interpreting each instruction.
+
+----
+                │ /tmp/day12_b0.txt │           /tmp/day12_b1.txt           │
+                │      sec/op       │    sec/op     vs base                 │
+Day12Part1-16         28.060m ± ∞ ¹   1.889m ± ∞ ¹        ~ (p=0.100 n=3)
+Day12Part2-16         815.44m ± ∞ ¹   51.78m ± ∞ ¹        ~ (p=0.100 n=3)
+geomean                38.63m         9.890m        -93.46%
+
+                │  /tmp/day12_b0.txt  │            /tmp/day12_b1.txt            │
+                │        B/op         │     B/op       vs base                  │
+Day12Part1-16       34786.778Ki ± ∞ ¹   2.117Ki ± ∞ ¹         ~ (p=0.100 n=3)
+Day12Part2-16     1009282.594Ki ± ∞ ¹   2.117Ki ± ∞ ¹         ~ (p=0.100 n=3)
+geomean                 629.8Ki         2.117Ki        -100.00%
+
+                │ /tmp/day12_b0.txt │           /tmp/day12_b1.txt           │
+                │     allocs/op     │  allocs/op   vs base                  │
+Day12Part1-16       954125.00 ± ∞ ¹   49.00 ± ∞ ¹         ~ (p=0.100 n=3)
+Day12Part2-16     27683141.00 ± ∞ ¹   49.00 ± ∞ ¹         ~ (p=0.100 n=3)
+geomean                15.87k         49.00        -100.00%
+----
+
+93% faster, 99.99% less memory, 99.99% fewer allocations.
+
 == Day 13: A Maze of Twisty Little Cubicles
 
 Off by one for part 2, because 50 steps means the starting point and from then
 on 50 steps.
 I took the starting point as the first step.
 
+=== Optimization (December 2025)
+
+Replaced A* library with simple BFS (uniform cost graph doesn't need A*).
+
+----
+              │ /tmp/day13_b0.txt │           /tmp/day13_b1.txt           │
+              │      sec/op       │    sec/op     vs base                 │
+Day13Part1-16        48.17µ ± ∞ ¹   33.89µ ± ∞ ¹        ~ (p=0.100 n=3)
+Day13Part2-16        40.56µ ± ∞ ¹   22.07µ ± ∞ ¹        ~ (p=0.100 n=3)
+geomean              44.20µ         27.35µ        -38.12%
+
+              │ /tmp/day13_b0.txt │           /tmp/day13_b1.txt            │
+              │       B/op        │     B/op       vs base                 │
+Day13Part1-16      139.96Ki ± ∞ ¹   22.30Ki ± ∞ ¹        ~ (p=0.100 n=3)
+Day13Part2-16      134.77Ki ± ∞ ¹   18.98Ki ± ∞ ¹        ~ (p=0.100 n=3)
+geomean             137.3Ki         20.57Ki        -85.02%
+
+              │ /tmp/day13_b0.txt │          /tmp/day13_b1.txt           │
+              │     allocs/op     │  allocs/op   vs base                 │
+Day13Part1-16         507.0 ± ∞ ¹   130.0 ± ∞ ¹        ~ (p=0.100 n=3)
+Day13Part2-16        392.00 ± ∞ ¹   87.00 ± ∞ ¹        ~ (p=0.100 n=3)
+geomean               445.8         106.3        -76.14%
+----
+
+38% faster, 85% less memory, 76% fewer allocations.
+
 == Day 14: One-Time Pad
+
+Find 64th cryptographic key using MD5 hashing. Part2 uses "key stretching" with 2017 iterations per hash.
+
+=== Baseline (b0)
+
+----
+BenchmarkDay14Part1-16    	      21	  51578173 ns/op	 2560736 B/op	   58800 allocs/op
+BenchmarkDay14Part2-16    	       1	4915322652 ns/op	1364068112 B/op	42607786 allocs/op
+----
+
+=== Optimized (b1)
+
+Reuse buffers for hex encoding in stretched hash, avoid `hex.EncodeToString`:
+
+----
+BenchmarkDay14Part1-16    	      22	  50410879 ns/op	 2968369 B/op	      21 allocs/op
+BenchmarkDay14Part2-16    	       1	4036440480 ns/op	 2968128 B/op	      21 allocs/op
+----
+
+=== Optimization Results (benchstat b0 b1)
+
+----
+              │ /tmp/day14_b0.txt │           /tmp/day14_b1.txt           │
+              │      sec/op       │    sec/op     vs base                 │
+Day14Part1-16        51.64m           50.47m          -2.27%
+Day14Part2-16         4.920            4.078         -17.11%
+geomean              504.0m           453.7m         -10.00%
+
+              │ /tmp/day14_b0.txt │           /tmp/day14_b1.txt            │
+              │       B/op        │     B/op       vs base                 │
+Day14Part1-16       2.442Mi          2.831Mi          +15.94%
+Day14Part2-16    1300.877Mi          2.831Mi         -99.78%
+geomean             56.36Mi          2.831Mi         -94.98%
+
+              │ /tmp/day14_b0.txt │           /tmp/day14_b1.txt           │
+              │     allocs/op     │  allocs/op   vs base                  │
+Day14Part1-16      58800.00          21.00          -99.96%
+Day14Part2-16   42607786.00          21.00          -99.99%
+geomean              1.583M          21.00          -99.99%
+----
+
+Part2 is 17% faster with 99.78% memory reduction and 99.99% fewer allocations.
 == Day 15: Timing is Everything
 == Day 16: Dragon Checksum
 
@@ -259,12 +610,62 @@ As a bit of surprise, this one was pretty straightforward, first shot ran in
 half a second, so no further optimizations such as reducing allocations,
 collapsing distinct reverse and flip phases into one e.a.
 
+=== Optimization (December 2025)
+
+In-place dragon curve and checksum operations, avoiding repeated string allocations.
+
+----
+              │ /tmp/day16_b0.txt │           /tmp/day16_b1.txt           │
+              │      sec/op       │    sec/op     vs base                 │
+Day16Part1-16       2541.0n ± ∞ ¹   390.6n ± ∞ ¹        ~ (p=0.100 n=3)
+Day16Part2-16       321.11m ± ∞ ¹   51.32m ± ∞ ¹        ~ (p=0.100 n=3)
+geomean              903.3µ         141.6µ        -84.33%
+
+              │ /tmp/day16_b0.txt │           /tmp/day16_b1.txt            │
+              │       B/op        │     B/op       vs base                 │
+Day16Part1-16        3056.0 ± ∞ ¹     312.0 ± ∞ ¹        ~ (p=0.100 n=3)
+Day16Part2-16      483.59Mi ± ∞ ¹   34.00Mi ± ∞ ¹        ~ (p=0.100 n=3)
+geomean             1.187Mi         103.0Ki        -91.53%
+
+              │ /tmp/day16_b0.txt │          /tmp/day16_b1.txt           │
+              │     allocs/op     │  allocs/op   vs base                 │
+Day16Part1-16        31.000 ± ∞ ¹   2.000 ± ∞ ¹        ~ (p=0.100 n=3)
+Day16Part2-16       505.000 ± ∞ ¹   2.000 ± ∞ ¹        ~ (p=0.100 n=3)
+geomean               125.1         2.000        -98.40%
+----
+
+84% faster, 92% less memory, 98% fewer allocations.
 
 == Day 17: Two Steps Forward
 
 Both part 1 and part 2 correct on first try.
 Updated Go from 1.13 to 1.21 because it is October 2023.
 
+=== Optimization (December 2025)
+
+Avoid hex encoding by working directly with MD5 nibbles.
+
+----
+              │ /tmp/day17_b0.txt │           /tmp/day17_b1.txt           │
+              │      sec/op       │    sec/op     vs base                 │
+Day17Part1-16        6.786µ ± ∞ ¹   3.675µ ± ∞ ¹        ~ (p=0.100 n=3)
+Day17Part2-16        20.96m ± ∞ ¹   14.60m ± ∞ ¹        ~ (p=0.100 n=3)
+geomean              377.1µ         231.6µ        -38.58%
+
+              │ /tmp/day17_b0.txt │           /tmp/day17_b1.txt            │
+              │       B/op        │     B/op       vs base                 │
+Day17Part1-16       3.305Ki ± ∞ ¹   3.719Ki ± ∞ ¹        ~ (p=0.100 n=3)
+Day17Part2-16       19.98Mi ± ∞ ¹   11.69Mi ± ∞ ¹        ~ (p=0.100 n=3)
+geomean             260.0Ki         210.9Ki        -18.87%
+
+              │ /tmp/day17_b0.txt │           /tmp/day17_b1.txt           │
+              │     allocs/op     │  allocs/op    vs base                 │
+Day17Part1-16         97.00 ± ∞ ¹    48.00 ± ∞ ¹        ~ (p=0.100 n=3)
+Day17Part2-16       166.48k ± ∞ ¹   44.08k ± ∞ ¹        ~ (p=0.100 n=3)
+geomean              4.019k         1.455k        -63.80%
+----
+
+39% faster, 19% less memory, 64% fewer allocations.
 
 == Day 18: Like a Rogue
 
@@ -549,6 +950,31 @@ It is a solved problem for O(1) space and time complexity.
 EDIT: Turned out i am on a wrong track, submasks is not going to solve the problem.
 Falling back to a regular algo.
 
+=== Optimization (December 2025)
+
+Replaced `strings.Split` and `strconv.Atoi` with inline byte parsing, pre-allocated ranges slice.
+
+----
+              │ /tmp/day20_b0.txt │           /tmp/day20_b1.txt           │
+              │      sec/op       │    sec/op     vs base                 │
+Day20Part1-16        87.30µ ± ∞ ¹   39.68µ ± ∞ ¹        ~ (p=0.100 n=3)
+Day20Part2-16        86.72µ ± ∞ ¹   39.10µ ± ∞ ¹        ~ (p=0.100 n=3)
+geomean              87.01µ         39.38µ        -54.73%
+
+              │ /tmp/day20_b0.txt │           /tmp/day20_b1.txt            │
+              │       B/op        │     B/op       vs base                 │
+Day20Part1-16      59.172Ki ± ∞ ¹   9.250Ki ± ∞ ¹        ~ (p=0.100 n=3)
+Day20Part2-16      59.172Ki ± ∞ ¹   9.250Ki ± ∞ ¹        ~ (p=0.100 n=3)
+geomean             59.17Ki         9.250Ki        -84.37%
+
+              │ /tmp/day20_b0.txt │          /tmp/day20_b1.txt           │
+              │     allocs/op     │  allocs/op   vs base                 │
+Day20Part1-16      1118.000 ± ∞ ¹   1.000 ± ∞ ¹        ~ (p=0.100 n=3)
+Day20Part2-16      1118.000 ± ∞ ¹   1.000 ± ∞ ¹        ~ (p=0.100 n=3)
+geomean              1.118k         1.000        -99.91%
+----
+
+55% faster, 84% less memory, 99.9% fewer allocations.
 
 == Day 21: Scrambled Letters and Hash
 
@@ -571,6 +997,32 @@ BenchmarkDay21Part2-8   	    9260	    110085 ns/op	   24888 B/op	     631 allocs
 BenchmarkDay21Part2-8   	   12633	    107367 ns/op	   24888 B/op	     631 allocs/op
 BenchmarkDay21Part2-8   	   15932	     76910 ns/op	   24888 B/op	     631 allocs/op
 ----
+
+=== Optimization (December 2025)
+
+Rewrote to use `[]byte` in-place operations instead of string manipulation. Inline parsing replaces `strings.Fields`.
+
+----
+              │ /tmp/day21_b0.txt │           /tmp/day21_b1.txt           │
+              │      sec/op       │    sec/op     vs base                 │
+Day21Part1-16       16.269µ ± ∞ ¹   6.605µ ± ∞ ¹        ~ (p=0.100 n=3)
+Day21Part2-16       16.540µ ± ∞ ¹   6.609µ ± ∞ ¹        ~ (p=0.100 n=3)
+geomean              16.40µ         6.607µ        -59.72%
+
+              │ /tmp/day21_b0.txt │           /tmp/day21_b1.txt            │
+              │       B/op        │     B/op       vs base                 │
+Day21Part1-16       21.18Ki ± ∞ ¹   11.16Ki ± ∞ ¹        ~ (p=0.100 n=3)
+Day21Part2-16       21.32Ki ± ∞ ¹   11.16Ki ± ∞ ¹        ~ (p=0.100 n=3)
+geomean             21.25Ki         11.16Ki        -47.46%
+
+              │ /tmp/day21_b0.txt │          /tmp/day21_b1.txt           │
+              │     allocs/op     │  allocs/op   vs base                 │
+Day21Part1-16         507.0 ± ∞ ¹   217.0 ± ∞ ¹        ~ (p=0.100 n=3)
+Day21Part2-16         525.0 ± ∞ ¹   217.0 ± ∞ ¹        ~ (p=0.100 n=3)
+geomean               515.9         217.0        -57.94%
+----
+
+60% faster, 47% less memory, 58% fewer allocations.
 
 == Day 22: Grid Computing
 
@@ -650,6 +1102,32 @@ Day22Part2-16      3.504k ± ?%    2.901k ± 0%  -17.21% (p=0.000 n=1+10)
 
 Removing I/O from the puzzle function resulted in significant performance improvements for Part 2: 55% faster runtime, 97.6% memory reduction, and 17.2% fewer allocations.
 
+=== Additional Optimization (December 2025)
+
+Replaced `strings.Fields`, `strings.Split`, and `strconv.Atoi` with inline parsing. Changed from map to slice storage.
+
+----
+              │ /tmp/day22_b0.txt │           /tmp/day22_b1.txt           │
+              │      sec/op       │    sec/op     vs base                 │
+Day22Part1-16       6178.5µ ± ∞ ¹   443.9µ ± ∞ ¹        ~ (p=0.100 n=3)
+Day22Part2-16       6249.1µ ± ∞ ¹   453.3µ ± ∞ ¹        ~ (p=0.100 n=3)
+geomean              6.214m         448.6µ        -92.78%
+
+              │ /tmp/day22_b0.txt │           /tmp/day22_b1.txt            │
+              │       B/op        │     B/op       vs base                 │
+Day22Part1-16      334.49Ki ± ∞ ¹   48.75Ki ± ∞ ¹        ~ (p=0.100 n=3)
+Day22Part2-16      340.07Ki ± ∞ ¹   54.33Ki ± ∞ ¹        ~ (p=0.100 n=3)
+geomean             337.3Ki         51.46Ki        -84.74%
+
+              │ /tmp/day22_b0.txt │          /tmp/day22_b1.txt           │
+              │     allocs/op     │  allocs/op   vs base                 │
+Day22Part1-16      2896.000 ± ∞ ¹   7.000 ± ∞ ¹        ~ (p=0.100 n=3)
+Day22Part2-16       2901.00 ± ∞ ¹   12.00 ± ∞ ¹        ~ (p=0.100 n=3)
+geomean              2.898k         9.165        -99.68%
+----
+
+93% faster, 85% less memory, 99.7% fewer allocations.
+
 == Day 23: Safe Cracking
 
 Basically an extension to the assembunny code from Day 12, is what the
@@ -717,6 +1195,32 @@ BenchmarkDay24Part2-16    	    1191	    982728 ns/op	 1147347 B/op	    2624 allo
 BenchmarkDay24Part2-16    	    1202	    980059 ns/op	 1147346 B/op	    2624 allocs/op
 ----
 
+=== Optimization (December 2025)
+
+Reuse visited array and queue across BFS calls. Fixed-size arrays for distances and memo tables (max 10 locations).
+
+----
+              │ /tmp/day24_b0.txt │           /tmp/day24_b1.txt           │
+              │      sec/op       │    sec/op     vs base                 │
+Day24Part1-16        864.3µ ± ∞ ¹   489.3µ ± ∞ ¹        ~ (p=0.100 n=3)
+Day24Part2-16        838.1µ ± ∞ ¹   487.9µ ± ∞ ¹        ~ (p=0.100 n=3)
+geomean              851.1µ         488.6µ        -42.59%
+
+              │ /tmp/day24_b0.txt │           /tmp/day24_b1.txt            │
+              │       B/op        │     B/op       vs base                 │
+Day24Part1-16      1120.2Ki ± ∞ ¹   217.4Ki ± ∞ ¹        ~ (p=0.100 n=3)
+Day24Part2-16      1120.2Ki ± ∞ ¹   217.4Ki ± ∞ ¹        ~ (p=0.100 n=3)
+geomean             1.094Mi         217.4Ki        -80.59%
+
+              │ /tmp/day24_b0.txt │          /tmp/day24_b1.txt           │
+              │     allocs/op     │  allocs/op   vs base                 │
+Day24Part1-16       2608.00 ± ∞ ¹   47.00 ± ∞ ¹        ~ (p=0.100 n=3)
+Day24Part2-16       2608.00 ± ∞ ¹   47.00 ± ∞ ¹        ~ (p=0.100 n=3)
+geomean              2.608k         47.00        -98.20%
+----
+
+43% faster, 81% less memory, 98% fewer allocations.
+
 == Day 25: Clock Signal
 
 Find the lowest positive integer to initialize register 'a' that generates an alternating 0,1,0,1,0,1... clock signal using assembunny code with a new `out` instruction.
@@ -739,6 +1243,20 @@ BenchmarkDay25-16    	      44	  25393981 ns/op	       0 B/op	       0 allocs/op
 BenchmarkDay25-16    	      45	  25450240 ns/op	       0 B/op	       0 allocs/op
 BenchmarkDay25-16    	      43	  25365834 ns/op	       0 B/op	       0 allocs/op
 ----
+
+=== Optimization (December 2025)
+
+Added peephole multiplication optimization (same technique as Day 23). Inline parsing replaces `strings.Fields` and `strconv.Atoi`.
+
+----
+              │ /tmp/day25_b0.txt │           /tmp/day25_b1.txt           │
+              │      sec/op       │    sec/op     vs base                 │
+Day25-16            23.487m ± ∞ ¹   9.360m ± ∞ ¹        ~ (p=0.100 n=3)
+Day25Part1-16       23.366m ± ∞ ¹   9.282m ± ∞ ¹        ~ (p=0.100 n=3)
+geomean              23.43m         9.321m        -60.21%
+----
+
+60% faster while maintaining 0 allocations.
 
 == Benchmarks archive
 

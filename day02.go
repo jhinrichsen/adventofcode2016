@@ -2,83 +2,80 @@ package adventofcode2016
 
 // Day02 solves day 2, both part 1 and part 2.
 func Day02(input []byte, part1 bool) string {
-	// start at '5' for both parts
-	var here complex128
+	// Keypads as 5x5 grids (0 = invalid position)
+	// Part 1: 3x3 keypad centered
+	//     1 2 3
+	//     4 5 6
+	//     7 8 9
+	var grid1 = [5][5]byte{
+		{0, 0, 0, 0, 0},
+		{0, '1', '2', '3', 0},
+		{0, '4', '5', '6', 0},
+		{0, '7', '8', '9', 0},
+		{0, 0, 0, 0, 0},
+	}
+	// Part 2: diamond keypad
+	//       1
+	//     2 3 4
+	//   5 6 7 8 9
+	//     A B C
+	//       D
+	var grid2 = [5][5]byte{
+		{0, 0, '1', 0, 0},
+		{0, '2', '3', '4', 0},
+		{'5', '6', '7', '8', '9'},
+		{0, 'A', 'B', 'C', 0},
+		{0, 0, 'D', 0, 0},
+	}
+
+	var grid *[5][5]byte
+	var x, y int
 	if part1 {
-		here = 1 + 1i
+		grid = &grid1
+		x, y = 2, 2 // start at '5'
 	} else {
-		here = 0 + 2i
+		grid = &grid2
+		x, y = 0, 2 // start at '5'
 	}
 
-	var digits map[complex128]byte
-	if part1 {
-		digits = map[complex128]byte{
-			0 + 0i: '1',
-			1 + 0i: '2',
-			2 + 0i: '3',
-
-			0 + 1i: '4',
-			1 + 1i: '5',
-			2 + 1i: '6',
-
-			0 + 2i: '7',
-			1 + 2i: '8',
-			2 + 2i: '9',
-		}
-	} else {
-		digits = map[complex128]byte{
-			2 + 0i: '1',
-
-			1 + 1i: '2',
-			2 + 1i: '3',
-			3 + 1i: '4',
-
-			0 + 2i: '5',
-			1 + 2i: '6',
-			2 + 2i: '7',
-			3 + 2i: '8',
-			4 + 2i: '9',
-
-			1 + 3i: 'A',
-			2 + 3i: 'B',
-			3 + 3i: 'C',
-
-			2 + 4i: 'D',
-		}
-	}
-	inBound := func(c complex128) bool {
-		_, ok := digits[c]
-		return ok
-	}
-
-	var steps = map[byte]complex128{
-		'U': 0 - 1i,
-		'R': 1 + 0i,
-		'D': 0 + 1i,
-		'L': -1 + 0i,
-	}
-
-	var code []byte
+	// Count lines to pre-allocate
+	lines := 0
 	for _, b := range input {
 		if b == '\n' {
-			// End of line - record digit
-			digit := digits[here]
-			code = append(code, digit)
-		} else if step, ok := steps[b]; ok {
-			// Valid movement instruction
-			if inBound(here + step) {
-				here += step
+			lines++
+		}
+	}
+	if len(input) > 0 && input[len(input)-1] != '\n' {
+		lines++
+	}
+	code := make([]byte, 0, lines)
+
+	for _, b := range input {
+		switch b {
+		case '\n':
+			code = append(code, grid[y][x])
+		case 'U':
+			if y > 0 && grid[y-1][x] != 0 {
+				y--
+			}
+		case 'D':
+			if y < 4 && grid[y+1][x] != 0 {
+				y++
+			}
+		case 'L':
+			if x > 0 && grid[y][x-1] != 0 {
+				x--
+			}
+		case 'R':
+			if x < 4 && grid[y][x+1] != 0 {
+				x++
 			}
 		}
-		// Ignore invalid characters
 	}
-	// Handle final line if input doesn't end with newline
 	if len(input) > 0 && input[len(input)-1] != '\n' {
-		digit := digits[here]
-		code = append(code, digit)
+		code = append(code, grid[y][x])
 	}
 
-	// Return "0" if no valid output was generated (garbage input)
 	if len(code) == 0 {
 		return "0"
 	}

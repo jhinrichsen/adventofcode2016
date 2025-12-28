@@ -1,171 +1,121 @@
 package adventofcode2016
 
 import (
-	"fmt"
 	"math/bits"
 	"strings"
-
-	"github.com/beefsack/go-astar"
 )
 
-type cubicle struct {
+// isWall returns true if (x,y) is a wall given the favorite number
+func isWall(x, y int, favorite uint) bool {
+	if x < 0 || y < 0 {
+		return true
+	}
+	ux, uy := uint(x), uint(y)
+	val := ux*ux + 3*ux + 2*ux*uy + uy + uy*uy + favorite
+	return bits.OnesCount(val)%2 == 1
+}
+
+type point13 struct {
 	x, y int
-	wall bool   // wall or open space
-	area *day13 // back reference to complete area
-
-	// included in part 2
-	floodfilled bool
 }
 
-func (a *cubicle) PathNeighbors() []astar.Pather {
-	var hood []astar.Pather
-	// north
-	y := a.y - 1
-	if y >= 0 && !a.area[a.x][y].wall {
-		hood = append(hood, &a.area[a.x][y])
-	}
-	// east
-	x := a.x + 1
-	if x < len(a.area) && !a.area[x][a.y].wall {
-		hood = append(hood, &a.area[x][a.y])
-	}
-	// south
-	y = a.y + 1
-	if y < len(a.area[0]) && !a.area[a.x][y].wall {
-		hood = append(hood, &a.area[a.x][y])
-	}
-	// west
-	x = a.x - 1
-	if x >= 0 && !a.area[x][a.y].wall {
-		hood = append(hood, &a.area[x][a.y])
-	}
-	return hood
-}
+// Day13Part1 returns minimum steps to go from src to dst using BFS.
+func Day13Part1(favoriteNumber uint, src, dst complex64) (uint, error) {
+	srcX, srcY := int(real(src)), int(imag(src))
+	dstX, dstY := int(real(dst)), int(imag(dst))
 
-// PathNeighborCost returns the movement cost of the directly neighboring tile.
-func (a *cubicle) PathNeighborCost(to astar.Pather) float64 {
-	return 1.0
-}
-
-func (a *cubicle) PathEstimatedCost(to astar.Pather) float64 {
-	toT := to.(*cubicle)
-	absX := toT.x - a.x
-	if absX < 0 {
-		absX = -absX
+	// BFS with visited map
+	type state struct {
+		x, y, dist int
 	}
-	absY := toT.y - a.y
-	if absY < 0 {
-		absY = -absY
-	}
-	d := float64(absX + absY)
-	return d
-}
 
-type day13 [51][51]cubicle // part2 requires depth 50
+	visited := make(map[point13]bool)
+	queue := []state{{srcX, srcY, 0}}
+	visited[point13{srcX, srcY}] = true
 
-// filled returns number of filled cubicles.
-func (a day13) filled() uint {
-	sum := uint(0)
-	for y := 0; y < len(a); y++ {
-		for x := 0; x < len(a[0]); x++ {
-			if a[x][y].floodfilled {
-				sum++
+	dirs := [4][2]int{{0, -1}, {1, 0}, {0, 1}, {-1, 0}}
+
+	for len(queue) > 0 {
+		cur := queue[0]
+		queue = queue[1:]
+
+		if cur.x == dstX && cur.y == dstY {
+			return uint(cur.dist), nil
+		}
+
+		for _, d := range dirs {
+			nx, ny := cur.x+d[0], cur.y+d[1]
+			p := point13{nx, ny}
+			if !visited[p] && !isWall(nx, ny, favoriteNumber) {
+				visited[p] = true
+				queue = append(queue, state{nx, ny, cur.dist + 1})
 			}
 		}
 	}
-	return sum
+
+	return 0, nil
 }
 
-// String return 10x6 string representation.
-func (a day13) String() string {
-	const (
-		maxX = 10
-		maxY = 7
+// Day13Part2 returns number of locations reachable in at most `steps` steps.
+func Day13Part2(favorite uint, src complex64, steps uint) uint {
+	srcX, srcY := int(real(src)), int(imag(src))
 
-		openSpace = '.'
-		wall      = '#'
-		newline   = '\n'
-		separator = ' '
-	)
+	visited := make(map[point13]bool)
+	type state struct {
+		x, y, dist int
+	}
+	queue := []state{{srcX, srcY, 0}}
+	visited[point13{srcX, srcY}] = true
+
+	dirs := [4][2]int{{0, -1}, {1, 0}, {0, 1}, {-1, 0}}
+
+	for len(queue) > 0 {
+		cur := queue[0]
+		queue = queue[1:]
+
+		if cur.dist >= int(steps) {
+			continue
+		}
+
+		for _, d := range dirs {
+			nx, ny := cur.x+d[0], cur.y+d[1]
+			p := point13{nx, ny}
+			if !visited[p] && !isWall(nx, ny, favorite) {
+				visited[p] = true
+				queue = append(queue, state{nx, ny, cur.dist + 1})
+			}
+		}
+	}
+
+	return uint(len(visited))
+}
+
+// day13Grid for test compatibility
+type day13Grid struct {
+	favorite uint
+}
+
+func newDay13(favorite uint) *day13Grid {
+	return &day13Grid{favorite: favorite}
+}
+
+func (g *day13Grid) String() string {
+	const maxX, maxY = 10, 7
 	var sb strings.Builder
 	sb.WriteString("  0123456789\n")
 	for y := 0; y < maxY; y++ {
 		sb.WriteByte(byte(y) + '0')
-		sb.WriteByte(separator)
+		sb.WriteByte(' ')
 		for x := 0; x < maxX; x++ {
-			if a[x][y].wall {
-				sb.WriteByte(wall)
+			if isWall(x, y, g.favorite) {
+				sb.WriteByte('#')
 			} else {
-				sb.WriteByte(openSpace)
+				sb.WriteByte('.')
 			}
 		}
 		if y < maxY-1 {
-			sb.WriteByte(newline)
+			sb.WriteByte('\n')
 		}
 	}
 	return sb.String()
-}
-
-// Day13Part1 returns minimum steps to go from (1,1) to (31,39).
-func Day13Part1(favoriteNumber uint, src, dst complex64) (uint, error) {
-	d := newDay13(favoriteNumber)
-	from := &d[int(real(src))][int(imag(src))]
-	to := &d[int(real(dst))][int(imag(dst))]
-	_, distance, found := astar.Path(from, to)
-
-	if !found {
-		return 0, fmt.Errorf("no possible path")
-	}
-	return uint(distance), nil
-}
-
-// newDay13 returns a pointer, so that the result will be the same pointer
-// as any embedded cubicle's area. When using return by value, taking the
-// address of day13 for starting and end point will break A*, which operates
-// on internal area pointer.
-func newDay13(favoriteNumber uint) *day13 {
-	f := func(x, y uint) uint {
-		return x*x + 3*x + 2*x*y + y + y*y
-	}
-	bitsSet := func(x uint) uint8 {
-		return uint8(bits.OnesCount(x))
-	}
-	odd := func(x uint8) bool {
-		return x%2 != 0
-	}
-	var d day13
-	for x := 0; x < len(d); x++ {
-		for y := 0; y < len(d[0]); y++ {
-			d[x][y].x = x
-			d[x][y].y = y
-			ux, uy := uint(x), uint(y)
-			d[x][y].wall = odd(bitsSet(favoriteNumber + f(ux, uy)))
-			d[x][y].area = &d
-		}
-	}
-	return &d
-}
-
-// Day13Part2 returns number of fields flooded for depth = 50 beginning from
-// (1,1).
-func Day13Part2(favorite uint, src complex64, steps uint) uint {
-	d := newDay13(favorite)
-	scratchpad := make(map[cubicle]bool)
-	scratchpad[d[1][1]] = true
-	for step := uint(0); step <= steps; step++ {
-		neighbours := make(map[cubicle]bool)
-		for k := range scratchpad {
-			d[k.x][k.y].floodfilled = true
-			hood := k.PathNeighbors()
-			for _, h := range hood {
-				c := h.(*cubicle)
-				if !c.floodfilled {
-					neighbours[*c] = true
-				}
-			}
-			delete(scratchpad, k)
-		}
-		scratchpad = neighbours
-	}
-	return d.filled()
 }

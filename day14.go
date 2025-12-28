@@ -2,9 +2,10 @@ package adventofcode2016
 
 import (
 	"crypto/md5"
-	"encoding/hex"
-	"strconv"
 )
+
+// hexTable for converting nibbles to hex chars
+var hexTable = [16]byte{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'}
 
 // Day14 returns 64th key for given salt.
 func Day14(salt string, part1 bool) uint {
@@ -12,48 +13,76 @@ func Day14(salt string, part1 bool) uint {
 		nth  = 64
 		next = 1000
 	)
-	hasher := func() func(string) string {
+
+	// Pre-allocate buffer for salt + number
+	saltBytes := []byte(salt)
+	buf := make([]byte, len(salt)+20)
+	copy(buf, saltBytes)
+	base := len(salt)
+
+	// Hash cache
+	var hashes [][32]byte // store raw hash bytes, not hex strings
+
+	// Compute hash for index, using stretched version if part2
+	computeHash := func(idx int) [16]byte {
+		n := writeInt(buf[base:], idx)
 		if part1 {
-			return hash
+			return md5.Sum(buf[:base+n])
 		}
-		return stretchedHash
-	}()
-	var hashes []string
+		return stretchedHashBytes(buf[:base+n])
+	}
+
+	// Convert hash to hex string (32 bytes)
+	hashToHex := func(h [16]byte) [32]byte {
+		var hex [32]byte
+		for i, b := range h {
+			hex[i*2] = hexTable[b>>4]
+			hex[i*2+1] = hexTable[b&0x0f]
+		}
+		return hex
+	}
+
 	keys := uint8(1)
 	for i := 0; ; i++ {
+		// Ensure we have enough hashes computed
 		for j := len(hashes); j < i+next+1; j++ {
-			hashes = append(hashes, "")
-			hashes[j] = hasher(salt + strconv.Itoa(j))
+			h := computeHash(j)
+			hashes = append(hashes, hashToHex(h))
 		}
-		findTriple := func(s string) byte {
-			for i := 0; i < len(s)-2; i++ {
-				if s[i] == s[i+1] &&
-					s[i] == s[i+2] {
-					return s[i]
-				}
+
+		// Find triple in hash[i]
+		hex := hashes[i]
+		triple := byte(0)
+		for j := 0; j < 30; j++ {
+			if hex[j] == hex[j+1] && hex[j] == hex[j+2] {
+				triple = hex[j]
+				break
 			}
-			return 0
 		}
-		triple := findTriple(hashes[i])
 		if triple == 0 {
 			continue
 		}
-		any := func(idx int, b byte) bool {
-			for i := idx; i < idx+next; i++ {
-				s := hashes[i]
-				for j := 0; j < len(s)-4; j++ {
-					if s[j] == b &&
-						s[j+1] == b &&
-						s[j+2] == b &&
-						s[j+3] == b &&
-						s[j+4] == b {
-						return true
-					}
+
+		// Look for quint in next 1000 hashes
+		found := false
+		for k := i + 1; k <= i+next; k++ {
+			hex := hashes[k]
+			for j := 0; j < 28; j++ {
+				if hex[j] == triple &&
+					hex[j+1] == triple &&
+					hex[j+2] == triple &&
+					hex[j+3] == triple &&
+					hex[j+4] == triple {
+					found = true
+					break
 				}
 			}
-			return false
+			if found {
+				break
+			}
 		}
-		if any(i+1, triple) {
+
+		if found {
 			if keys == nth {
 				return uint(i)
 			}
@@ -62,16 +91,29 @@ func Day14(salt string, part1 bool) uint {
 	}
 }
 
-func hash(s string) string {
-	bs := md5.Sum([]byte(s))
-	return hex.EncodeToString(bs[:])
+// stretchedHashBytes computes MD5 2017 times, reusing buffers
+func stretchedHashBytes(input []byte) [16]byte {
+	var hexBuf [32]byte
+	h := md5.Sum(input)
+
+	for i := 0; i < 2016; i++ {
+		// Convert hash to hex
+		for j, b := range h {
+			hexBuf[j*2] = hexTable[b>>4]
+			hexBuf[j*2+1] = hexTable[b&0x0f]
+		}
+		h = md5.Sum(hexBuf[:])
+	}
+	return h
 }
 
+// stretchedHash returns stretched hash as hex string (for test compatibility)
 func stretchedHash(s string) string {
-	buf := []byte(s)
-	for i := 0; i < 2017; i++ {
-		bs := md5.Sum(buf)
-		buf = []byte(hex.EncodeToString(bs[:]))
+	h := stretchedHashBytes([]byte(s))
+	var hex [32]byte
+	for i, b := range h {
+		hex[i*2] = hexTable[b>>4]
+		hex[i*2+1] = hexTable[b&0x0f]
 	}
-	return string(buf)
+	return string(hex[:])
 }

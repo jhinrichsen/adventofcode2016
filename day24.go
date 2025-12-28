@@ -9,20 +9,25 @@ type Day24Puzzle struct {
 	grid      [][]byte
 	dimY      int
 	dimX      int
-	locations map[byte]image.Point
+	locations [10]image.Point // locations 0-9
 	numLocs   int
 }
 
 func NewDay24(lines []string) Day24Puzzle {
 	dimY := len(lines)
 	grid := make([][]byte, dimY)
-	locations := make(map[byte]image.Point)
+	var locations [10]image.Point
+	numLocs := 0
 
 	for y := range grid {
 		grid[y] = []byte(lines[y])
 		for x, cell := range grid[y] {
 			if cell >= '0' && cell <= '9' {
-				locations[cell] = image.Point{X: x, Y: y}
+				idx := int(cell - '0')
+				locations[idx] = image.Point{X: x, Y: y}
+				if idx >= numLocs {
+					numLocs = idx + 1
+				}
 			}
 		}
 	}
@@ -32,104 +37,114 @@ func NewDay24(lines []string) Day24Puzzle {
 		dimY:      dimY,
 		dimX:      len(lines[0]),
 		locations: locations,
-		numLocs:   len(locations),
+		numLocs:   numLocs,
 	}
 }
 
 func Day24(puzzle Day24Puzzle, part1 bool) uint {
-	// Calculate distances between all pairs of locations using BFS
-	distances := make(map[[2]byte]uint)
+	// Pre-allocate reusable visited array and queue for BFS
+	visited := make([][]bool, puzzle.dimY)
+	for y := range visited {
+		visited[y] = make([]bool, puzzle.dimX)
+	}
+	queue := make([]image.Point, 0, puzzle.dimX*puzzle.dimY)
 
-	for from := range puzzle.locations {
-		dists := bfsDistances(puzzle, from)
-		for to, dist := range dists {
-			distances[[2]byte{from, to}] = dist
+	// Calculate distances between all pairs using fixed array
+	// distances[from][to] = distance
+	var distances [10][10]uint
+
+	for from := 0; from < puzzle.numLocs; from++ {
+		bfsDistancesReuse(puzzle, byte(from), visited, queue, &distances)
+	}
+
+	// Use DP with bitmasks to solve TSP
+	// memo[current][visited_mask] = min distance
+	allVisited := uint(1<<puzzle.numLocs) - 1
+	memo := make([][1024]uint, 10) // up to 10 locations, 2^10 = 1024 states
+	for i := range memo {
+		for j := range memo[i] {
+			memo[i][j] = math.MaxUint
 		}
 	}
 
-	// Use dynamic programming with bitmasks to solve TSP
-	// State: (current location, visited mask)
-	memo := make(map[[2]uint]uint)
-	allVisited := (1 << puzzle.numLocs) - 1
-	startMask := uint(1) // location '0' is visited
-
-	var tsp func(current byte, visited uint) uint
-	tsp = func(current byte, visited uint) uint {
-		if visited == uint(allVisited) {
+	var tsp func(current int, visited uint) uint
+	tsp = func(current int, visited uint) uint {
+		if visited == allVisited {
 			if part1 {
-				return 0 // Part 1: don't need to return to start
+				return 0
 			}
-			// Part 2: return to location '0'
-			return distances[[2]byte{current, '0'}]
+			return distances[current][0]
 		}
 
-		state := [2]uint{uint(current), visited}
-		if result, exists := memo[state]; exists {
-			return result
+		if memo[current][visited] != math.MaxUint {
+			return memo[current][visited]
 		}
 
 		minDist := uint(math.MaxUint)
-
-		for target := range puzzle.locations {
-			bit := uint(1) << (target - '0')
-			if visited&bit == 0 { // not visited yet
-				newVisited := visited | bit
-				dist := distances[[2]byte{current, target}] + tsp(target, newVisited)
+		for target := 0; target < puzzle.numLocs; target++ {
+			bit := uint(1) << target
+			if visited&bit == 0 {
+				dist := distances[current][target] + tsp(target, visited|bit)
 				if dist < minDist {
 					minDist = dist
 				}
 			}
 		}
 
-		memo[state] = minDist
+		memo[current][visited] = minDist
 		return minDist
 	}
 
-	return tsp('0', startMask)
+	return tsp(0, 1) // start at 0, with 0 visited
 }
 
-func bfsDistances(puzzle Day24Puzzle, start byte) map[byte]uint {
-	startPos := puzzle.locations[start]
-	distances := make(map[byte]uint)
-	visited := make([][]bool, puzzle.dimY)
+func bfsDistancesReuse(puzzle Day24Puzzle, start byte, visited [][]bool, queue []image.Point, distances *[10][10]uint) {
+	// Clear visited array
 	for y := range visited {
-		visited[y] = make([]bool, puzzle.dimX)
+		for x := range visited[y] {
+			visited[y][x] = false
+		}
 	}
 
-	queue := []image.Point{startPos}
+	startIdx := int(start)
+	startPos := puzzle.locations[startIdx]
+
+	queue = queue[:0]
+	queue = append(queue, startPos)
 	visited[startPos.Y][startPos.X] = true
+
 	dist := uint(0)
+	found := 0
 
-	directions := []image.Point{{0, -1}, {1, 0}, {0, 1}, {-1, 0}} // up, right, down, left
+	directions := [4]image.Point{{0, -1}, {1, 0}, {0, 1}, {-1, 0}}
 
-	for len(queue) > 0 {
+	for len(queue) > 0 && found < puzzle.numLocs {
 		size := len(queue)
 
-		for range size {
-			current := queue[0]
-			queue = queue[1:]
+		for i := 0; i < size; i++ {
+			current := queue[i]
 
-			// Check if this position contains a numbered location
 			cell := puzzle.grid[current.Y][current.X]
 			if cell >= '0' && cell <= '9' {
-				distances[cell] = dist
+				targetIdx := int(cell - '0')
+				distances[startIdx][targetIdx] = dist
+				found++
 			}
 
-			// Explore neighbors
 			for _, dir := range directions {
-				next := image.Point{X: current.X + dir.X, Y: current.Y + dir.Y}
+				nx, ny := current.X+dir.X, current.Y+dir.Y
 
-				if next.X >= 0 && next.X < puzzle.dimX &&
-					next.Y >= 0 && next.Y < puzzle.dimY &&
-					!visited[next.Y][next.X] &&
-					puzzle.grid[next.Y][next.X] != '#' {
-					visited[next.Y][next.X] = true
-					queue = append(queue, next)
+				if nx >= 0 && nx < puzzle.dimX &&
+					ny >= 0 && ny < puzzle.dimY &&
+					!visited[ny][nx] &&
+					puzzle.grid[ny][nx] != '#' {
+					visited[ny][nx] = true
+					queue = append(queue, image.Point{X: nx, Y: ny})
 				}
 			}
 		}
+
+		queue = queue[size:]
 		dist++
 	}
-
-	return distances
 }

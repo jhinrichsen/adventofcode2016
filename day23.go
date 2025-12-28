@@ -137,8 +137,75 @@ func Day23(puzzle Day23Puzzle, part1 bool) int {
 		}
 	}
 
+	// Peephole: detect multiplication loop pattern:
+	// cpy X c    ; c = X
+	// inc a      ; a++
+	// dec c      ; c--
+	// jnz c -2   ; inner loop
+	// dec d      ; d--
+	// jnz d -5   ; outer loop
+	// This computes: a += X * d, c = 0, d = 0
+	tryMultiply := func(pc int) bool {
+		if pc+5 >= len(instructions) {
+			return false
+		}
+		i0 := instructions[pc]
+		i1 := instructions[pc+1]
+		i2 := instructions[pc+2]
+		i3 := instructions[pc+3]
+		i4 := instructions[pc+4]
+		i5 := instructions[pc+5]
+
+		// Check pattern: cpy X c, inc a, dec c, jnz c -2, dec d, jnz d -5
+		if i0.opcode != CPY || !i0.arg2.isRegister {
+			return false
+		}
+		if i1.opcode != INC || !i1.arg1.isRegister {
+			return false
+		}
+		if i2.opcode != DEC || !i2.arg1.isRegister {
+			return false
+		}
+		if i3.opcode != JNZ || !i3.arg1.isRegister || getValue(i3.arg2) != -2 {
+			return false
+		}
+		if i4.opcode != DEC || !i4.arg1.isRegister {
+			return false
+		}
+		if i5.opcode != JNZ || !i5.arg1.isRegister || getValue(i5.arg2) != -5 {
+			return false
+		}
+
+		// Registers involved
+		cReg := i0.arg2.register  // inner loop counter
+		aReg := i1.arg1.register  // accumulator
+		dReg := i4.arg1.register  // outer loop counter
+
+		// Verify consistency
+		if i2.arg1.register != cReg || i3.arg1.register != cReg {
+			return false
+		}
+		if i5.arg1.register != dReg {
+			return false
+		}
+
+		// Execute multiplication: a += X * d
+		x := getValue(i0.arg1)
+		d := registers[dReg]
+		registers[aReg] += x * d
+		registers[cReg] = 0
+		registers[dReg] = 0
+		return true
+	}
+
 	pc := 0
 	for pc < len(instructions) {
+		// Try peephole optimization first
+		if tryMultiply(pc) {
+			pc += 6
+			continue
+		}
+
 		inst := instructions[pc]
 
 		switch inst.opcode {

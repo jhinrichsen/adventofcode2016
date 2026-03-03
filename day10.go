@@ -2,11 +2,11 @@ package adventofcode2016
 
 // bot10 is used for bots and outputs in Day10.
 type bot10 struct {
-	n         int      // input counter
-	input     [2]uint  // chip values
-	lowID     int      // destination for low chip (negative = output)
-	highID    int      // destination for high chip (negative = output)
-	hasOutput bool     // whether output destinations are set
+	n         int     // input counter
+	input     [2]uint // chip values
+	lowID     int     // destination for low chip (negative = output)
+	highID    int     // destination for high chip (negative = output)
+	hasOutput bool    // whether output destinations are set
 }
 
 // Day10 solves day 10. For part 2, value1 and value2 are ignored.

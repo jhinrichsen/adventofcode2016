@@ -177,9 +177,9 @@ func Day23(puzzle Day23Puzzle, part1 bool) int {
 		}
 
 		// Registers involved
-		cReg := i0.arg2.register  // inner loop counter
-		aReg := i1.arg1.register  // accumulator
-		dReg := i4.arg1.register  // outer loop counter
+		cReg := i0.arg2.register // inner loop counter
+		aReg := i1.arg1.register // accumulator
+		dReg := i4.arg1.register // outer loop counter
 
 		// Verify consistency
 		if i2.arg1.register != cReg || i3.arg1.register != cReg {

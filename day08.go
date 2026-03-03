@@ -8,10 +8,10 @@ const (
 )
 
 type day8 struct {
-	grid          [width][height]bool // Fixed-size array, zero allocations
-	w, h          int
-	tmpCol        [height]bool // Reusable temp buffer for column rotation
-	tmpRow        [width]bool  // Reusable temp buffer for row rotation
+	grid   [width][height]bool // Fixed-size array, zero allocations
+	w, h   int
+	tmpCol [height]bool // Reusable temp buffer for column rotation
+	tmpRow [width]bool  // Reusable temp buffer for row rotation
 }
 
 func newDay08(w, h uint8) day8 {

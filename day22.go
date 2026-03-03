@@ -138,10 +138,10 @@ func Day22(lines []string, part1 bool) (uint, error) {
 	// repeat sequence to move red hole to the left
 	for i := 0; i < dimX-2; i++ {
 		paths = append(paths, []path{
-			{0, 1, 1},   // down 1
-			{-1, 0, 2},  // left 2
-			{0, -1, 1},  // up 1
-			{1, 0, 1},   // right 1
+			{0, 1, 1},  // down 1
+			{-1, 0, 2}, // left 2
+			{0, -1, 1}, // up 1
+			{1, 0, 1},  // right 1
 		}...)
 	}
 

@@ -4,7 +4,7 @@ package adventofcode2016
 func Day09Part1(s string) (sum uint) {
 	var times uint = 1        // how many times to repeat a character
 	var repeat uint           // number of characters to repeat
-	var inMarker bool         // state maching: parsing marker
+	var inMarker bool         // state machine: parsing marker
 	var marker1, marker2 uint // temporary marker content while parsing
 
 	// one sweet single pass
@@ -46,7 +46,7 @@ func Day09Part1(s string) (sum uint) {
 // Instead, iterate from right to left, resolving any (repeat x time)
 // immediately.
 func Day09Part2(s string) (sum uint) {
-	var inMarker bool         // state maching: parsing marker
+	var inMarker bool         // state machine: parsing marker
 	var marker1, marker2 uint // temporary marker content while parsing
 	factors := make([]uint, len(s)+1)
 	for i := 0; i < len(factors); i++ {

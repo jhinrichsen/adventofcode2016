@@ -131,19 +131,3 @@ func (s day11State) move(up bool, chips, gens int) day11State {
 
 	return newState
 }
-
-func (s day11State) isValid() bool {
-	// A floor is safe if:
-	// - No generators present (chips are safe), OR
-	// - No chips present, OR
-	// - All chips have matching generators (chips == gens when treating pairs as equivalent)
-	// Since we count pairs, chips on a floor with generators means chips must equal gens
-	for f := 0; f < 4; f++ {
-		chips, gens := s.getFloor(f)
-		// Invalid if there are chips AND generators AND they're not all paired
-		if chips > 0 && gens > 0 && chips != gens {
-			return false
-		}
-	}
-	return true
-}

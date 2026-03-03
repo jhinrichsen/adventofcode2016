@@ -99,7 +99,6 @@ func Day22(lines []string, part1 bool) (uint, error) {
 
 	// dimension is one larger than max index
 	dimX++
-	dimY++
 	_ = emptyX
 	_ = emptyY
 

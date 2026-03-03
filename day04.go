@@ -1,10 +1,5 @@
 package adventofcode2016
 
-// numeric returns true if b is an ASCII digit
-func numeric(b byte) bool {
-	return '0' <= b && b <= '9'
-}
-
 // Day04Part1 returns sum of sector IDs of all real rooms.
 func Day04Part1(input []byte) uint {
 	var sum uint

@@ -1,11 +1,14 @@
 = Advent Of Code (AOC) 2016
 :doctype: book
-:toc:
+:toc: macro
 
 image:https://godoc.org/gitlab.com/jhinrichsen/adventofcode2016?status.svg["godoc", link="https://godoc.org/gitlab.com/jhinrichsen/adventofcode2016"]
 image:https://goreportcard.com/badge/gitlab.com/jhinrichsen/adventofcode2016["Go report card", link="https://goreportcard.com/report/gitlab.com/jhinrichsen/adventofcode2016"]
 image:https://gitlab.com/jhinrichsen/adventofcode2016/badges/main/pipeline.svg[link="https://gitlab.com/jhinrichsen/adventofcode2016/-/commits/main",title="pipeline status"]
 image:https://gitlab.com/jhinrichsen/adventofcode2016/badges/main/coverage.svg[link="https://gitlab.com/jhinrichsen/adventofcode2016/badges/main/coverage.svg",title="coverage report"]
+image:https://img.shields.io/badge/runtime-8s-brightgreen.svg["runtime"]
+
+toc::[]
 
 My take on aoc puzzles in Go.
 
@@ -1313,7 +1316,7 @@ Our CI pipeline uses:
 - Test Reports: go-junit-report/v2 → JUnit XML format
   * Integrates test results into GitLab's test report UI
 
-- Coverage Reports: gocover-cobertura → Cobertura XML format  
+- Coverage Reports: gocover-cobertura → Cobertura XML format
   * Shows coverage metrics and trends in merge requests
 
 - Vulnerability Scanning: govulncheck (periodic, scheduled pipeline)
